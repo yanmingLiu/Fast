@@ -1,0 +1,198 @@
+import 'package:fast_ai/generated/locales.g.dart';
+import 'package:get/get.dart';
+
+enum VipFrom {
+  locktext,
+  lockpic,
+  lockvideo,
+  lockaudio,
+  send,
+  homevip,
+  mevip,
+  chatvip,
+  launch,
+  relaunch,
+  viprole,
+  call,
+  acceptcall,
+  creimg,
+  crevideo,
+  undrphoto,
+  postpic,
+  postvideo,
+  undrchar,
+  videochat,
+  trans,
+  dailyrd,
+  scenario,
+}
+
+enum ConsumeFrom {
+  home,
+  chat,
+  send,
+  profile,
+  text,
+  audio,
+  call,
+  unlcokText,
+  undr,
+  creaimg,
+  creavideo,
+  album,
+  gift_toy,
+  gift_clo,
+  aiphoto,
+  img2v,
+  mask,
+}
+
+extension GlobFromExt on ConsumeFrom {
+  int get gems {
+    switch (this) {
+      case ConsumeFrom.text:
+        return 2;
+      case ConsumeFrom.audio:
+        return 4;
+      case ConsumeFrom.call:
+        return 10;
+      case ConsumeFrom.creaimg:
+        return 8;
+      case ConsumeFrom.creavideo:
+        return 10;
+      case ConsumeFrom.unlcokText:
+        return 4;
+      case ConsumeFrom.undr:
+        return 100;
+      default:
+        return 0;
+    }
+  }
+}
+
+enum MsgSource {
+  text('TEXT_GEN'),
+  video('VIDEO'),
+  audio('AUDIO'),
+  photo('PHOTO'),
+  gift('GIFT'),
+  clothe('CLOTHE'),
+
+  sendText('sendText'),
+  waitAnswer('waitAnswer'),
+  tips('tips'),
+  scenario('scenario'),
+  intro('intro'),
+  welcome('welcome'),
+  maskTips('maskTips'),
+  error('error');
+
+  final String value;
+  const MsgSource(this.value);
+
+  static final Map<String, MsgSource> _map = {for (var e in MsgSource.values) e.value: e};
+
+  static MsgSource? fromSource(String? source) => _map[source];
+}
+
+enum SendStatus {
+  sending, // 0 - 发送中
+  sent, // 1 - 发送成功
+  failed, // 2 - 发送失败
+}
+
+extension SendStatusConverter on SendStatus {
+  static const Map<SendStatus, int> _statusToInt = {
+    SendStatus.sending: 0,
+    SendStatus.sent: 1,
+    SendStatus.failed: 2,
+  };
+
+  static const Map<int, SendStatus> _intToStatus = {
+    0: SendStatus.sending,
+    1: SendStatus.sent,
+    2: SendStatus.failed,
+  };
+
+  int toInt() => _statusToInt[this]!;
+
+  static SendStatus fromInt(int value) {
+    return _intToStatus[value] ?? (throw ArgumentError('Invalid value for SendStatus: $value'));
+  }
+}
+
+enum LockLevel { normal, private }
+
+extension LockLevelConverter on LockLevel {
+  static const Map<LockLevel, String> _levelToStr = {
+    LockLevel.normal: 'NORMAL',
+    LockLevel.private: 'PRIVATE',
+  };
+
+  static const Map<String, LockLevel> _strToLevel = {
+    'NORMAL': LockLevel.normal,
+    'PRIVATE': LockLevel.private,
+  };
+
+  String get value => _levelToStr[this]!;
+
+  static LockLevel fromValue(String value) => _strToLevel[value]!;
+}
+
+enum MsgEvent { add, update, remove }
+
+enum SessionEvent { add, update, remove, clear }
+
+enum LogEventName { log, error, warning }
+
+enum ClothingState { init, chooseImage, generated }
+
+enum CreateType { photo, video }
+
+enum CallState { calling, incoming, listening, answering, answered, micOff }
+
+enum FollowEvent { follow, unfollow }
+
+enum DialogTag { sigin, gift, giftLoading }
+
+enum Gender {
+  male(0),
+  female(1),
+  nonBinary(2),
+  unknown(-1);
+
+  final int code;
+  const Gender(this.code);
+
+  static final Map<int, Gender> _codeMap = {for (var g in Gender.values) g.code: g};
+
+  /// 根据数值反查 Gender
+  static Gender fromValue(int? code) => _codeMap[code] ?? Gender.unknown;
+
+  /// 显示名称（可根据需要本地化）
+  String get display {
+    switch (this) {
+      case Gender.male:
+        return LocaleKeys.male.tr;
+      case Gender.female:
+        return LocaleKeys.female.tr;
+      case Gender.nonBinary:
+        return LocaleKeys.non_binary.tr;
+      case Gender.unknown:
+        return 'unknown';
+    }
+  }
+
+  // Widget get iconLight {
+  //   switch (this) {
+  //     case Gender.male:
+  //       return Assets.images.sexManS.image(width: 64);
+  //     case Gender.female:
+  //       return Assets.images.sexFemaleS.image(width: 64);
+  //     case Gender.nonBinary:
+  //       return Assets.images.sexNobinaryS.image(width: 64);
+  //     case Gender.unknown:
+  //       return Icon(Icons.question_mark);
+  //   }
+  // }
+}
