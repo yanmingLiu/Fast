@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_keep_alive.dart';
 import 'package:fast_ai/component/f_loading.dart';
+import 'package:fast_ai/component/linked_tab_page_controller.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
@@ -20,48 +23,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   final ctr = Get.put(HomeCtr());
 
-  late PageController _pageController;
-  late ScrollController _scrollController;
+  late LinkedTabPageController _linkedController;
 
   @override
   void initState() {
     super.initState();
     Get.put(HomeCallCtr());
 
-    _pageController = PageController();
-    _scrollController = ScrollController();
+    _linkedController = LinkedTabPageController(
+      items: ctr.categroyList,
+      onIndexChanged: (index) => print("当前选中 index: $index"),
+      onItemsChanged: (items) => print("数据源更新: $items"),
+    );
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
-    _scrollController.dispose();
+    _linkedController.dispose();
     super.dispose();
-  }
-
-  void _handleTabSelection(int index) async {
-    // 避免重复触发逻辑
-    if (ctr.categroy.value.index == index) return;
-
-    ctr.categroy.value = ctr.categroyList[index];
-    // 滚动到指定 Tab
-    await _scrollToSelectedTab(index);
-  }
-
-  Future<void> _scrollToSelectedTab(int index) async {
-    final count = ctr.categroyList.isNotEmpty ? ctr.categroyList.length : 1;
-    final tabWidth = (MediaQuery.of(context).size.width - 32 - 44 - 12) / count;
-    final targetOffset = index * tabWidth - (MediaQuery.of(context).size.width - tabWidth) / 2;
-
-    // 计算目标偏移量
-    final scrollOffset = targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent);
-
-    // 滚动到目标偏移量
-    return _scrollController.animateTo(
-      scrollOffset,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
   }
 
   @override
@@ -71,38 +50,47 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         Positioned(top: 0, left: 0, right: 0, child: Assets.images.pageBg.image()),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: _buildAppBar(),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                SizedBox(height: 16),
-                _buildCategory(),
-                Expanded(
-                  child: Obx(() {
-                    final list = ctr.categroyList;
-
-                    List<Widget> children = list.map((element) {
-                      return KeepAliveWrapper(child: HomeListView(cate: element));
-                    }).toList();
-
-                    return PageView(
-                      controller: _pageController,
-                      onPageChanged: _handleTabSelection,
-                      physics: BouncingScrollPhysics(),
-                      children: children,
-                    );
-                  }),
+          appBar: buildAppBar(),
+          body: AnimatedBuilder(
+            animation: _linkedController,
+            builder: (_, _) {
+              if (_linkedController.items.isEmpty) {
+                return FLoading.loadingWidget();
+              }
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    SizedBox(height: 16),
+                    buildCategory(),
+                    Expanded(
+                      child: Obx(() {
+                        final list = ctr.categroyList;
+                        List<Widget> children = list.map((element) {
+                          return KeepAliveWrapper(child: HomeListView(cate: element));
+                        }).toList();
+                        return PageView(
+                          controller: _linkedController.pageController,
+                          onPageChanged: (index) {
+                            _linkedController.handlePageChanged(index);
+                            ctr.categroy.value = ctr.categroyList[index];
+                          },
+                          physics: BouncingScrollPhysics(),
+                          children: children,
+                        );
+                      }),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildCategory() {
+  Widget buildCategory() {
     return Row(
       spacing: 12,
       children: [
@@ -128,13 +116,26 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               return ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: list.length,
+                controller: _linkedController.scrollController,
                 separatorBuilder: (context, index) => SizedBox(width: 16),
                 itemBuilder: (context, index) {
                   final data = list[index];
-                  return _buildTabItem(
-                    title: data.title,
-                    isActive: cate == data,
-                    onTap: () => ctr.onTapCate(data),
+                  return GestureDetector(
+                    child: AnimatedBuilder(
+                      animation: _linkedController,
+                      builder: (_, _) {
+                        final isActive = _linkedController.index == index;
+                        return buildTabItem(
+                          key: _linkedController.getTabKey(index),
+                          title: data.title,
+                          isActive: isActive,
+                          onTap: () {
+                            ctr.onTapCate(data);
+                            _linkedController.select(index);
+                          },
+                        );
+                      },
+                    ),
                   );
                 },
               );
@@ -145,8 +146,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget _buildTabItem({required String title, required bool isActive, void Function()? onTap}) {
+  Widget buildTabItem({
+    Key? key,
+    required String title,
+    required bool isActive,
+    void Function()? onTap,
+  }) {
     return FButton(
+      key: key,
       borderRadius: BorderRadius.circular(16),
       color: isActive ? Color(0xFF3F8DFD) : Colors.transparent,
       onTap: onTap,
@@ -166,7 +173,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar buildAppBar() {
     return AppBar(
       backgroundColor: Colors.transparent,
       leadingWidth: 200,

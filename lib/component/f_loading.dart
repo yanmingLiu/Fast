@@ -16,13 +16,12 @@ class FLoading {
       width: 60,
       height: 60,
       decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(8)),
-      child: Center(
-        child: // 无限循环的圆形加载
-        RotationWrapper(
-          child: Assets.images.loading.image(width: 30),
-        ),
-      ),
+      child: Center(child: RotationWrapper(child: Assets.images.loading.image(width: 30))),
     );
+  }
+
+  static Widget loadingWidget() {
+    return Center(child: RotationWrapper(child: Assets.images.loading.image(width: 30)));
   }
 }
 
