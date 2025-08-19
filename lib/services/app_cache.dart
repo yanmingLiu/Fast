@@ -60,8 +60,8 @@ class AppCache {
   set isBig(bool value) => _box.write('5zR7wE1qX', value);
 
   /// start restart app
-  bool get isRestartApp => _box.read<bool>('restart_k8V2gT5rA') ?? false;
-  set isRestartApp(bool value) => _box.write('restart_k8V2gT5rA', value);
+  bool get isRestart => _box.read<bool>('restart_k8V2gT5rA') ?? false;
+  set isRestart(bool value) => _box.write('restart_k8V2gT5rA', value);
 
   /// chatBgImage
   String get chatBgImagePath => _box.read<String>('chat_3jU6yI8oZ') ?? '';

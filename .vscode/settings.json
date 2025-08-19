@@ -1,6 +1,9 @@
 {
     // 每行字符限制为 120
     "dart.lineLength": 100,
+    "editor.rulers": [
+        100
+    ], // 在 100 字符位置显示垂直线
     // 启用格式化相关
     "editor.formatOnSave": true,
     "[dart]": {

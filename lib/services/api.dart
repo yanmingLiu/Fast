@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:adjust_sdk/adjust.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:fast_ai/data/base_data.dart';
+import 'package:fast_ai/data/order_data.dart';
 import 'package:fast_ai/data/role.dart';
 import 'package:fast_ai/data/role_tags.dart';
 import 'package:fast_ai/data/session_data.dart';
+import 'package:fast_ai/data/sku_data.dart';
 import 'package:fast_ai/data/user.dart';
 import 'package:fast_ai/services/api_service.dart';
 import 'package:fast_ai/services/app_cache.dart';
@@ -27,11 +29,11 @@ class ApiPath {
   // 修改用户信息
   static const String updateUserInfo = '/v2/appUser/updateUserInfo';
   // 角色列表
-  static const String roleList = '/v2/charProfile/getAll';
+  static const String roleList = '/v2/characterProfile/getAll';
   // moments list
   static const String momentsList = '/moments/getAll';
   // 根据角色 id 查询角色
-  static const String getRoleById = '/v2/charProfile/getById';
+  static const String getRoleById = '/v2/characterProfile/getById';
   // 用户减钻石
   static const String minusGems = '/v2/appUserDetails/minusGems';
   // 通过角色随机查一条查询
@@ -51,11 +53,11 @@ class ApiPath {
   // 谷歌验签
   static const String verifyAndOrder = '/pay/google/verify';
   // 收藏角色
-  static const String collectRole = '/v2/charProfile/collect';
+  static const String collectRole = '/v2/characterProfile/collect';
   // 取消收藏角色
-  static const String cancelCollectRole = '/v2/charProfile/cancelCollect';
+  static const String cancelCollectRole = '/v2/characterProfile/cancelCollect';
   // 角色标签
-  static const String roleTag = '/v2/charProfile/tags';
+  static const String roleTag = '/v2/characterProfile/tags';
   // 会话列表
   static const String sessionList = '/aiChatConversation/list';
   // 新增会话
@@ -65,7 +67,7 @@ class ApiPath {
   // 删除会话
   static const String deleteSession = '/aiChatConversation/delete';
   // 收藏列表
-  static const String collectList = '/v2/charProfile/collect/list';
+  static const String collectList = '/v2/characterProfile/collect/list';
   // 消息列表
   static const String messageList = '/v2/history/getAll';
   // 语音聊天
@@ -85,9 +87,9 @@ class ApiPath {
   // 签到
   static String signIn = '/signin';
   // 送礼配置
-  static String giftConfig = '/v2/charProfile/getGiftConf';
+  static String giftConfig = '/v2/characterProfile/getGiftConf';
   // 换装配置
-  static String changeConfig = '/v2/charProfile/getClothingConf';
+  static String changeConfig = '/v2/characterProfile/getClothingConf';
   // 送玩具
   static String sendToy = '/v2/message/gift';
   // 送衣服
@@ -170,23 +172,6 @@ class Api {
     }
   }
 
-  /// 获取角色标签列表。
-  ///
-  /// 通过调用 API 接口 [ApiPath.roleTag] 获取角色标签数据，并将其解析为 [RoleTagRes] 对象的列表。
-  /// 如果 API 调用成功且返回的数据是有效的列表，则返回解析后的列表；否则返回 `null`。
-  ///
-  /// 返回：
-  /// - 成功时返回 `List<RoleTagRes>`，包含解析后的角色标签数据。
-  /// - 失败时返回 `null`（包括 API 调用失败、数据格式错误或异常情况）。
-  ///
-  /// 示例：
-  /// ```dart
-  /// final tags = await roleTagsList();
-  /// if (tags != null) {
-  ///   print('角色标签数量: ${tags.length}');
-  /// }
-  /// ```
-
   static Future<List<RoleTagRes>?> roleTagsList() async {
     try {
       var res = await api.get(ApiPath.roleTag, queryParameters: _qp);
@@ -256,7 +241,8 @@ class Api {
       }
       var res = await api.post(ApiPath.roleList, body: data, queryParameters: _qp);
       if (res.isOk) {
-        return RolePage.fromJson(res.body);
+        final rolePage = RolePage.fromJson(res.body);
+        return rolePage;
       } else {
         return null;
       }
@@ -481,174 +467,168 @@ class Api {
   //   }
   // }
 
-  // static Future<OrderIosRes?> makeIosOrder({
-  //   required String skuId,
-  //   required String orderType,
-  // }) async {
-  //   try {
-  //     final userId = AccountUtil().user?.id;
-  //     if (userId == null || userId.isEmpty) return null;
+  static Future<OrderData?> makeIosOrder({required String skuId, required String orderType}) async {
+    try {
+      final userId = AppUser().user?.id;
+      if (userId == null || userId.isEmpty) return null;
 
-  //     String deviceId = await InfoUtil().deviceId();
+      String deviceId = await AppCache().phoneId();
 
-  //     var body = {
-  //       'user_id': userId,
-  //       'sku_id': skuId,
-  //       'order_type': orderType,
-  //       'device_id': deviceId,
-  //     };
+      var body = {
+        'user_id': userId,
+        'sku_id': skuId,
+        'order_type': orderType,
+        'device_id': deviceId,
+      };
 
-  //     var res = await api.post(ApiPath.createIosOrder, body: body);
-  //     if (res.isOk) {
-  //       final result = BaseRes.fromJson(res.body, (data) => OrderIosRes.fromJson(data));
-  //       return result.data;
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+      var res = await api.post(ApiPath.createIosOrder, body: body);
+      if (res.isOk) {
+        final result = BaseData.fromJson(res.body, (data) => OrderData.fromJson(data));
+        return result.data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // static Future<bool> verifyIosOrder({
-  //   required int orderId,
-  //   required String? receipt,
-  //   required String skuId,
-  //   required String? transactionId,
-  //   required String? purchaseDate,
-  //   bool? dres,
-  //   bool? createImg,
-  //   bool? createVideo,
-  // }) async {
-  //   try {
-  //     final userId = AccountUtil().user?.id;
-  //     if (userId == null || userId.isEmpty) return false;
+  static Future<bool> verifyIosOrder({
+    required int orderId,
+    required String? receipt,
+    required String skuId,
+    required String? transactionId,
+    required String? purchaseDate,
+    bool? dres,
+    bool? createImg,
+    bool? createVideo,
+  }) async {
+    try {
+      final userId = AppUser().user?.id;
+      if (userId == null || userId.isEmpty) return false;
 
-  //     var chooseEnv = ConstUtil().isDeving ? false : true;
-  //     final idfa = await Adjust.getIdfa();
-  //     final adid = await Adjust.getAdid();
+      var chooseEnv = AppService().isDebugMode ? false : true;
+      final idfa = await Adjust.getIdfa();
+      final adid = await Adjust.getAdid();
 
-  //     var params = <String, dynamic>{
-  //       'order_id': orderId,
-  //       'user_id': userId,
-  //       'receipt': receipt,
-  //       'choose_env': chooseEnv,
-  //       'idfa': idfa,
-  //       'adid': adid,
-  //       'sku_id': skuId,
-  //       'transaction_id': transactionId,
-  //       'purchase_date': purchaseDate,
-  //     };
-  //     if (dres != null) {
-  //       params['dres'] = dres;
-  //     }
-  //     if (createImg != null) {
-  //       params['create_img'] = createImg;
-  //     }
-  //     if (createVideo != null) {
-  //       params['create_video'] = createVideo;
-  //     }
+      var params = <String, dynamic>{
+        'order_id': orderId,
+        'user_id': userId,
+        'receipt': receipt,
+        'choose_env': chooseEnv,
+        'idfa': idfa,
+        'adid': adid,
+        'sku_id': skuId,
+        'transaction_id': transactionId,
+        'purchase_date': purchaseDate,
+      };
+      if (dres != null) {
+        params['dres'] = dres;
+      }
+      if (createImg != null) {
+        params['create_img'] = createImg;
+      }
+      if (createVideo != null) {
+        params['create_video'] = createVideo;
+      }
 
-  //     var res = await api.post(ApiPath.verifyIosReceipt, body: params);
-  //     if (res.isOk) {
-  //       var data = BaseRes.fromJson(res.body, null);
-  //       if (data.code == 0 || data.code == 200) {
-  //         return true;
-  //       }
-  //       return false;
-  //     } else {
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+      var res = await api.post(ApiPath.verifyIosReceipt, body: params);
+      if (res.isOk) {
+        var data = BaseData.fromJson(res.body, null);
+        if (data.code == 0 || data.code == 200) {
+          return true;
+        }
+        return false;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 
-  // static Future<OrderAndRes?> makeAndOrder({
-  //   required String orderType,
-  //   required String skuId,
-  // }) async {
-  //   try {
-  //     final userId = AccountUtil().user?.id;
-  //     if (userId == null || userId.isEmpty) return null;
+  static Future<OrderData?> makeAndOrder({required String orderType, required String skuId}) async {
+    try {
+      final userId = AppUser().user?.id;
+      if (userId == null || userId.isEmpty) return null;
 
-  //     String deviceId = await InfoUtil().deviceId();
+      String deviceId = await AppCache().phoneId();
 
-  //     var body = {
-  //       'device_id': deviceId,
-  //       'platform': ConstUtil().platform,
-  //       'order_type': orderType,
-  //       'sku_id': skuId,
-  //       'user_id': userId,
-  //     };
+      var body = {
+        'device_id': deviceId,
+        'platform': AppService().platform,
+        'order_type': orderType,
+        'sku_id': skuId,
+        'user_id': userId,
+      };
 
-  //     var res = await api.post(ApiPath.createAndOrder, body: body);
+      var res = await api.post(ApiPath.createAndOrder, body: body);
 
-  //     if (res.isOk) {
-  //       var result = BaseRes.fromJson(res.body, (data) => OrderAndRes.fromJson(data));
-  //       return result.data;
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+      if (res.isOk) {
+        var result = BaseData.fromJson(res.body, (data) => OrderData.fromJson(data));
+        return result.data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // // 安卓验签
-  // static Future<bool> verifyAndOrder({
-  //   required String originalJson,
-  //   required String purchaseToken,
-  //   required String orderType,
-  //   required String skuId,
-  //   required String orderId,
-  //   bool? dres,
-  //   bool? createImg,
-  //   bool? createVideo,
-  // }) async {
-  //   try {
-  //     final userId = AccountUtil().user?.id;
-  //     if (userId == null || userId.isEmpty) return false;
-  //     String androidId = await InfoUtil().deviceId(isOrigin: true);
-  //     final adid = await Adjust.getAdid();
-  //     final gpsAdid = await Adjust.getGoogleAdId();
+  // 安卓验签
+  static Future<bool> verifyAndOrder({
+    required String originalJson,
+    required String purchaseToken,
+    required String orderType,
+    required String skuId,
+    required String orderId,
+    bool? dres,
+    bool? createImg,
+    bool? createVideo,
+  }) async {
+    try {
+      final userId = AppUser().user?.id;
+      if (userId == null || userId.isEmpty) return false;
+      String androidId = await AppCache().phoneId(isOrigin: true);
+      final adid = await Adjust.getAdid();
+      final gpsAdid = await Adjust.getGoogleAdId();
 
-  //     var body = <String, dynamic>{
-  //       'original_json': originalJson,
-  //       'purchase_token': purchaseToken,
-  //       'order_type': orderType,
-  //       'sku_id': skuId,
-  //       'order_id': orderId,
-  //       'android_id': androidId,
-  //       'gps_adid': gpsAdid,
-  //       'adid': adid,
-  //       'user_id': userId,
-  //     };
-  //     if (dres != null) {
-  //       body['dres'] = dres;
-  //     }
-  //     if (createImg != null) {
-  //       body['create_img'] = createImg;
-  //     }
-  //     if (createVideo != null) {
-  //       body['create_video'] = createVideo;
-  //     }
+      var body = <String, dynamic>{
+        'original_json': originalJson,
+        'purchase_token': purchaseToken,
+        'order_type': orderType,
+        'sku_id': skuId,
+        'order_id': orderId,
+        'android_id': androidId,
+        'gps_adid': gpsAdid,
+        'adid': adid,
+        'user_id': userId,
+      };
+      if (dres != null) {
+        body['dres'] = dres;
+      }
+      if (createImg != null) {
+        body['create_img'] = createImg;
+      }
+      if (createVideo != null) {
+        body['create_video'] = createVideo;
+      }
 
-  //     var res = await api.post(ApiPath.verifyAndOrder, body: body);
+      var res = await api.post(ApiPath.verifyAndOrder, body: body);
 
-  //     if (res.isOk) {
-  //       final data = BaseRes.fromJson(res.body, null);
-  //       if (data.code == 0 || data.code == 200) {
-  //         return true;
-  //       }
-  //       return false;
-  //     } else {
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+      if (res.isOk) {
+        final data = BaseData.fromJson(res.body, null);
+        if (data.code == 0 || data.code == 200) {
+          return true;
+        }
+        return false;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 
   static Future<bool> collectRole(String roleId) async {
     try {
@@ -890,18 +870,18 @@ class Api {
   //   }
   // }
 
-  // static Future getDailyReward() async {
-  //   try {
-  //     var result = await api.post(ApiPath.signIn);
-  //     final res = BaseRes.fromJson(result.body, null);
-  //     if (res.code == 0 || res.code == 200) {
-  //       return true;
-  //     }
-  //     return false;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  static Future getDailyReward() async {
+    try {
+      var result = await api.post(ApiPath.signIn);
+      final res = BaseData.fromJson(result.body, null);
+      if (res.code == 0 || res.code == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
 
   // static Future<List<MsgToys>?> getToysConfigs() async {
   //   try {
@@ -972,23 +952,23 @@ class Api {
   //   }
   // }
 
-  // /// 获取商品列表
-  // static Future<List<Sku>?> getSku() async {
-  //   try {
-  //     var result = await api.get(ApiPath.skuList);
-  //     BaseRes res = BaseRes.fromJson(result.body, null);
-  //     if (res.data != null) {
-  //       List<Sku> skus = [];
-  //       for (var item in res.data) {
-  //         skus.add(Sku.fromJson(item));
-  //       }
-  //       return skus;
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  /// 获取商品列表
+  static Future<List<SkuData>?> getSkuList() async {
+    try {
+      var result = await api.get(ApiPath.skuList);
+      var res = BaseData.fromJson(result.body, null);
+      if (res.data != null) {
+        List<SkuData> skus = [];
+        for (var item in res.data) {
+          skus.add(SkuData.fromJson(item));
+        }
+        return skus;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 
   // /// 编辑消息
   // static Future<Msg?> editMsg({required String id, required String text}) async {

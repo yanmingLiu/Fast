@@ -6,12 +6,13 @@ import 'package:fast_ai/data/role.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
+import 'package:fast_ai/pages/home/home_item.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/services/network_service.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 
 class HomeListView extends StatefulWidget {
@@ -41,6 +42,8 @@ class _HomeListViewState extends State<HomeListView> {
 
   EmptyType? type;
   bool isNoMoreData = false;
+  bool _isRefreshing = false;
+  bool _isLoading = false;
 
   // create
   bool fromCreat = false;
@@ -105,15 +108,46 @@ class _HomeListViewState extends State<HomeListView> {
   }
 
   Future<void> _onRefresh() async {
-    page = 1;
-    await _fetchData();
-    _controller.finishRefresh();
-    _controller.resetFooter();
+    if (_isRefreshing) return;
+    _isRefreshing = true;
+
+    try {
+      page = 1;
+      isNoMoreData = false;
+      await _fetchData();
+
+      await Future.delayed(Duration(milliseconds: 50));
+      _controller.finishRefresh();
+      // 根据返回数据量设置底部状态
+      _controller.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+    } finally {
+      _isRefreshing = false;
+    }
   }
 
   Future<void> _onLoad() async {
-    await _fetchData();
-    _controller.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+    if (_isLoading) return;
+
+    if (isNoMoreData) {
+      _controller.finishLoad(IndicatorResult.noMore);
+      return;
+    }
+
+    _isLoading = true;
+
+    try {
+      page++;
+      await _fetchData();
+
+      await Future.delayed(Duration(milliseconds: 50));
+      // 使用 fetchData() 执行后更新的 isNoMoreData 值
+      _controller.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+    } catch (e) {
+      page--; // 回滚页码
+      _controller.finishLoad(IndicatorResult.fail);
+    } finally {
+      _isLoading = false;
+    }
   }
 
   void _onCollect(int index, Role role) async {
@@ -149,8 +183,6 @@ class _HomeListViewState extends State<HomeListView> {
 
   Future<RolePage?> _fetchData() async {
     try {
-      AppUser().getUserInfo();
-
       final res = await Api.homeList(
         page: page,
         size: size,
@@ -178,7 +210,6 @@ class _HomeListViewState extends State<HomeListView> {
       setState(() {
         type = null;
         list.addAll(res.records!);
-        page++;
       });
 
       return res;
@@ -206,39 +237,32 @@ class _HomeListViewState extends State<HomeListView> {
         if (type != null) {
           return FEmpty(type: type!, physics: physics);
         }
-
-        return _buildHomeList(physics);
+        return _buildList(physics);
       },
     );
   }
 
-  Widget _buildHomeList(ScrollPhysics physics) {
-    if (list.isEmpty) {
-      return FEmpty(type: EmptyType.empty, physics: physics);
-    }
-
-    return Text('data');
-
-    // return GridView.builder(
-    //   physics: physics,
-    //   padding: const EdgeInsets.symmetric(horizontal: 20),
-    //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    //     crossAxisCount: 2,
-    //     mainAxisSpacing: 8,
-    //     crossAxisSpacing: 8,
-    //     childAspectRatio: 164.0 / 280.0,
-    //   ),
-    //   itemBuilder: (BuildContext context, int index) {
-    //     return HomeItem(
-    //       key: ValueKey(list[ridx].id),
-    //       role: list[ridx],
-    //       categroy: widget.cate,
-    //       onCollect: (role) {
-    //         _onCollect(ridx, role);
-    //       },
-    //     );
-    //   },
-    //   itemCount: itemCount,
-    // );
+  Widget _buildList(ScrollPhysics physics) {
+    return MasonryGridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      itemCount: list.length,
+      physics: physics,
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      itemBuilder: (context, index) {
+        final role = list[index];
+        return SizedBox(
+          height: index.isOdd ? 300 : 250,
+          child: HomeItem(
+            role: role,
+            onCollect: (Role role) {
+              _onCollect(index, role);
+            },
+            cate: widget.cate,
+          ),
+        );
+      },
+    );
   }
 }

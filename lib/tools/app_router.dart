@@ -1,17 +1,23 @@
 import 'dart:io';
 
 import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
+import 'package:fast_ai/component/image_preview.dart';
+import 'package:fast_ai/component/video_preview.dart';
 import 'package:fast_ai/data/role.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/home/home_fillter_page.dart';
+import 'package:fast_ai/pages/home/search_page.dart';
 import 'package:fast_ai/pages/mian/launch_page.dart';
 import 'package:fast_ai/pages/mian/main_page.dart';
+import 'package:fast_ai/pages/vip/gems_page.dart';
+import 'package:fast_ai/pages/vip/vip_page.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_values.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -36,23 +42,25 @@ class Routers {
   static const String undrSku = '/undrSku';
   static const String mask = '/mask';
   static const String maskEdit = '/maskEdit';
+  static const String homeFilter = '/fillter';
 
   static final List<GetPage> pages = [
     GetPage(name: main, page: () => const MainPage()),
     GetPage(name: splash, page: () => const LaunchPage()),
     // GetPage(name: phone, page: () => const PhonePage()),
     // GetPage(name: phoneGuide, page: () => const PhoneGuidePage()),
-    // GetPage(name: vip, page: () => const VipPage()),
-    // GetPage(
-    //   name: imagePreview,
-    //   page: () => const ImagePreviewPage(),
-    //   transition: Transition.zoom,
-    //   fullscreenDialog: true,
-    // ),
-    // GetPage(name: videoPreview, page: () => const VideoPreviewPage(), fullscreenDialog: true),
-    // GetPage(name: search, page: () => const SearchPage()),
+    GetPage(name: vip, page: () => const VipPage()),
+    GetPage(name: gems, page: () => const GemsPage()),
+    GetPage(
+      name: imagePreview,
+      page: () => const ImagePreview(),
+      transition: Transition.zoom,
+      fullscreenDialog: true,
+    ),
+    GetPage(name: videoPreview, page: () => const VideoPreview(), fullscreenDialog: true),
+    GetPage(name: homeFilter, page: () => const HomeFiltterPage(), transition: Transition.downToUp),
+    GetPage(name: search, page: () => const SearchPage()),
     // GetPage(name: genPage, page: () => const GenPage()),
-    // GetPage(name: gems, page: () => const GemsPage()),
     // GetPage(name: msg, page: () => MsgPage()),
     // GetPage(name: profile, page: () => const RoleProfilePage()),
     // GetPage(
@@ -81,13 +89,13 @@ class AppRouter {
 
   static Future<void> pushChat(String? roleId, {bool showLoading = true}) async {
     if (roleId == null) {
-      SmartDialog.showToast('roleId is null');
+      FToast.toast('roleId is null, please check!');
       return;
     }
 
     try {
       if (showLoading) {
-        SmartDialog.showLoading();
+        FLoading.showLoading();
       }
 
       // 使用 Future.wait 来同时执行查角色和查会话
@@ -109,17 +117,17 @@ class AppRouter {
         return;
       }
 
-      SmartDialog.dismiss();
+      FLoading.dismiss();
       Get.toNamed(Routers.msg, arguments: {'role': role, 'session': session});
     } catch (e) {
-      SmartDialog.dismiss(); // 确保发生异常时关闭加载提示
-      SmartDialog.showNotify(msg: e.toString(), notifyType: NotifyType.error);
+      FLoading.dismiss();
+      FToast.toast(e.toString());
     }
   }
 
   static void _dismissAndShowErrorToast(String message) {
-    SmartDialog.dismiss();
-    SmartDialog.showToast(message);
+    FLoading.dismiss();
+    FToast.toast(message);
   }
 
   static void pushVip(VipFrom from) {
@@ -174,7 +182,7 @@ class AppRouter {
     var seesion = await Api.addSession(role.id ?? ''); // 查会话
     final sessionId = seesion?.id;
     if (sessionId == null) {
-      SmartDialog.showToast('sessionId is null');
+      FToast.toast('sessionId is null, please check!');
       return null;
     }
 
@@ -224,7 +232,7 @@ class AppRouter {
   static Future<T?>? pushPhoneGuideFormHome<T>({required Role role}) async {
     final roleId = role.id;
     if (roleId == null) {
-      SmartDialog.showToast('roleId is null');
+      FToast.toast('roleId is null');
       return null;
     }
     return null;

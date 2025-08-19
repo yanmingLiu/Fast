@@ -43,5 +43,11 @@
     "auto_trans": "Automatic Translation",
     "nickname": "NICK NAME",
     "upload_a_photo": "Upload a photo",
-    "use_avatar": "Use Al characters' cover"
+    "use_avatar": "Use Al characters' cover",
+    "search_sirens": "Type a Name to find Sirens",
+    "create_order_error": "Create order error",
+    "iap_not_support": "IAP not supported",
+    "choose_your_tags": "Choose your tags",
+    "select_all": "Select All",
+    "unselect_all": "Unselect All"
 }

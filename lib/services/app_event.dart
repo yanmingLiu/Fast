@@ -15,96 +15,18 @@ import 'package:uuid/v4.dart';
 
 import 'app_service.dart';
 
-abstract class AnalyticsStrategy {
-  Future<void> logEvent(String name, {Map<String, Object>? parameters});
-}
-
-// 依赖注入容器
-class ServiceLocator {
-  static final Map<Type, dynamic> _services = {};
-
-  static void register<T>(T instance) {
-    _services[T] = instance;
-  }
-
-  static T get<T>() {
-    return _services[T] as T;
+void logEvent(String name, {Map<String, Object>? parameters}) {
+  try {
+    FirebaseAnalytics.instance.logEvent(name: name, parameters: parameters);
+    FLogEvent().logCustomEvent(name: name, params: parameters ?? {});
+  } catch (e) {
+    log.e('FirebaseAnalytics: $e');
   }
 }
 
-enum Strategies { firebase, tba }
-
-extension StrategiesExtension on Strategies {
-  String get value {
-    switch (this) {
-      case Strategies.firebase:
-        return 'firebase';
-      case Strategies.tba:
-        return 'tba';
-    }
-  }
-}
-
-// 事件上报管理类
-class LogEventService {
-  List<String> allStrategies = Strategies.values.map((e) => e.value).toList();
-
-  LogEventService() {
-    // 注册所有策略
-    ServiceLocator.register<FirebaseAnalyticsStrategy>(FirebaseAnalyticsStrategy());
-    ServiceLocator.register<FLogEvent>(FLogEvent());
-  }
-
-  Future<void> logEvent(
-    String name, {
-    Map<String, Object>? parameters,
-    List<String>? strategies,
-  }) async {
-    final strategyTypes = strategies ?? allStrategies;
-
-    for (var type in strategyTypes) {
-      switch (type) {
-        case 'firebase':
-          final firebaseStrategy = ServiceLocator.get<FirebaseAnalyticsStrategy>();
-          await firebaseStrategy.logEvent(name, parameters: parameters);
-          break;
-
-        case 'tba':
-          final tbaStrategy = ServiceLocator.get<FLogEvent>();
-          await tbaStrategy.logEvent(name, parameters: parameters);
-          break;
-        default:
-          log.e('Unsupported strategy type: $type');
-      }
-    }
-  }
-}
-
-/// 日志记录函数
-/// <param name="name">事件名称</param>
-/// <param name="parameters">事件参数</param>
-/// <param name="strategies">要使用的策略列表</param>
-Future<void> logEvent(String name, {Map<String, Object>? parameters, List<String>? strategies}) {
-  final eventReportManager = ServiceLocator.get<LogEventService>();
-  return eventReportManager.logEvent(name, parameters: parameters, strategies: strategies);
-}
-
-// Firebase 策略的具体实现
-class FirebaseAnalyticsStrategy implements AnalyticsStrategy {
-  @override
-  Future<void> logEvent(String name, {Map<String, Object>? parameters}) async {
-    log.d('Firebase: $name, parameters: $parameters');
-    try {
-      FirebaseAnalytics.instance.logEvent(name: name, parameters: parameters);
-    } catch (e) {
-      log.e('FirebaseAnalytics: $e');
-    }
-  }
-}
-
-/// ----------------------------------------------------------------------///
-/// ----------------------------------------------------------------------///
-/// ----------------------------------------------------------------------///
+/// ----------------------------------------------------------------------
+///
+/// ----------------------------------------------------------------------
 
 class AdLogService {
   static final AdLogService _instance = AdLogService._internal();
@@ -112,7 +34,7 @@ class AdLogService {
   AdLogService._internal();
 
   static Box<EventData>? _box;
-  static const String boxName = 'ad_logs';
+  static const String boxName = 'events_logs';
 
   Future<Box<EventData>> get box async {
     if (_box != null) return _box!;
@@ -166,7 +88,7 @@ class AdLogService {
   }
 }
 
-class FLogEvent implements AnalyticsStrategy {
+class FLogEvent {
   static final FLogEvent _instance = FLogEvent._internal();
 
   factory FLogEvent() => _instance;
@@ -422,11 +344,6 @@ class FLogEvent implements AnalyticsStrategy {
     } catch (e) {
       log.e('[ad]log Retry failed catch: $e');
     }
-  }
-
-  @override
-  Future<void> logEvent(String name, {Map<String, Object>? parameters}) {
-    return logCustomEvent(name: name, params: parameters ?? {});
   }
 }
 

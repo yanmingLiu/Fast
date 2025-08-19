@@ -5,6 +5,7 @@ import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/vip/recharge_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -15,9 +16,11 @@ class AppDialog {
     return SmartDialog.dismiss(status: SmartStatus.dialog);
   }
 
-  static Future<void> show({required Widget child, bool? clickMaskDismiss = true}) {
+  static Future<void> show({required Widget child, bool? clickMaskDismiss = true, String? tag}) {
     return SmartDialog.show(
       clickMaskDismiss: clickMaskDismiss,
+      keepSingle: true,
+      tag: tag,
       maskWidget: ClipPath(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
@@ -370,6 +373,7 @@ class AppDialog {
   static bool rateCollectShowd = false;
 
   static void showRateUs(String msg) async {
+    return;
     SmartDialog.show(
       clickMaskDismiss: false,
       builder: (_) {
@@ -382,5 +386,13 @@ class AppDialog {
 
   static bool checkExist(String tag) {
     return SmartDialog.checkExist(tag: tag);
+  }
+
+  static Future<void> showRechargeSuccess(int number) async {
+    return AppDialog.show(
+      child: RechargeDialog(number: number),
+      clickMaskDismiss: false,
+      tag: 'recharge_success',
+    );
   }
 }

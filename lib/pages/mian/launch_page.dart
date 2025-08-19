@@ -103,8 +103,6 @@ class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateM
 
   Future<void> _navigateToMain() async {
     if (!mounted) return;
-
-    // 广告未加载时直接进入首页
     Get.offAllNamed(Routers.main);
   }
 

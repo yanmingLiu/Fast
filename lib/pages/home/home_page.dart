@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_keep_alive.dart';
@@ -9,6 +7,9 @@ import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/home/home_list_view.dart';
+import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/tools/app_router.dart';
+import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -57,31 +58,28 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               if (_linkedController.items.isEmpty) {
                 return FLoading.loadingWidget();
               }
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    SizedBox(height: 16),
-                    buildCategory(),
-                    Expanded(
-                      child: Obx(() {
-                        final list = ctr.categroyList;
-                        List<Widget> children = list.map((element) {
-                          return KeepAliveWrapper(child: HomeListView(cate: element));
-                        }).toList();
-                        return PageView(
-                          controller: _linkedController.pageController,
-                          onPageChanged: (index) {
-                            _linkedController.handlePageChanged(index);
-                            ctr.categroy.value = ctr.categroyList[index];
-                          },
-                          physics: BouncingScrollPhysics(),
-                          children: children,
-                        );
-                      }),
-                    ),
-                  ],
-                ),
+              return Column(
+                children: [
+                  buildCategory(),
+                  Expanded(
+                    child: Obx(() {
+                      final list = ctr.categroyList;
+                      List<Widget> children = list.map((element) {
+                        return KeepAliveWrapper(child: HomeListView(cate: element));
+                      }).toList();
+                      return PageView(
+                        controller: _linkedController.pageController,
+                        pageSnapping: true,
+                        onPageChanged: (index) {
+                          _linkedController.handlePageChanged(index);
+                          ctr.categroy.value = ctr.categroyList[index];
+                        },
+                        physics: BouncingScrollPhysics(),
+                        children: children,
+                      );
+                    }),
+                  ),
+                ],
               );
             },
           ),
@@ -91,58 +89,61 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   Widget buildCategory() {
-    return Row(
-      spacing: 12,
-      children: [
-        FButton(
-          onTap: ctr.onTapFilter,
-          width: 44,
-          height: 44,
-          borderRadius: BorderRadius.all(Radius.circular(22)),
-          child: Center(child: FIcon(assetName: Assets.svg.filter)),
-        ),
-        Expanded(
-          child: Container(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        spacing: 12,
+        children: [
+          FButton(
+            onTap: ctr.onTapFilter,
+            width: 44,
             height: 44,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Color(0x1AFFFFFF),
-              border: BoxBorder.all(color: Color(0x33FFFFFF), width: 1),
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: Obx(() {
-              final cate = ctr.categroy.value;
-              final list = ctr.categroyList;
-              return ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: list.length,
-                controller: _linkedController.scrollController,
-                separatorBuilder: (context, index) => SizedBox(width: 16),
-                itemBuilder: (context, index) {
-                  final data = list[index];
-                  return GestureDetector(
-                    child: AnimatedBuilder(
-                      animation: _linkedController,
-                      builder: (_, _) {
-                        final isActive = _linkedController.index == index;
-                        return buildTabItem(
-                          key: _linkedController.getTabKey(index),
-                          title: data.title,
-                          isActive: isActive,
-                          onTap: () {
-                            ctr.onTapCate(data);
-                            _linkedController.select(index);
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
-              );
-            }),
+            borderRadius: BorderRadius.all(Radius.circular(22)),
+            child: Center(child: FIcon(assetName: Assets.svg.filter)),
           ),
-        ),
-      ],
+          Expanded(
+            child: Container(
+              height: 44,
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Color(0x1AFFFFFF),
+                border: BoxBorder.all(color: Color(0x33FFFFFF), width: 1),
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Obx(() {
+                final cate = ctr.categroy.value;
+                final list = ctr.categroyList;
+                return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: list.length,
+                  controller: _linkedController.scrollController,
+                  separatorBuilder: (context, index) => SizedBox(width: 16),
+                  itemBuilder: (context, index) {
+                    final data = list[index];
+                    return GestureDetector(
+                      child: AnimatedBuilder(
+                        animation: _linkedController,
+                        builder: (_, _) {
+                          final isActive = _linkedController.index == index;
+                          return buildTabItem(
+                            key: _linkedController.getTabKey(index),
+                            title: data.title,
+                            isActive: isActive,
+                            onTap: () {
+                              ctr.onTapCate(data);
+                              _linkedController.select(index);
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -184,8 +185,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           children: [
             FButton(
               onTap: () {
-                FLoading.showLoading();
-                Future.delayed(Duration(seconds: 2)).then((v) => FLoading.dismiss());
+                AppRouter.pushVip(VipFrom.homevip);
               },
               width: 44,
               height: 44,
@@ -196,19 +196,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               height: 44,
               borderRadius: BorderRadius.circular(22),
               constraints: BoxConstraints(minWidth: 44),
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              onTap: () {},
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              onTap: () {
+                AppRouter.pushGem(ConsumeFrom.home);
+              },
               child: Center(
                 child: Row(
                   spacing: 4,
                   children: [
                     Assets.images.gems.image(width: 24),
-                    Text(
-                      '100',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    Obx(
+                      () => Text(
+                        AppUser().balance.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -221,7 +225,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
       actions: [
         FButton(
-          onTap: () {},
+          onTap: () {
+            AppRouter.pushSearch();
+          },
           width: 44,
           height: 44,
           borderRadius: BorderRadius.all(Radius.circular(22)),

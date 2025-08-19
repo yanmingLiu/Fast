@@ -55,6 +55,12 @@ class LocaleKeys {
   static const nickname = 'nickname';
   static const upload_a_photo = 'upload_a_photo';
   static const use_avatar = 'use_avatar';
+  static const search_sirens = 'search_sirens';
+  static const create_order_error = 'create_order_error';
+  static const iap_not_support = 'iap_not_support';
+  static const choose_your_tags = 'choose_your_tags';
+  static const select_all = 'select_all';
+  static const unselect_all = 'unselect_all';
 }
 
 class Locales {
@@ -106,5 +112,11 @@ class Locales {
     'nickname': 'NICK NAME',
     'upload_a_photo': 'Upload a photo',
     'use_avatar': 'Use Al characters\' cover',
+    'search_sirens': 'Type a Name to find Sirens',
+    'create_order_error': 'Create order error',
+    'iap_not_support': 'IAP not supported',
+    'choose_your_tags': 'Choose your tags',
+    'select_all': 'Select All',
+    'unselect_all': 'Unselect All',
   };
 }

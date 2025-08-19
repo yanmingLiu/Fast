@@ -15,23 +15,36 @@ class $AssetsImagesGen {
   /// File path: assets/images/gems.png
   AssetGenImage get gems => const AssetGenImage('assets/images/gems.png');
 
+  /// File path: assets/images/gems_succ.png
+  AssetGenImage get gemsSucc =>
+      const AssetGenImage('assets/images/gems_succ.png');
+
+  /// File path: assets/images/image_place.png
+  AssetGenImage get imagePlace =>
+      const AssetGenImage('assets/images/image_place.png');
+
   /// File path: assets/images/launch_logo.png
-  AssetGenImage get launchLogo => const AssetGenImage('assets/images/launch_logo.png');
+  AssetGenImage get launchLogo =>
+      const AssetGenImage('assets/images/launch_logo.png');
 
   /// File path: assets/images/loading.png
   AssetGenImage get loading => const AssetGenImage('assets/images/loading.png');
 
   /// File path: assets/images/me_vip_bg_0.png
-  AssetGenImage get meVipBg0 => const AssetGenImage('assets/images/me_vip_bg_0.png');
+  AssetGenImage get meVipBg0 =>
+      const AssetGenImage('assets/images/me_vip_bg_0.png');
 
   /// File path: assets/images/me_vip_bg_1.png
-  AssetGenImage get meVipBg1 => const AssetGenImage('assets/images/me_vip_bg_1.png');
+  AssetGenImage get meVipBg1 =>
+      const AssetGenImage('assets/images/me_vip_bg_1.png');
 
   /// File path: assets/images/me_vip_icon.png
-  AssetGenImage get meVipIcon => const AssetGenImage('assets/images/me_vip_icon.png');
+  AssetGenImage get meVipIcon =>
+      const AssetGenImage('assets/images/me_vip_icon.png');
 
   /// File path: assets/images/me_vip_person.png
-  AssetGenImage get meVipPerson => const AssetGenImage('assets/images/me_vip_person.png');
+  AssetGenImage get meVipPerson =>
+      const AssetGenImage('assets/images/me_vip_person.png');
 
   /// File path: assets/images/member.png
   AssetGenImage get member => const AssetGenImage('assets/images/member.png');
@@ -40,39 +53,43 @@ class $AssetsImagesGen {
   AssetGenImage get noData => const AssetGenImage('assets/images/no_data.png');
 
   /// File path: assets/images/no_loading.png
-  AssetGenImage get noLoading => const AssetGenImage('assets/images/no_loading.png');
+  AssetGenImage get noLoading =>
+      const AssetGenImage('assets/images/no_loading.png');
 
   /// File path: assets/images/no_network.png
-  AssetGenImage get noNetwork => const AssetGenImage('assets/images/no_network.png');
+  AssetGenImage get noNetwork =>
+      const AssetGenImage('assets/images/no_network.png');
 
   /// File path: assets/images/page_bg.png
   AssetGenImage get pageBg => const AssetGenImage('assets/images/page_bg.png');
 
   /// File path: assets/images/page_pg_me.png
-  AssetGenImage get pagePgMe => const AssetGenImage('assets/images/page_pg_me.png');
+  AssetGenImage get pagePgMe =>
+      const AssetGenImage('assets/images/page_pg_me.png');
 
   /// File path: assets/images/selected.png
-  AssetGenImage get selected => const AssetGenImage('assets/images/selected.png');
+  AssetGenImage get selected =>
+      const AssetGenImage('assets/images/selected.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
-    gems,
-    launchLogo,
-    loading,
-    meVipBg0,
-    meVipBg1,
-    meVipIcon,
-    meVipPerson,
-    member,
-    noData,
-    noLoading,
-    noNetwork,
-    pageBg,
-    pagePgMe,
-    selected,
-  ];
-
-  get newUi => null;
+        gems,
+        gemsSucc,
+        imagePlace,
+        launchLogo,
+        loading,
+        meVipBg0,
+        meVipBg1,
+        meVipIcon,
+        meVipPerson,
+        member,
+        noData,
+        noLoading,
+        noNetwork,
+        pageBg,
+        pagePgMe,
+        selected
+      ];
 }
 
 class $AssetsLocalesGen {
@@ -88,11 +105,17 @@ class $AssetsLocalesGen {
 class $AssetsSvgGen {
   const $AssetsSvgGen();
 
+  /// File path: assets/svg/back.svg
+  String get back => 'assets/svg/back.svg';
+
   /// File path: assets/svg/close.svg
   String get close => 'assets/svg/close.svg';
 
   /// File path: assets/svg/filter.svg
   String get filter => 'assets/svg/filter.svg';
+
+  /// File path: assets/svg/like.svg
+  String get like => 'assets/svg/like.svg';
 
   /// File path: assets/svg/search.svg
   String get search => 'assets/svg/search.svg';
@@ -110,7 +133,8 @@ class $AssetsSvgGen {
   String get tabMe => 'assets/svg/tab_me.svg';
 
   /// List of all assets
-  List<String> get values => [close, filter, search, tabChat, tabCreat, tabHome, tabMe];
+  List<String> get values =>
+      [back, close, filter, like, search, tabChat, tabCreat, tabHome, tabMe];
 }
 
 class Assets {
@@ -122,7 +146,11 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
+  const AssetGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  });
 
   final String _assetName;
 
@@ -182,8 +210,15 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({AssetBundle? bundle, String? package}) {
-    return AssetImage(_assetName, bundle: bundle, package: package);
+  ImageProvider provider({
+    AssetBundle? bundle,
+    String? package,
+  }) {
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
   }
 
   String get path => _assetName;

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 class RolePage {
-  final List<Role>? records;
-  final int? total;
-  final int? size;
-  final int? current;
-  final int? pages;
+  List<Role>? records;
+  int? total;
+  int? size;
+  int? current;
+  int? pages;
 
   RolePage({this.records, this.total, this.size, this.current, this.pages});
 
@@ -34,44 +34,56 @@ class RolePage {
 
 class Role {
   String? id;
-  int? age;
+  dynamic age;
   String? aboutMe;
   Media? media;
+  List<RoleImage>? images;
   String? avatar;
+  dynamic avatarVideo;
   String? name;
   String? platform;
   String? renderStyle;
   String? likes;
   List<String>? greetings;
-  List<GreetingsVoice>? greetingsVoice;
+  List<dynamic>? greetingsVoice;
   String? sessionCount;
   bool? vip;
   int? orderNum;
   List<String>? tags;
+  dynamic tagType;
   String? scenario;
-  double? temperature;
-  String? voiceId;
-  String? engine;
+  dynamic voiceId;
+  dynamic engine;
   int? gender;
   bool? videoChat;
-  List<CharacterVideoChat>? characterVideoChat;
-  List<String>? genPhotoTags;
-  List<String>? genVideoTags;
+  dynamic characterVideoChat;
+  dynamic genPhotoTags;
+  dynamic genVideoTags;
   bool? genPhoto;
   bool? genVideo;
   bool? gems;
   bool? collect;
-  String? lastMessage;
-  List<RoleImage>? images;
-  List<ChangeClothe>? changeClothes;
-  bool? changeTogs;
+  dynamic lastMessage;
+  String? intro;
+  dynamic changeClothing;
+  dynamic changeClothes;
+  dynamic updateTime;
+  int? chatNum;
+  int? msgNum;
+  String? mode;
+  int? cid;
+  dynamic cardNum;
+  dynamic unlockCardNum;
+  dynamic price;
 
   Role({
     this.id,
     this.age,
     this.aboutMe,
     this.media,
+    this.images,
     this.avatar,
+    this.avatarVideo,
     this.name,
     this.platform,
     this.renderStyle,
@@ -82,8 +94,8 @@ class Role {
     this.vip,
     this.orderNum,
     this.tags,
+    this.tagType,
     this.scenario,
-    this.temperature,
     this.voiceId,
     this.engine,
     this.gender,
@@ -96,9 +108,17 @@ class Role {
     this.gems,
     this.collect,
     this.lastMessage,
-    this.images,
+    this.intro,
+    this.changeClothing,
     this.changeClothes,
-    this.changeTogs,
+    this.updateTime,
+    this.chatNum,
+    this.msgNum,
+    this.mode,
+    this.cid,
+    this.cardNum,
+    this.unlockCardNum,
+    this.price,
   });
 
   factory Role.fromRawJson(String str) => Role.fromJson(json.decode(str));
@@ -107,219 +127,155 @@ class Role {
 
   factory Role.fromJson(Map<String, dynamic> json) => Role(
     id: json["id"],
-    age: json["yr_age"],
-    aboutMe: json["about_me_txt"],
-    media: json["media_content"] == null ? null : Media.fromJson(json["media_content"]),
-    avatar: json["avatar_video"] ?? json["avtr_img"],
-    name: json["usr_name"],
-    platform: json["platfrm"],
-    renderStyle: json["rend_style"],
-    likes: json["like_cnt"],
-    greetings: json["greet_msg"] == null ? [] : List<String>.from(json["greet_msg"]!.map((x) => x)),
-    greetingsVoice: json["greet_voice"] == null
+    age: json["age"],
+    aboutMe: json["about_me"],
+    media: json["media"] == null ? null : Media.fromJson(json["media"]),
+    images: json["images"] == null
         ? []
-        : List<GreetingsVoice>.from(json["greet_voice"]!.map((x) => GreetingsVoice.fromJson(x))),
-    sessionCount: json["sess_count"],
-    vip: json["vip_status"],
-    orderNum: json["ord_num"],
-    tags: json["tag_list"] == null ? [] : List<String>.from(json["tag_list"]!.map((x) => x)),
+        : List<RoleImage>.from(json["images"]!.map((x) => RoleImage.fromJson(x))),
+    avatar: json["avatar"],
+    avatarVideo: json["avatar_video"],
+    name: json["name"],
+    platform: json["platform"],
+    renderStyle: json["render_style"],
+    likes: json["likes"],
+    greetings: json["greetings"] == null ? [] : List<String>.from(json["greetings"]!.map((x) => x)),
+    greetingsVoice: json["greetings_voice"] == null
+        ? []
+        : List<dynamic>.from(json["greetings_voice"]!.map((x) => x)),
+    sessionCount: json["session_count"],
+    vip: json["vip"],
+    orderNum: json["order_num"],
+    tags: json["tags"] == null ? [] : List<String>.from(json["tags"]!.map((x) => x)),
+    tagType: json["tag_type"],
     scenario: json["scenario"],
-    temperature: json["temperature"]?.toDouble(),
-    voiceId: json["voice_ident"],
-    engine: json["engn"],
-    gender: json["gendr"],
-    videoChat: json["vid_chat"],
-    characterVideoChat: json["char_vid_chat"] == null
-        ? []
-        : List<CharacterVideoChat>.from(
-            json["char_vid_chat"]!.map((x) => CharacterVideoChat.fromJson(x)),
-          ),
-    genPhotoTags: json["photo_tags"] == null
-        ? []
-        : List<String>.from(json["photo_tags"]!.map((x) => x)),
-    genVideoTags: json["gen_video_tags"] == null
-        ? []
-        : List<String>.from(json["gen_video_tags"]!.map((x) => x)),
-    genPhoto: json["photo_gen"],
-    genVideo: json["video_gen"],
-    gems: json["gem_bal"],
+    voiceId: json["voice_id"],
+    engine: json["engine"],
+    gender: json["gender"],
+    videoChat: json["video_chat"],
+    characterVideoChat: json["character_video_chat"],
+    genPhotoTags: json["gen_photo_tags"],
+    genVideoTags: json["gen_video_tags"],
+    genPhoto: json["gen_photo"],
+    genVideo: json["gen_video"],
+    gems: json["gems"],
     collect: json["collect"],
     lastMessage: json["last_message"],
-    images: json['images'] == null
-        ? []
-        : List<RoleImage>.from(json['images']!.map((x) => RoleImage.fromJson(x))),
-    changeClothes: json["change_clothes"] == null
-        ? []
-        : List<ChangeClothe>.from(json["change_clothes"]!.map((x) => ChangeClothe.fromJson(x))),
-    changeTogs: json["change_togs"],
+    intro: json["intro"],
+    changeClothing: json["change_clothing"],
+    changeClothes: json["change_clothes"],
+    updateTime: json["update_time"],
+    chatNum: json["chat_num"],
+    msgNum: json["msg_num"],
+    mode: json["mode"],
+    cid: json["cid"],
+    cardNum: json["card_num"],
+    unlockCardNum: json["unlock_card_num"],
+    price: json["price"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "yr_age": age,
-    "about_me_txt": aboutMe,
-    "media_content": media?.toJson(),
-    "avtr_img": avatar,
-    "usr_name": name,
-    "platfrm": platform,
-    "rend_style": renderStyle,
-    "like_cnt": likes,
-    "greet_msg": greetings == null ? [] : List<dynamic>.from(greetings!.map((x) => x)),
-    "greet_voice": greetingsVoice == null
+    "age": age,
+    "about_me": aboutMe,
+    "media": media?.toJson(),
+    "images": images == null ? [] : List<dynamic>.from(images!.map((x) => x.toJson())),
+    "avatar": avatar,
+    "avatar_video": avatarVideo,
+    "name": name,
+    "platform": platform,
+    "render_style": renderStyle,
+    "likes": likes,
+    "greetings": greetings == null ? [] : List<dynamic>.from(greetings!.map((x) => x)),
+    "greetings_voice": greetingsVoice == null
         ? []
-        : List<dynamic>.from(greetingsVoice!.map((x) => x.toJson())),
-    "sess_count": sessionCount,
-    "vip_status": vip,
-    "ord_num": orderNum,
-    "tag_list": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
+        : List<dynamic>.from(greetingsVoice!.map((x) => x)),
+    "session_count": sessionCount,
+    "vip": vip,
+    "order_num": orderNum,
+    "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
+    "tag_type": tagType,
     "scenario": scenario,
-    "temperature": temperature,
-    "voice_ident": voiceId,
-    "engn": engine,
-    "gendr": gender,
-    "vid_chat": videoChat,
-    "char_vid_chat": characterVideoChat == null
-        ? []
-        : List<dynamic>.from(characterVideoChat!.map((x) => x.toJson())),
-    "photo_tags": genPhotoTags == null ? [] : List<dynamic>.from(genPhotoTags!.map((x) => x)),
-    "gen_video_tags": genVideoTags == null ? [] : List<dynamic>.from(genVideoTags!.map((x) => x)),
-    "photo_gen": genPhoto,
-    "video_gen": genVideo,
-    "gem_bal": gems,
+    "voice_id": voiceId,
+    "engine": engine,
+    "gender": gender,
+    "video_chat": videoChat,
+    "character_video_chat": characterVideoChat,
+    "gen_photo_tags": genPhotoTags,
+    "gen_video_tags": genVideoTags,
+    "gen_photo": genPhoto,
+    "gen_video": genVideo,
+    "gems": gems,
     "collect": collect,
     "last_message": lastMessage,
-    'images': images == null ? [] : List<dynamic>.from(images!.map((x) => x.toJson())),
-    "change_clothes": changeClothes == null
-        ? []
-        : List<dynamic>.from(changeClothes!.map((x) => x.toJson())),
-    "change_togs": changeTogs,
+    "intro": intro,
+    "change_clothing": changeClothing,
+    "change_clothes": changeClothes,
+    "update_time": updateTime,
+    "chat_num": chatNum,
+    "msg_num": msgNum,
+    "mode": mode,
+    "cid": cid,
+    "card_num": cardNum,
+    "unlock_card_num": unlockCardNum,
+    "price": price,
   };
-
-  Role copyWith({
-    String? id,
-    int? age,
-    String? aboutMe,
-    Media? media,
-    String? avatar,
-    String? name,
-    String? platform,
-    String? renderStyle,
-    String? likes,
-    List<String>? greetings,
-    List<GreetingsVoice>? greetingsVoice,
-    String? sessionCount,
-    bool? vip,
-    int? orderNum,
-    List<String>? tags,
-    String? scenario,
-    double? temperature,
-    String? voiceId,
-    String? engine,
-    int? gender,
-    bool? videoChat,
-    List<CharacterVideoChat>? characterVideoChat,
-    List<String>? genPhotoTags,
-    List<String>? genVideoTags,
-    bool? genPhoto,
-    bool? genVideo,
-    bool? gems,
-    bool? collect,
-    String? lastMessage,
-    List<RoleImage>? images,
-    List<ChangeClothe>? changeClothes,
-    bool? changeTogs,
-  }) {
-    return Role(
-      id: id ?? this.id,
-      age: age ?? this.age,
-      aboutMe: aboutMe ?? this.aboutMe,
-      media: media ?? this.media,
-      avatar: avatar ?? this.avatar,
-      name: name ?? this.name,
-      platform: platform ?? this.platform,
-      renderStyle: renderStyle ?? this.renderStyle,
-      likes: likes ?? this.likes,
-      greetings: greetings ?? this.greetings,
-      greetingsVoice: greetingsVoice ?? this.greetingsVoice,
-      sessionCount: sessionCount ?? this.sessionCount,
-      vip: vip ?? this.vip,
-      orderNum: orderNum ?? this.orderNum,
-      tags: tags ?? this.tags,
-      scenario: scenario ?? this.scenario,
-      temperature: temperature ?? this.temperature,
-      voiceId: voiceId ?? this.voiceId,
-      engine: engine ?? this.engine,
-      gender: gender ?? this.gender,
-      videoChat: videoChat ?? this.videoChat,
-      characterVideoChat: characterVideoChat ?? this.characterVideoChat,
-      genPhotoTags: genPhotoTags ?? this.genPhotoTags,
-      genVideoTags: genVideoTags ?? this.genVideoTags,
-      genPhoto: genPhoto ?? this.genPhoto,
-      genVideo: genVideo ?? this.genVideo,
-      gems: gems ?? this.gems,
-      collect: collect ?? this.collect,
-      lastMessage: lastMessage ?? this.lastMessage,
-      images: images ?? this.images,
-      changeClothes: changeClothes ?? this.changeClothes,
-      changeTogs: changeTogs ?? this.changeTogs,
-    );
-  }
 }
 
-class CharacterVideoChat {
-  final int? id;
-  final String? characterId;
-  final String? tag;
-  final int? duration;
-  final String? url;
-  final String? gifUrl;
+class RoleImage {
+  int? id;
+  DateTime? createTime;
+  DateTime? updateTime;
+  String? imageUrl;
+  String? modelId;
+  int? gems;
+  int? imgType;
+  dynamic imgRemark;
+  bool? unlocked;
 
-  CharacterVideoChat({this.id, this.characterId, this.tag, this.duration, this.url, this.gifUrl});
+  RoleImage({
+    this.id,
+    this.createTime,
+    this.updateTime,
+    this.imageUrl,
+    this.modelId,
+    this.gems,
+    this.imgType,
+    this.imgRemark,
+    this.unlocked,
+  });
 
-  factory CharacterVideoChat.fromRawJson(String str) =>
-      CharacterVideoChat.fromJson(json.decode(str));
+  factory RoleImage.fromRawJson(String str) => RoleImage.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory CharacterVideoChat.fromJson(Map<String, dynamic> json) => CharacterVideoChat(
+  factory RoleImage.fromJson(Map<String, dynamic> json) => RoleImage(
     id: json["id"],
-    characterId: json["char_id"],
-    tag: json["tag"],
-    duration: json["dur"] is double ? json["dur"].toInt() : json["dur"],
-    url: json["web_link"],
-    gifUrl: json["gif_url"],
+    createTime: json["create_time"] == null ? null : DateTime.parse(json["create_time"]),
+    updateTime: json["update_time"] == null ? null : DateTime.parse(json["update_time"]),
+    imageUrl: json["image_url"],
+    modelId: json["model_id"],
+    gems: json["gems"],
+    imgType: json["img_type"],
+    imgRemark: json["img_remark"],
+    unlocked: json["unlocked"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "char_id": characterId,
-    "tag": tag,
-    "dur": duration,
-    "web_link": url,
-    "gif_url": gifUrl,
+    "create_time": createTime?.toIso8601String(),
+    "update_time": updateTime?.toIso8601String(),
+    "image_url": imageUrl,
+    "model_id": modelId,
+    "gems": gems,
+    "img_type": imgType,
+    "img_remark": imgRemark,
+    "unlocked": unlocked,
   };
-}
-
-class GreetingsVoice {
-  final String? url;
-  final int? duration;
-
-  GreetingsVoice({this.url, this.duration});
-
-  factory GreetingsVoice.fromRawJson(String str) => GreetingsVoice.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory GreetingsVoice.fromJson(Map<String, dynamic> json) => GreetingsVoice(
-    url: json["web_link"],
-    duration: json["dur"] is double ? json["dur"].toInt() : json["dur"],
-  );
-
-  Map<String, dynamic> toJson() => {"web_link": url, "dur": duration};
 }
 
 class Media {
-  final List<String>? characterImages;
+  List<String>? characterImages;
 
   Media({this.characterImages});
 
@@ -338,61 +294,4 @@ class Media {
         ? []
         : List<dynamic>.from(characterImages!.map((x) => x)),
   };
-}
-
-class RoleImage {
-  int? id;
-  String? imageUrl;
-  String? modelId;
-  int? gemTally;
-  bool? unlocked;
-
-  RoleImage({this.id, this.imageUrl, this.modelId, this.gemTally, this.unlocked});
-
-  factory RoleImage.fromRawJson(String str) => RoleImage.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory RoleImage.fromJson(Map<String, dynamic> json) => RoleImage(
-    id: json['id'],
-    imageUrl: json['image_url'],
-    modelId: json['model_id'],
-    gemTally: json['gem_bal'],
-    unlocked: json['unlocked'],
-  );
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'image_url': imageUrl,
-    'model_id': modelId,
-    'gem_bal': gemTally,
-    'unlocked': unlocked,
-  };
-
-  RoleImage copyWith({int? id, String? imageUrl, String? modelId, int? gemTally, bool? unlocked}) {
-    return RoleImage(
-      id: id ?? this.id,
-      imageUrl: imageUrl ?? this.imageUrl,
-      modelId: modelId ?? this.modelId,
-      gemTally: gemTally ?? this.gemTally,
-      unlocked: unlocked ?? this.unlocked,
-    );
-  }
-}
-
-class ChangeClothe {
-  final int? id;
-  final int? clothingType;
-  final String? modelId;
-
-  ChangeClothe({this.id, this.clothingType, this.modelId});
-
-  factory ChangeClothe.fromRawJson(String str) => ChangeClothe.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory ChangeClothe.fromJson(Map<String, dynamic> json) =>
-      ChangeClothe(id: json["id"], clothingType: json["clothing_type"], modelId: json["pdlurn"]);
-
-  Map<String, dynamic> toJson() => {"id": id, "clothing_type": clothingType, "pdlurn": modelId};
 }

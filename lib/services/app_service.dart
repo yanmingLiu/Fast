@@ -17,7 +17,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 enum Environment { dev, prod }
 
-final log = Logger(printer: PrettyPrinter(methodCount: 1));
+final log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 class AppService {
   static AppService? _instance;
