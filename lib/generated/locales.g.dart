@@ -66,6 +66,47 @@ class LocaleKeys {
   static const rate_us_like = 'rate_us_like';
   static const chatted = 'chatted';
   static const liked = 'liked';
+  static const wait_for_response = 'wait_for_response';
+  static const please_input = 'please_input';
+  static const not_enough = 'not_enough';
+  static const free_chat_used = 'free_chat_used';
+  static const upgrade_to_chat = 'upgrade_to_chat';
+  static const easter_egg_unlock = 'easter_egg_unlock';
+  static const yes = 'yes';
+  static const some_error_try_again = 'some_error_try_again';
+  static const level_up_value = 'level_up_value';
+  static const aoto_trans = 'aoto_trans';
+  static const reply_mode = 'reply_mode';
+  static const short_reply = 'short_reply';
+  static const long_reply = 'long_reply';
+  static const edit_scenario = 'edit_scenario';
+  static const gems_per_edit = 'gems_per_edit';
+  static const scenario_restart_warning = 'scenario_restart_warning';
+  static const profile_mask_description = 'profile_mask_description';
+  static const select_profile_mask = 'select_profile_mask';
+  static const edit = 'edit';
+  static const pick_it = 'pick_it';
+  static const create_profile_mask = 'create_profile_mask';
+  static const your_name = 'your_name';
+  static const your_gender = 'your_gender';
+  static const your_age = 'your_age';
+  static const description = 'description';
+  static const other_info = 'other_info';
+  static const name_hint = 'name_hint';
+  static const age_hint = 'age_hint';
+  static const description_hint = 'description_hint';
+  static const other_info_hint = 'other_info_hint';
+  static const fill_required_info = 'fill_required_info';
+  static const mask_already_loaded = 'mask_already_loaded';
+  static const mask_applied = 'mask_applied';
+  static const save = 'save';
+  static const to_create = 'to_create';
+  static const create_mask_profile_description =
+      'create_mask_profile_description';
+  static const delete_mask_confirmation = 'delete_mask_confirmation';
+  static const unlock_role = 'unlock_role';
+  static const unlock_role_description = 'unlock_role_description';
+  static const unlock_now = 'unlock_now';
 }
 
 class Locales {
@@ -129,5 +170,56 @@ class Locales {
         'Hey, thanks for your likes! If you think we did a good job, please give us a good review to help us do better~ 😊',
     'chatted': 'Chatted',
     'liked': 'Liked',
+    'wait_for_response': 'Please wait for the response',
+    'please_input': 'Please enter content',
+    'not_enough': 'Insufficient balance, please recharge',
+    'free_chat_used':
+        'You\'ve used up your free chat credits. To continue enjoying our service, please consider upgrading to our premium plan.',
+    'upgrade_to_chat': 'Upgrade to chat',
+    'easter_egg_unlock':
+        'Congrats on unlocking the Easter egg feature! You can now upload images to explore the undress function. Give it a shot!',
+    'yes': 'Yes',
+    'some_error_try_again': 'Some error, please wait and try again!',
+    'level_up_value': 'Level @level Reward: @reward',
+    'aoto_trans': 'Enable automatic translation?',
+    'reply_mode': 'Reply mode',
+    'short_reply': 'Short Reply: like sms',
+    'long_reply': 'Long Reply: like story',
+    'edit_scenario': 'Edit scenario',
+    'gems_per_edit': '@num gems/edit',
+    'scenario_restart_warning':
+        'To active the new scenario，the chat wil be restart and the history will lose.',
+    'profile_mask_description':
+        'Here you can set your own profile to achieve the desired chat effect. Please note that only one mask can be used in a chat, but you can open a new chat to use other cards.',
+    'select_profile_mask': 'Select Your Profile Mask',
+    'edit': 'Edit',
+    'pick_it': 'Pick it',
+    'create_profile_mask': 'Create Your Profile Mask',
+    'your_name': 'Your Name',
+    'your_gender': 'Your Gender',
+    'your_age': 'Your Age',
+    'description': 'Description',
+    'other_info': 'Other info',
+    'name_hint': 'The name that you want bots to call you',
+    'age_hint': 'Please input your age',
+    'description_hint':
+        'Like: What are your hobbies?\nDislike: what is your dislike?\nWhat topics do you like to talk about?',
+    'other_info_hint':
+        'Your relationship with the character or important events.',
+    'fill_required_info': 'Please fill in the required information',
+    'mask_already_loaded':
+        'This chat already has a mask loaded. You can restart a chat to use another mask. After restarting, the history will lose.',
+    'mask_applied':
+        'The mask has been put on for you! Modifying the mask doesn\'t affect the loaded mask\'s effect.',
+    'save': 'Save',
+    'to_create': 'To create',
+    'create_mask_profile_description':
+        'Create a mask profile to interact with the character better',
+    'delete_mask_confirmation':
+        'Deleting this mask will restore default chat settings. Confirm?',
+    'unlock_role': 'Unlock Hot Roles!',
+    'unlock_role_description':
+        'Become a premium to unlock hot roles and get unlimited chats.',
+    'unlock_now': 'Unlock Now',
   };
 }

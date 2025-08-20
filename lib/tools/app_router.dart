@@ -7,6 +7,7 @@ import 'package:fast_ai/component/image_preview.dart';
 import 'package:fast_ai/component/video_preview.dart';
 import 'package:fast_ai/data/role.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/chat/msg_page.dart';
 import 'package:fast_ai/pages/home/home_fillter_page.dart';
 import 'package:fast_ai/pages/home/search_page.dart';
 import 'package:fast_ai/pages/mian/launch_page.dart';
@@ -61,7 +62,7 @@ class Routers {
     GetPage(name: homeFilter, page: () => const HomeFiltterPage(), transition: Transition.downToUp),
     GetPage(name: search, page: () => const SearchPage()),
     // GetPage(name: genPage, page: () => const GenPage()),
-    // GetPage(name: msg, page: () => MsgPage()),
+    GetPage(name: msg, page: () => MsgPage()),
     // GetPage(name: profile, page: () => const RoleProfilePage()),
     // GetPage(
     //   name: undr,

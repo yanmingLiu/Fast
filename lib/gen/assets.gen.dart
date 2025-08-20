@@ -49,6 +49,21 @@ class $AssetsImagesGen {
   /// File path: assets/images/member.png
   AssetGenImage get member => const AssetGenImage('assets/images/member.png');
 
+  /// File path: assets/images/msg_auto.png
+  AssetGenImage get msgAuto =>
+      const AssetGenImage('assets/images/msg_auto.png');
+
+  /// File path: assets/images/msg_clo.png
+  AssetGenImage get msgClo => const AssetGenImage('assets/images/msg_clo.png');
+
+  /// File path: assets/images/msg_gift.png
+  AssetGenImage get msgGift =>
+      const AssetGenImage('assets/images/msg_gift.png');
+
+  /// File path: assets/images/msg_mask.png
+  AssetGenImage get msgMask =>
+      const AssetGenImage('assets/images/msg_mask.png');
+
   /// File path: assets/images/no_data.png
   AssetGenImage get noData => const AssetGenImage('assets/images/no_data.png');
 
@@ -66,6 +81,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/page_pg_me.png
   AssetGenImage get pagePgMe =>
       const AssetGenImage('assets/images/page_pg_me.png');
+
+  /// File path: assets/images/phone.png
+  AssetGenImage get phone => const AssetGenImage('assets/images/phone.png');
 
   /// File path: assets/images/rate_icon.png
   AssetGenImage get rateIcon =>
@@ -87,11 +105,16 @@ class $AssetsImagesGen {
         meVipIcon,
         meVipPerson,
         member,
+        msgAuto,
+        msgClo,
+        msgGift,
+        msgMask,
         noData,
         noLoading,
         noNetwork,
         pageBg,
         pagePgMe,
+        phone,
         rateIcon,
         selected
       ];

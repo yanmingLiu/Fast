@@ -220,58 +220,136 @@ class Role {
     "unlock_card_num": unlockCardNum,
     "price": price,
   };
+
+  Role copyWith({
+    String? id,
+    dynamic age,
+    String? aboutMe,
+    Media? media,
+    List<RoleImage>? images,
+    String? avatar,
+    dynamic avatarVideo,
+    String? name,
+    String? platform,
+    String? renderStyle,
+    String? likes,
+    List<String>? greetings,
+    List<dynamic>? greetingsVoice,
+    String? sessionCount,
+    bool? vip,
+    int? orderNum,
+    List<String>? tags,
+    dynamic tagType,
+    String? scenario,
+    dynamic voiceId,
+    dynamic engine,
+    int? gender,
+    bool? videoChat,
+    dynamic characterVideoChat,
+    dynamic genPhotoTags,
+    dynamic genVideoTags,
+    bool? genPhoto,
+    bool? genVideo,
+    bool? gems,
+    bool? collect,
+    String? lastMessage,
+    String? intro,
+    dynamic changeClothing,
+    dynamic changeClothes,
+    int? updateTime,
+    int? chatNum,
+    int? msgNum,
+    String? mode,
+    int? cid,
+    dynamic cardNum,
+    dynamic unlockCardNum,
+    dynamic price,
+  }) {
+    return Role(
+      id: id ?? this.id,
+      age: age ?? this.age,
+      aboutMe: aboutMe ?? this.aboutMe,
+      media: media ?? this.media,
+      images: images ?? this.images,
+      avatar: avatar ?? this.avatar,
+      avatarVideo: avatarVideo ?? this.avatarVideo,
+      name: name ?? this.name,
+      platform: platform ?? this.platform,
+      renderStyle: renderStyle ?? this.renderStyle,
+      likes: likes ?? this.likes,
+      greetings: greetings ?? this.greetings,
+      greetingsVoice: greetingsVoice ?? this.greetingsVoice,
+      sessionCount: sessionCount ?? this.sessionCount,
+      vip: vip ?? this.vip,
+      orderNum: orderNum ?? this.orderNum,
+      tags: tags ?? this.tags,
+      tagType: tagType ?? this.tagType,
+      scenario: scenario ?? this.scenario,
+      voiceId: voiceId ?? this.voiceId,
+      engine: engine ?? this.engine,
+      gender: gender ?? this.gender,
+      videoChat: videoChat ?? this.videoChat,
+      characterVideoChat: characterVideoChat ?? this.characterVideoChat,
+      genPhotoTags: genPhotoTags ?? this.genPhotoTags,
+      genVideoTags: genVideoTags ?? this.genVideoTags,
+      genPhoto: genPhoto ?? this.genPhoto,
+      genVideo: genVideo ?? this.genVideo,
+      gems: gems ?? this.gems,
+      collect: collect ?? this.collect,
+      lastMessage: lastMessage ?? this.lastMessage,
+      intro: intro ?? this.intro,
+      changeClothing: changeClothing ?? this.changeClothing,
+      changeClothes: changeClothes ?? this.changeClothes,
+      updateTime: updateTime ?? this.updateTime,
+      chatNum: chatNum ?? this.chatNum,
+      msgNum: msgNum ?? this.msgNum,
+      mode: mode ?? this.mode,
+      cid: cid ?? this.cid,
+      cardNum: cardNum ?? this.cardNum,
+      unlockCardNum: unlockCardNum ?? this.unlockCardNum,
+      price: price ?? this.price,
+    );
+  }
 }
 
 class RoleImage {
   int? id;
-  DateTime? createTime;
-  DateTime? updateTime;
   String? imageUrl;
   String? modelId;
   int? gems;
-  int? imgType;
-  dynamic imgRemark;
   bool? unlocked;
 
-  RoleImage({
-    this.id,
-    this.createTime,
-    this.updateTime,
-    this.imageUrl,
-    this.modelId,
-    this.gems,
-    this.imgType,
-    this.imgRemark,
-    this.unlocked,
-  });
+  RoleImage({this.id, this.imageUrl, this.modelId, this.gems, this.unlocked});
 
   factory RoleImage.fromRawJson(String str) => RoleImage.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory RoleImage.fromJson(Map<String, dynamic> json) => RoleImage(
-    id: json["id"],
-    createTime: json["create_time"] == null ? null : DateTime.parse(json["create_time"]),
-    updateTime: json["update_time"] == null ? null : DateTime.parse(json["update_time"]),
-    imageUrl: json["image_url"],
-    modelId: json["model_id"],
-    gems: json["gems"],
-    imgType: json["img_type"],
-    imgRemark: json["img_remark"],
-    unlocked: json["unlocked"],
+    id: json['id'],
+    imageUrl: json['image_url'],
+    modelId: json['model_id'],
+    gems: json['gems'],
+    unlocked: json['unlocked'],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "create_time": createTime?.toIso8601String(),
-    "update_time": updateTime?.toIso8601String(),
-    "image_url": imageUrl,
-    "model_id": modelId,
-    "gems": gems,
-    "img_type": imgType,
-    "img_remark": imgRemark,
-    "unlocked": unlocked,
+    'id': id,
+    'image_url': imageUrl,
+    'model_id': modelId,
+    'gems': gems,
+    'unlocked': unlocked,
   };
+
+  RoleImage copyWith({int? id, String? imageUrl, String? modelId, int? gems, bool? unlocked}) {
+    return RoleImage(
+      id: id ?? this.id,
+      imageUrl: imageUrl ?? this.imageUrl,
+      modelId: modelId ?? this.modelId,
+      gems: gems ?? this.gems,
+      unlocked: unlocked ?? this.unlocked,
+    );
+  }
 }
 
 class Media {

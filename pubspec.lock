@@ -547,6 +547,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_client_sse:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "22eda4d0e6b18d02376540e2cc46878373bdcf81"
+      url: "https://github.com/yanmingLiu/flutter_client_sse.git"
+    source: git
+    version: "2.0.3"
   flutter_gen_core:
     dependency: transitive
     description:

@@ -4,11 +4,17 @@ import 'dart:io';
 import 'package:adjust_sdk/adjust.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:fast_ai/data/base_data.dart';
+import 'package:fast_ai/data/chat_level_data.dart';
+import 'package:fast_ai/data/clothing_data.dart';
+import 'package:fast_ai/data/mask_data.dart';
+import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/data/order_data.dart';
+import 'package:fast_ai/data/price_config.dart';
 import 'package:fast_ai/data/role.dart';
 import 'package:fast_ai/data/role_tags.dart';
 import 'package:fast_ai/data/session_data.dart';
 import 'package:fast_ai/data/sku_data.dart';
+import 'package:fast_ai/data/toys_data.dart';
 import 'package:fast_ai/data/user.dart';
 import 'package:fast_ai/services/api_service.dart';
 import 'package:fast_ai/services/app_cache.dart';
@@ -722,24 +728,24 @@ class Api {
     }
   }
 
-  // // 消息列表
-  // static Future<MsgRes?> messageList(int page, int size, int convId) async {
-  //   try {
-  //     var res = await api.post(
-  //       ApiPath.messageList,
-  //       body: {'page': page, 'size': size, 'conversation_id': convId},
-  //       queryParameters: _qp,
-  //     );
-  //     if (res.isOk) {
-  //       var data = MsgRes.fromJson(res.body);
-  //       return data;
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  // 消息列表
+  static Future<MsgRes?> messageList(int page, int size, int convId) async {
+    try {
+      var res = await api.post(
+        ApiPath.messageList,
+        body: {'page': page, 'size': size, 'conversation_id': convId},
+        queryParameters: _qp,
+      );
+      if (res.isOk) {
+        var data = MsgRes.fromJson(res.body);
+        return data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
   // static Future<MsgAnswer?> sendVoiceChatMsg({
   //   required String roleId,
@@ -808,69 +814,69 @@ class Api {
     }
   }
 
-  // static Future<List<ChatLevelConfig>?> getChatLevelConfig() async {
-  //   try {
-  //     var result = await api.get(ApiPath.chatLevelConfig);
-  //     final list = result.body;
-  //     if (list is List) {
-  //       final datas = list.map((x) => ChatLevelConfig.fromJson(x)).toList();
-  //       return datas;
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<List<ChatLevelData>?> getChatLevelConfig() async {
+    try {
+      var result = await api.get(ApiPath.chatLevelConfig);
+      final list = result.body;
+      if (list is List) {
+        final datas = list.map((x) => ChatLevelData.fromJson(x)).toList();
+        return datas;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // static Future<bool> unlockImageReq(int imageId, String modelId) async {
-  //   try {
-  //     var result = await api.post(
-  //       ApiPath.unlockImage,
-  //       body: {'image_id': imageId, 'model_id': modelId},
-  //     );
+  static Future<bool> unlockImageReq(int imageId, String modelId) async {
+    try {
+      var result = await api.post(
+        ApiPath.unlockImage,
+        body: {'image_id': imageId, 'model_id': modelId},
+      );
 
-  //     return result.body;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+      return result.body;
+    } catch (e) {
+      return false;
+    }
+  }
 
-  // static Future<ChatAnserLevel?> fetchChatLevel({
-  //   required String charId,
-  //   required String userId,
-  // }) async {
-  //   try {
-  //     var qb = _qp;
-  //     qb['charId'] = charId;
-  //     qb['userId'] = userId;
+  static Future<ChatLevelData?> fetchChatLevel({
+    required String charId,
+    required String userId,
+  }) async {
+    try {
+      var qb = _qp;
+      qb['charId'] = charId;
+      qb['userId'] = userId;
 
-  //     var result = await api.post(ApiPath.chatLevel, queryParameters: qb);
-  //     if (result.isOk) {
-  //       var res = BaseRes.fromJson(result.body, (json) => ChatAnserLevel.fromJson(json));
-  //       return res.data;
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+      var result = await api.post(ApiPath.chatLevel, queryParameters: qb);
+      if (result.isOk) {
+        var res = BaseData.fromJson(result.body, (json) => ChatLevelData.fromJson(json));
+        return res.data;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // static Future<String?> translateText(String content, {String? slan = 'en', String? tlan}) async {
-  //   try {
-  //     var result = await api.post(
-  //       ApiPath.translate,
-  //       body: {
-  //         'content': content,
-  //         'source_language': slan,
-  //         'target_language': tlan ?? Get.deviceLocale?.languageCode,
-  //       },
-  //     );
-  //     final res = BaseRes.fromJson(result.body, null);
-  //     return res.data;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<String?> translateText(String content, {String? slan = 'en', String? tlan}) async {
+    try {
+      var result = await api.post(
+        ApiPath.translate,
+        body: {
+          'content': content,
+          'source_language': slan,
+          'target_language': tlan ?? Get.deviceLocale?.languageCode,
+        },
+      );
+      final res = BaseData.fromJson(result.body, null);
+      return res.data;
+    } catch (e) {
+      return null;
+    }
+  }
 
   static Future getDailyReward() async {
     try {
@@ -885,74 +891,74 @@ class Api {
     }
   }
 
-  // static Future<List<MsgToys>?> getToysConfigs() async {
-  //   try {
-  //     var result = await api.get(ApiPath.giftConfig);
-  //     if (result.body is List) {
-  //       final list = (result.body as List).map((e) => MsgToys.fromJson(e)).toList();
-  //       return list;
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<List<ToysData>?> getToysConfigs() async {
+    try {
+      var result = await api.get(ApiPath.giftConfig);
+      if (result.body is List) {
+        final list = (result.body as List).map((e) => ToysData.fromJson(e)).toList();
+        return list;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // static Future<List<MsgClothing>?> getClotheConfigs() async {
-  //   try {
-  //     var result = await api.get(ApiPath.changeConfig);
-  //     if (result.body is List) {
-  //       final list = (result.body as List).map((e) => MsgClothing.fromJson(e)).toList();
-  //       return list;
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<List<ClothingData>?> getClotheConfigs() async {
+    try {
+      var result = await api.get(ApiPath.changeConfig);
+      if (result.body is List) {
+        final list = (result.body as List).map((e) => ClothingData.fromJson(e)).toList();
+        return list;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // static Future<Msg?> sendToys({
-  //   required String roleId,
-  //   required int id,
-  //   required int convId,
-  // }) async {
-  //   try {
-  //     var result = await api.post(
-  //       ApiPath.sendToy,
-  //       body: {'model_id': roleId, 'id': id, 'conversation_id': convId},
-  //     );
-  //     var res = BaseRes.fromJson(result.body, (json) => Msg.fromJson(json));
-  //     return res.data;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<MsgData?> sendToys({
+    required String roleId,
+    required int id,
+    required int convId,
+  }) async {
+    try {
+      var result = await api.post(
+        ApiPath.sendToy,
+        body: {'model_id': roleId, 'id': id, 'conversation_id': convId},
+      );
+      var res = BaseData.fromJson(result.body, (json) => MsgData.fromJson(json));
+      return res.data;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // static Future<Msg?> sendClothes({
-  //   required String roleId,
-  //   required int id,
-  //   required int convId,
-  // }) async {
-  //   try {
-  //     var result = await api.post(
-  //       ApiPath.sendClothes,
-  //       body: {'model_id': roleId, 'id': id, 'conversation_id': convId},
-  //     );
-  //     var res = BaseRes.fromJson(result.body, (json) => Msg.fromJson(json));
-  //     return res.data;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<MsgData?> sendClothes({
+    required String roleId,
+    required int id,
+    required int convId,
+  }) async {
+    try {
+      var result = await api.post(
+        ApiPath.sendClothes,
+        body: {'model_id': roleId, 'id': id, 'conversation_id': convId},
+      );
+      var res = BaseData.fromJson(result.body, (json) => MsgData.fromJson(json));
+      return res.data;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // static Future<bool> saveMsgTrans({required String id, required String text}) async {
-  //   try {
-  //     var result = await api.post(ApiPath.saveMsg, body: {'translate_answer': text, 'id': id});
-  //     return result.isOk;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  static Future<bool> saveMsgTrans({required String id, required String text}) async {
+    try {
+      var result = await api.post(ApiPath.saveMsg, body: {'translate_answer': text, 'id': id});
+      return result.isOk;
+    } catch (e) {
+      return false;
+    }
+  }
 
   /// 获取商品列表
   static Future<List<SkuData>?> getSkuList() async {
@@ -973,126 +979,125 @@ class Api {
   }
 
   // /// 编辑消息
-  // static Future<Msg?> editMsg({required String id, required String text}) async {
-  //   try {
-  //     var result = await api.post(ApiPath.editMsg, body: {'id': id, 'answer': text});
-  //     var res = BaseRes.fromJson(result.body, (json) => Msg.fromJson(json));
-  //     return res.data;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<MsgData?> editMsg({required String id, required String text}) async {
+    try {
+      var result = await api.post(ApiPath.editMsg, body: {'id': id, 'answer': text});
+      var res = BaseData.fromJson(result.body, (json) => MsgData.fromJson(json));
+      return res.data;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // /// 修改聊天场景
-  // static Future<bool> editScene({
-  //   required int convId,
-  //   required String scene,
-  //   required String roleId,
-  // }) async {
-  //   try {
-  //     var result = await api.post(
-  //       ApiPath.editScene,
-  //       body: {'conversation_id': convId, 'character_id': roleId, 'scene': scene},
-  //     );
-  //     BaseRes res = BaseRes.fromJson(result.body, null);
-  //     return res.data == null ? false : true;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  /// 修改聊天场景
+  static Future<bool> editScene({
+    required int convId,
+    required String scene,
+    required String roleId,
+  }) async {
+    try {
+      var result = await api.post(
+        ApiPath.editScene,
+        body: {'conversation_id': convId, 'character_id': roleId, 'scene': scene},
+      );
+      var res = BaseData.fromJson(result.body, null);
+      return res.data == null ? false : true;
+    } catch (e) {
+      return false;
+    }
+  }
 
-  // /// 修改会话模式
-  // static Future<bool> editChatMode({required int convId, required String mode}) async {
-  //   try {
-  //     var result = await api.post(ApiPath.editMode, body: {'id': convId, 'chat_model': mode});
-  //     BaseRes res = BaseRes.fromJson(result.body, null);
-  //     return res.data;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  /// 修改会话模式
+  static Future<bool> editChatMode({required int convId, required String mode}) async {
+    try {
+      var result = await api.post(ApiPath.editMode, body: {'id': convId, 'chat_model': mode});
+      var res = BaseData.fromJson(result.body, null);
+      return res.data;
+    } catch (e) {
+      return false;
+    }
+  }
 
-  // /// 新建 mask
-  // static Future<bool> createOrUpdateMask({
-  //   required String name,
-  //   required String age,
-  //   required int gender,
-  //   required String? description,
-  //   required String? otherInfo,
-  //   required int? id,
-  // }) async {
-  //   try {
-  //     final userId = AccountUtil().user?.id;
-  //     final isEdit = id != null;
-  //     final path = isEdit ? ApiPath.editMask : ApiPath.createMask;
-  //     final body = <String, dynamic>{
-  //       'profile_name': name,
-  //       'age': age,
-  //       'gender': gender,
-  //       'description': description,
-  //       'other_info': otherInfo,
-  //       'user_id': userId,
-  //     };
-  //     if (isEdit) {
-  //       body['id'] = id;
-  //     }
+  /// 新建 mask
+  static Future<bool> createOrUpdateMask({
+    required String name,
+    required String age,
+    required int gender,
+    required String? description,
+    required String? otherInfo,
+    required int? id,
+  }) async {
+    try {
+      final userId = AppUser().user?.id;
+      final isEdit = id != null;
+      final path = isEdit ? ApiPath.editMask : ApiPath.createMask;
+      final body = <String, dynamic>{
+        'profile_name': name,
+        'age': age,
+        'gender': gender,
+        'description': description,
+        'other_info': otherInfo,
+        'user_id': userId,
+      };
+      if (isEdit) {
+        body['id'] = id;
+      }
 
-  //     var result = await api.post(path, body: body);
-  //     BaseRes res = BaseRes.fromJson(result.body, null);
-  //     return isEdit ? res.data : res.data != null;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+      var result = await api.post(path, body: body);
+      var res = BaseData.fromJson(result.body, null);
+      return isEdit ? res.data : res.data != null;
+    } catch (e) {
+      return false;
+    }
+  }
 
-  // /// 获取 mask 列表 分页
-  // static Future<ChatMaskListRes?> getMaskList({int page = 1, int size = 10}) async {
-  //   try {
-  //     var result = await api.post(
-  //       ApiPath.getMaskList,
-  //       body: {'page': page, 'size': size, 'user_id': AccountUtil().user?.id},
-  //     );
-  //     var res = ChatMaskListRes.fromJson(result.body);
-  //     return res;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  /// 获取 mask 列表 分页
+  static Future<MaskListRes?> getMaskList({int page = 1, int size = 10}) async {
+    try {
+      var result = await api.post(
+        ApiPath.getMaskList,
+        body: {'page': page, 'size': size, 'user_id': AppUser().user?.id},
+      );
+      var res = MaskListRes.fromJson(result.body);
+      return res;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // /// 切换 mask
-  // static Future<bool> changeMask({required int? conversationId, required int? maskId}) async {
-  //   try {
-  //     var result = await api.post(
-  //       ApiPath.changeMask,
-  //       body: {'conversation_id': conversationId, 'profile_id': maskId},
-  //     );
-  //     BaseRes res = BaseRes.fromJson(result.body, null);
-  //     return res.data;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  /// 切换 mask
+  static Future<bool> changeMask({required int? conversationId, required int? maskId}) async {
+    try {
+      var result = await api.post(
+        ApiPath.changeMask,
+        body: {'conversation_id': conversationId, 'profile_id': maskId},
+      );
+      var res = BaseData.fromJson(result.body, null);
+      return res.data;
+    } catch (e) {
+      return false;
+    }
+  }
 
-  // /// 获取各种价格配置
-  // static Future<PriceConfig?> getPriceConfig() async {
-  //   try {
-  //     var result = await api.get(ApiPath.getPriceConfig);
-  //     var res = PriceConfig.fromJson(result.body);
-  //     return res;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  /// 获取各种价格配置
+  static Future<PriceConfig?> getPriceConfig() async {
+    try {
+      var result = await api.get(ApiPath.getPriceConfig);
+      var res = PriceConfig.fromJson(result.body);
+      return res;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // /// 删除 mask
-  // /// [id] mask id
-  // static Future<bool> deleteMask({required int id}) async {
-  //   try {
-  //     var result = await api.post(ApiPath.deleteMask, body: {'id': id});
-  //     BaseRes res = BaseRes.fromJson(result.body, null);
-  //     return res.data ?? false;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  /// 删除 mask
+  static Future<bool> deleteMask({required int id}) async {
+    try {
+      var result = await api.post(ApiPath.deleteMask, body: {'id': id});
+      var res = BaseData.fromJson(result.body, null);
+      return res.data ?? false;
+    } catch (e) {
+      return false;
+    }
+  }
 }

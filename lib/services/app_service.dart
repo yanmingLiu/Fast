@@ -57,6 +57,7 @@ class AppService {
   late bool isDebugMode;
 
   int maxFreeChatCount = 50;
+  int showClothingCount = 5;
 
   /// 初始化方法，根据环境加载配置
   void init({required Environment env}) {
@@ -143,6 +144,7 @@ class AppService {
 
     // TODO: configuration
     maxFreeChatCount = _getConfigValue('free_chat_count', remoteConfig.getInt, 50);
+    showClothingCount = _getConfigValue('show_clothing_count', remoteConfig.getInt, 5);
   }
 
   // 获取配置值
