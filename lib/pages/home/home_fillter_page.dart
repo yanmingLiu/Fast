@@ -1,5 +1,6 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
+import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/data/role_tags.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,16 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
   @override
   void initState() {
     super.initState();
+
+    loadData();
+  }
+
+  void loadData() async {
+    if (ctr.roleTags.isEmpty) {
+      FLoading.showLoading();
+      await ctr.loadTags();
+      FLoading.dismiss();
+    }
 
     selectedType = ctr.roleTags.firstOrNull;
   }
@@ -96,23 +107,32 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
 
             const SizedBox(height: 24),
             Expanded(child: _buildTags()),
-            const SizedBox(height: 32),
-            Container(
-              height: 32,
-              margin: const EdgeInsets.symmetric(horizontal: 60),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.red),
-              child: InkWell(
-                splashColor: Colors.transparent, // 去除水波纹
-                highlightColor: Colors.transparent, // 去除点击高亮
-                onTap: () {
-                  Get.back();
-                  ctr.filterEvent.value = Set<RoleTag>.from(ctr.selectTags);
-                  ctr.filterEvent.refresh();
-                },
-                child: Center(child: Text(LocaleKeys.confirm.tr)),
+            const SizedBox(height: 16),
+            FButton(
+              color: Color(0xFF3F8DFD),
+              height: 48,
+              borderRadius: BorderRadius.circular(24),
+              hasShadow: true,
+              onTap: () {
+                Get.back();
+                ctr.filterEvent.value = (
+                  Set<RoleTag>.from(ctr.selectTags),
+                  DateTime.now().millisecondsSinceEpoch,
+                );
+                ctr.filterEvent.refresh();
+              },
+              child: Center(
+                child: Text(
+                  LocaleKeys.confirm.tr,
+                  style: GoogleFonts.openSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -158,15 +178,20 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
   Widget _buildItem(bool isSelected, RoleTag e) {
     return Container(
       height: 32,
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.amber : Colors.red,
         borderRadius: const BorderRadius.all(Radius.circular(16)),
+        border: Border.all(color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8), width: 1.0),
       ),
-      alignment: Alignment.center,
-      child: Text(
-        e.name ?? '',
-        style: isSelected ? TextStyle(color: Colors.red) : TextStyle(color: Colors.blue),
+      child: Center(
+        child: Text(
+          e.name ?? '',
+          style: GoogleFonts.openSans(
+            color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }

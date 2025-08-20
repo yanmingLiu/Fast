@@ -12,14 +12,14 @@ class RoleTagRes {
 
   factory RoleTagRes.fromJson(Map<String, dynamic> json) => RoleTagRes(
     labelType: json["label_type"],
-    tags: json["tag_list"] == null
+    tags: json["tags"] == null
         ? []
-        : List<RoleTag>.from(json["tag_list"]!.map((x) => RoleTag.fromJson(x))),
+        : List<RoleTag>.from(json["tags"]!.map((x) => RoleTag.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "label_type": labelType,
-    "tag_list": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x.toJson())),
+    "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x.toJson())),
   };
 }
 
@@ -36,7 +36,7 @@ class RoleTag {
   String toRawJson() => json.encode(toJson());
 
   factory RoleTag.fromJson(Map<String, dynamic> json) =>
-      RoleTag(id: json["id"], name: json["usr_name"], labelType: json["label_type"]);
+      RoleTag(id: json["id"], name: json["name"], labelType: json["label_type"]);
 
-  Map<String, dynamic> toJson() => {"id": id, "usr_name": name, "label_type": labelType};
+  Map<String, dynamic> toJson() => {"id": id, "name": name, "label_type": labelType};
 }

@@ -1,12 +1,13 @@
 import 'package:fast_ai/pages/chat/chat_page.dart';
-import 'package:fast_ai/pages/creat/creat_page.dart';
+import 'package:fast_ai/pages/creat/ai_tab_page.dart';
 import 'package:fast_ai/pages/home/home_page.dart';
 import 'package:fast_ai/pages/me/me_page.dart';
 import 'package:fast_ai/pages/mian/main_tab_bar.dart';
+import 'package:fast_ai/services/app_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-enum MainTabBarIndex { home, chat, creat, me }
+enum MainTabBarIndex { home, chat, ai, me }
 
 MainTabBarIndex mainTabIndex = MainTabBarIndex.home;
 
@@ -75,7 +76,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         backgroundColor: Colors.black,
         body: IndexedStack(
           index: mainTabIndex.index,
-          children: [HomePage(), ChatPage(), CreatPage(), MePage()],
+          children: [HomePage(), ChatPage(), if (AppCache().isBig) AiTabPage(), MePage()],
         ),
       ),
     );

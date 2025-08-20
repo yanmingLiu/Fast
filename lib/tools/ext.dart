@@ -160,3 +160,73 @@ Future<bool> isSameImage(File file1, File file2) async {
   final hash2 = await calculateMd5(file2);
   return hash1.isNotEmpty && hash1 == hash2;
 }
+
+/// 微信会话列表英文时间格式转换
+/// Rules:
+/// - Today's messages: show HH:MM (e.g. 14:30)
+/// - Yesterday's messages: show "Yesterday"
+/// - Messages within this week: show weekday (e.g. Mon, Tue)
+/// - Messages within this year: show MM/DD (e.g. 08/20)
+/// - Messages from previous years: show YYYY/MM/DD (e.g. 2023/08/20)
+String formatSessionTimeEnglish(int timestamp) {
+  // Convert timestamp to DateTime object
+  DateTime messageTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  DateTime now = DateTime.now();
+
+  // Check if two dates are the same day
+  bool isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  // Get weekday abbreviation in English
+  String getWeekdayAbbreviation(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'Mon';
+      case DateTime.tuesday:
+        return 'Tue';
+      case DateTime.wednesday:
+        return 'Wed';
+      case DateTime.thursday:
+        return 'Thu';
+      case DateTime.friday:
+        return 'Fri';
+      case DateTime.saturday:
+        return 'Sat';
+      case DateTime.sunday:
+        return 'Sun';
+      default:
+        return '';
+    }
+  }
+
+  // Format number with leading zero if needed
+  String twoDigits(int n) {
+    return n.toString().padLeft(2, '0');
+  }
+
+  // Today
+  if (isSameDay(messageTime, now)) {
+    return '${twoDigits(messageTime.hour)}:${twoDigits(messageTime.minute)}';
+  }
+
+  // Yesterday
+  DateTime yesterday = now.subtract(const Duration(days: 1));
+  if (isSameDay(messageTime, yesterday)) {
+    return 'Yesterday';
+  }
+
+  // Within this week (last 7 days)
+  DateTime aWeekAgo = now.subtract(const Duration(days: 7));
+  if (messageTime.isAfter(aWeekAgo) && messageTime.isBefore(yesterday)) {
+    return getWeekdayAbbreviation(messageTime.weekday);
+  }
+
+  // Within this year
+  if (messageTime.year == now.year) {
+    return '${twoDigits(messageTime.month)}/${twoDigits(messageTime.day)}';
+  }
+
+  // Previous years
+  return '${messageTime.year}/${twoDigits(messageTime.month)}/${twoDigits(messageTime.day)}';
+}

@@ -59,14 +59,15 @@ class MainTabBar extends StatelessWidget {
                       itemHeight: itemHeight,
                       onTap: () => onTapItem?.call(MainTabBarIndex.chat),
                     ),
-                    _buildItem(
-                      isActive: mainTabIndex == MainTabBarIndex.creat,
-                      label: LocaleKeys.ai_photo.tr,
-                      assetName: Assets.svg.tabCreat,
-                      itemRadius: itemRadius,
-                      itemHeight: itemHeight,
-                      onTap: () => onTapItem?.call(MainTabBarIndex.creat),
-                    ),
+                    // if (AppCache().isBig)
+                    //   _buildItem(
+                    //     isActive: mainTabIndex == MainTabBarIndex.ai,
+                    //     label: LocaleKeys.ai_photo.tr,
+                    //     assetName: Assets.svg.tabCreat,
+                    //     itemRadius: itemRadius,
+                    //     itemHeight: itemHeight,
+                    //     onTap: () => onTapItem?.call(MainTabBarIndex.ai),
+                    //   ),
                     _buildItem(
                       isActive: mainTabIndex == MainTabBarIndex.me,
                       label: LocaleKeys.me.tr,

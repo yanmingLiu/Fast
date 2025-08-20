@@ -8,7 +8,7 @@ class FButton extends StatelessWidget {
     this.focusColor,
     this.hoverColor,
     this.highlightColor,
-    this.height,
+    this.height = 48.0,
     this.width,
     this.constraints,
     this.onTap,
@@ -33,7 +33,7 @@ class FButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BorderRadius br = borderRadius ?? BorderRadius.circular(8);
+    final BorderRadius br = borderRadius ?? BorderRadius.circular(height ?? 0 / 2);
 
     return Material(
       color: Colors.transparent,

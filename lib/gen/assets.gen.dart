@@ -67,6 +67,10 @@ class $AssetsImagesGen {
   AssetGenImage get pagePgMe =>
       const AssetGenImage('assets/images/page_pg_me.png');
 
+  /// File path: assets/images/rate_icon.png
+  AssetGenImage get rateIcon =>
+      const AssetGenImage('assets/images/rate_icon.png');
+
   /// File path: assets/images/selected.png
   AssetGenImage get selected =>
       const AssetGenImage('assets/images/selected.png');
@@ -88,6 +92,7 @@ class $AssetsImagesGen {
         noNetwork,
         pageBg,
         pagePgMe,
+        rateIcon,
         selected
       ];
 }

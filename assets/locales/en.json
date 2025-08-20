@@ -19,7 +19,6 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "network_error": "Please check the network connection",
-    "home_rate_message": "Hey, thanks for your likes! If you think we did a good job, please give us a good review to help us do better~ 😊",
     "mic_permission": "Microphone permission is required to make a call.",
     "open_settings": "Open settings",
     "up_to_vip": "Upgrade to VIP",
@@ -33,7 +32,6 @@
     "input_nickname": "Input your nickname",
     "support": "SUPPORT",
     "feedback": "Feedback",
-    "rate_us": "Rate Us",
     "reset_chat_background": "Rest chat background",
     "set_chat_background": "Custom Chat Background",
     "app_version": "App version",
@@ -49,5 +47,12 @@
     "iap_not_support": "IAP not supported",
     "choose_your_tags": "Choose your tags",
     "select_all": "Select All",
-    "unselect_all": "Unselect All"
+    "unselect_all": "Unselect All",
+    "rate_us": "Help Us Grow",
+    "rate_us_msg": "Thank you for chatting with me for so long! If you think we had a good chat, please give me a five-star rating? (>ω<)",
+    "nope": "Nope",
+    "help_app": "💗Help Fast Ai",
+    "rate_us_like": "Hey, thanks for your likes! If you think we did a good job, please give us a good review to help us do better~ 😊",
+    "chatted": "Chatted",
+    "liked": "Liked"
 }

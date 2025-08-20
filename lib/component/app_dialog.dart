@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
+import 'package:fast_ai/component/rate_dialog.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/vip/recharge_dialog.dart';
@@ -12,8 +13,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppDialog {
-  static Future<void> dismiss() {
-    return SmartDialog.dismiss(status: SmartStatus.dialog);
+  static Future<void> dismiss({String? tag}) {
+    return SmartDialog.dismiss(status: SmartStatus.dialog, tag: tag);
   }
 
   static Future<void> show({required Widget child, bool? clickMaskDismiss = true, String? tag}) {
@@ -373,14 +374,10 @@ class AppDialog {
   static bool rateCollectShowd = false;
 
   static void showRateUs(String msg) async {
-    return;
-    SmartDialog.show(
+    AppDialog.show(
       clickMaskDismiss: false,
-      builder: (_) {
-        // return RateUsDialog(msg: msg);
-        return const Text('a');
-      },
-      tag: 'rate_dialog',
+      child: RateDialog(msg: msg),
+      tag: 'afasdf524151',
     );
   }
 

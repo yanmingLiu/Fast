@@ -70,7 +70,11 @@ class SearchCtr extends GetxController {
         role.collect = false;
         list.refresh();
 
-        Get.find<HomeCtr>().followEvent.value = (FollowEvent.unfollow, chatId);
+        Get.find<HomeCtr>().followEvent.value = (
+          FollowEvent.unfollow,
+          chatId,
+          DateTime.now().millisecondsSinceEpoch,
+        );
       }
     } else {
       final res = await Api.collectRole(chatId);
@@ -78,10 +82,14 @@ class SearchCtr extends GetxController {
         role.collect = true;
         list.refresh();
 
-        Get.find<HomeCtr>().followEvent.value = (FollowEvent.follow, chatId);
+        Get.find<HomeCtr>().followEvent.value = (
+          FollowEvent.follow,
+          chatId,
+          DateTime.now().millisecondsSinceEpoch,
+        );
 
         if (AppDialog.rateCollectShowd == false) {
-          AppDialog.showRateUs(LocaleKeys.home_rate_message.tr);
+          AppDialog.showRateUs(LocaleKeys.rate_us_like.tr);
           AppDialog.rateCollectShowd = true;
         }
       }

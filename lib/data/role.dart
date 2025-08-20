@@ -63,11 +63,11 @@ class Role {
   bool? genVideo;
   bool? gems;
   bool? collect;
-  dynamic lastMessage;
+  String? lastMessage;
   String? intro;
   dynamic changeClothing;
   dynamic changeClothes;
-  dynamic updateTime;
+  int? updateTime;
   int? chatNum;
   int? msgNum;
   String? mode;

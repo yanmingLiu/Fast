@@ -648,21 +648,23 @@ class Api {
     }
   }
 
-  // static Future<SessionRes?> sessionList(int page, int size) async {
-  //   try {
-  //     var res = await api.post(
-  //       ApiPath.sessionList,
-  //       body: {'page': page, 'size': size},
-  //       queryParameters: _qp,
-  //     );
-  //     if (res.isOk) {
-  //       return SessionRes.fromJson(res.body);
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<SessionDataRes?> sessionList(int page, int size) async {
+    try {
+      var res = await api.post(
+        ApiPath.sessionList,
+        body: {'page': page, 'size': size},
+        queryParameters: _qp,
+      );
+      if (res.isOk) {
+        final data = SessionDataRes.fromJson(res.body);
+        return data;
+      }
+      return null;
+    } catch (e) {
+      log.e(e);
+      return null;
+    }
+  }
 
   static Future<SessionData?> addSession(String charId) async {
     try {
@@ -677,48 +679,48 @@ class Api {
     }
   }
 
-  // static Future<Session?> resetSession(int id) async {
-  //   try {
-  //     var res = await api.post(
-  //       ApiPath.resetSession,
-  //       queryParameters: {'conversationId': id.toString()},
-  //     );
-  //     if (res.isOk) {
-  //       return Session.fromJson(res.body);
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<SessionData?> resetSession(int id) async {
+    try {
+      var res = await api.post(
+        ApiPath.resetSession,
+        queryParameters: {'conversationId': id.toString()},
+      );
+      if (res.isOk) {
+        return SessionData.fromJson(res.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
-  // static Future<bool> deleteSession(int id) async {
-  //   try {
-  //     var res = await api.post(ApiPath.deleteSession, queryParameters: {'id': id.toString()});
-  //     return res.isOk;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  static Future<bool> deleteSession(int id) async {
+    try {
+      var res = await api.post(ApiPath.deleteSession, queryParameters: {'id': id.toString()});
+      return res.isOk;
+    } catch (e) {
+      return false;
+    }
+  }
 
-  // static Future<RoleRes?> collectList(int page, int size) async {
-  //   try {
-  //     var res = await api.post(
-  //       ApiPath.collectList,
-  //       body: {'page': page, 'size': size},
-  //       queryParameters: _qp,
-  //     );
-  //     if (res.isOk) {
-  //       var data = RoleRes.fromJson(res.body);
-  //       return data;
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<RolePage?> likedList(int page, int size) async {
+    try {
+      var res = await api.post(
+        ApiPath.collectList,
+        body: {'page': page, 'size': size},
+        queryParameters: _qp,
+      );
+      if (res.isOk) {
+        var data = RolePage.fromJson(res.body);
+        return data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
   // // 消息列表
   // static Future<MsgRes?> messageList(int page, int size, int convId) async {

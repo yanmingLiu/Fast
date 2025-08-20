@@ -1,8 +1,8 @@
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
-class CreatPage extends StatelessWidget {
-  const CreatPage({super.key});
+class AiTabPage extends StatelessWidget {
+  const AiTabPage({super.key});
 
   @override
   Widget build(BuildContext context) {

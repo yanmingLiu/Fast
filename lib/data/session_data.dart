@@ -1,59 +1,58 @@
 import 'dart:convert';
 
 class SessionDataRes {
-  final int? current;
-  final int? pages;
-  final List<SessionData>? records;
-  final int? size;
-  final int? total;
+  List<SessionData>? records;
+  int? total;
+  int? size;
+  int? current;
+  int? pages;
 
-  SessionDataRes({this.current, this.pages, this.records, this.size, this.total});
+  SessionDataRes({this.records, this.total, this.size, this.current, this.pages});
 
   factory SessionDataRes.fromRawJson(String str) => SessionDataRes.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory SessionDataRes.fromJson(Map<String, dynamic> json) => SessionDataRes(
-    current: json["current"],
-    pages: json["pages"],
     records: json["records"] == null
         ? []
         : List<SessionData>.from(json["records"]!.map((x) => SessionData.fromJson(x))),
-    size: json["size"],
     total: json["total"],
+    size: json["size"],
+    current: json["current"],
+    pages: json["pages"],
   );
 
   Map<String, dynamic> toJson() => {
+    "records": records == null ? [] : List<dynamic>.from(records!.map((x) => x.toJson())),
+    "total": total,
+    "size": size,
     "current": current,
     "pages": pages,
-    "records": records == null ? [] : List<dynamic>.from(records!.map((x) => x.toJson())),
-    "size": size,
-    "total": total,
   };
 }
 
 class SessionData {
-  final int? id;
-  final String? avatar;
-  final String? userId;
-  final String? title;
-  final bool? pinned;
-  final DateTime? pinnedTime;
-  final String? characterId;
-  final dynamic model;
-  final int? templateId;
-  final String? voiceModel;
-  final String? lastMessage;
-  final bool? collect;
-
-  /// 聊天模型 short / long
-  String? chatModel;
-
-  /// 场景
+  int? id;
+  String? avatar;
+  String? userId;
+  String? title;
+  bool? pinned;
+  dynamic pinnedTime;
+  String? characterId;
+  dynamic model;
+  int? templateId;
+  String? voiceModel;
+  dynamic lastMessage;
+  int? updateTime;
+  int? createTime;
+  bool? collect;
+  String? mode;
+  dynamic background;
+  int? cid;
   String? scene;
-
-  /// 角色 maskid
   int? profileId;
+  String? chatModel;
 
   SessionData({
     this.id,
@@ -67,10 +66,15 @@ class SessionData {
     this.templateId,
     this.voiceModel,
     this.lastMessage,
+    this.updateTime,
+    this.createTime,
     this.collect,
-    this.chatModel,
+    this.mode,
+    this.background,
+    this.cid,
     this.scene,
     this.profileId,
+    this.chatModel,
   });
 
   factory SessionData.fromRawJson(String str) => SessionData.fromJson(json.decode(str));
@@ -79,37 +83,47 @@ class SessionData {
 
   factory SessionData.fromJson(Map<String, dynamic> json) => SessionData(
     id: json["id"],
-    avatar: json["avtr_img"],
-    userId: json["usr_id"],
+    avatar: json["avatar"],
+    userId: json["user_id"],
     title: json["title"],
     pinned: json["pinned"],
-    pinnedTime: json["pinned_time"] == null ? null : DateTime.parse(json["pinned_time"]),
-    characterId: json["char_id"],
+    pinnedTime: json["pinned_time"],
+    characterId: json["character_id"],
     model: json["model"],
-    templateId: json["tmpl_id"],
+    templateId: json["template_id"],
     voiceModel: json["voice_model"],
     lastMessage: json["last_message"],
+    updateTime: json["update_time"],
+    createTime: json["create_time"],
     collect: json["collect"],
-    chatModel: json["zogojt"],
+    mode: json["mode"],
+    background: json["background"],
+    cid: json["cid"],
     scene: json["scene"],
     profileId: json["profile_id"],
+    chatModel: json["chat_model"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "avtr_img": avatar,
-    "usr_id": userId,
+    "avatar": avatar,
+    "user_id": userId,
     "title": title,
     "pinned": pinned,
-    "pinned_time": pinnedTime?.toIso8601String(),
-    "char_id": characterId,
+    "pinned_time": pinnedTime,
+    "character_id": characterId,
     "model": model,
-    "tmpl_id": templateId,
+    "template_id": templateId,
     "voice_model": voiceModel,
     "last_message": lastMessage,
+    "update_time": updateTime,
+    "create_time": createTime,
     "collect": collect,
-    "zogojt": chatModel,
+    "mode": mode,
+    "background": background,
+    "cid": cid,
     "scene": scene,
     "profile_id": profileId,
+    "chat_model": chatModel,
   };
 }

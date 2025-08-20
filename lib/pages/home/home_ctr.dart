@@ -44,10 +44,10 @@ class HomeCtr extends GetxController {
   // 标签
   List<RoleTagRes> roleTags = [];
   var selectTags = <RoleTag>{}.obs;
-  Rx<Set<RoleTag>> filterEvent = Rx<Set<RoleTag>>({});
+  Rx<(Set<RoleTag>, int)> filterEvent = (<RoleTag>{}, 0).obs;
 
   // 关注
-  Rx<(FollowEvent, String)> followEvent = (FollowEvent.follow, '').obs;
+  Rx<(FollowEvent, String, int)> followEvent = (FollowEvent.follow, '', 0).obs;
 
   @override
   void onInit() {

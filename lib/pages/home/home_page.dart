@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/app_service.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -33,8 +35,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     _linkedController = LinkedTabPageController(
       items: ctr.categroyList,
-      onIndexChanged: (index) => print("当前选中 index: $index"),
-      onItemsChanged: (items) => print("数据源更新: $items"),
+      onIndexChanged: (index) => log.d("当前选中 index: $index"),
+      onItemsChanged: (items) => log.d("数据源更新: $items"),
     );
   }
 
@@ -99,7 +101,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             width: 44,
             height: 44,
             borderRadius: BorderRadius.all(Radius.circular(22)),
-            child: Center(child: FIcon(assetName: Assets.svg.filter)),
+            child: Center(
+              child: Obx(
+                () => FIcon(
+                  assetName: Assets.svg.filter,
+                  width: 24,
+                  color: ctr.selectTags.isEmpty ? Colors.white : const Color(0xFF3F8DFD),
+                ),
+              ),
+            ),
           ),
           Expanded(
             child: Container(
@@ -111,7 +121,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 borderRadius: BorderRadius.circular(22),
               ),
               child: Obx(() {
-                final cate = ctr.categroy.value;
                 final list = ctr.categroyList;
                 return ListView.separated(
                   scrollDirection: Axis.horizontal,

@@ -30,7 +30,6 @@ class LocaleKeys {
   static const confirm = 'confirm';
   static const cancel = 'cancel';
   static const network_error = 'network_error';
-  static const home_rate_message = 'home_rate_message';
   static const mic_permission = 'mic_permission';
   static const open_settings = 'open_settings';
   static const up_to_vip = 'up_to_vip';
@@ -44,7 +43,6 @@ class LocaleKeys {
   static const input_nickname = 'input_nickname';
   static const support = 'support';
   static const feedback = 'feedback';
-  static const rate_us = 'rate_us';
   static const reset_chat_background = 'reset_chat_background';
   static const set_chat_background = 'set_chat_background';
   static const app_version = 'app_version';
@@ -61,6 +59,13 @@ class LocaleKeys {
   static const choose_your_tags = 'choose_your_tags';
   static const select_all = 'select_all';
   static const unselect_all = 'unselect_all';
+  static const rate_us = 'rate_us';
+  static const rate_us_msg = 'rate_us_msg';
+  static const nope = 'nope';
+  static const help_app = 'help_app';
+  static const rate_us_like = 'rate_us_like';
+  static const chatted = 'chatted';
+  static const liked = 'liked';
 }
 
 class Locales {
@@ -85,8 +90,6 @@ class Locales {
     'confirm': 'Confirm',
     'cancel': 'Cancel',
     'network_error': 'Please check the network connection',
-    'home_rate_message':
-        'Hey, thanks for your likes! If you think we did a good job, please give us a good review to help us do better~ 😊',
     'mic_permission': 'Microphone permission is required to make a call.',
     'open_settings': 'Open settings',
     'up_to_vip': 'Upgrade to VIP',
@@ -101,7 +104,6 @@ class Locales {
     'input_nickname': 'Input your nickname',
     'support': 'SUPPORT',
     'feedback': 'Feedback',
-    'rate_us': 'Rate Us',
     'reset_chat_background': 'Rest chat background',
     'set_chat_background': 'Custom Chat Background',
     'app_version': 'App version',
@@ -118,5 +120,14 @@ class Locales {
     'choose_your_tags': 'Choose your tags',
     'select_all': 'Select All',
     'unselect_all': 'Unselect All',
+    'rate_us': 'Help Us Grow',
+    'rate_us_msg':
+        'Thank you for chatting with me for so long! If you think we had a good chat, please give me a five-star rating? (>ω<)',
+    'nope': 'Nope',
+    'help_app': '💗Help Fast Ai',
+    'rate_us_like':
+        'Hey, thanks for your likes! If you think we did a good job, please give us a good review to help us do better~ 😊',
+    'chatted': 'Chatted',
+    'liked': 'Liked',
   };
 }
