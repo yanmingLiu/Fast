@@ -105,4 +105,8 @@ class AppCache {
   // lastRewardDate
   int get lastRewardDate => _box.read<int>('re_8sD3fG5hJ') ?? 0;
   set lastRewardDate(int value) => _box.write('re_8sD3fG5hJ', value);
+
+  // 首次点击聊天输入框
+  bool get firstClickChatInputBox => _box.read<bool>('dsagfa1561gfag') ?? true;
+  set firstClickChatInputBox(bool value) => _box.write('dsagfa1561gfag', value);
 }

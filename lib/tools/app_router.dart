@@ -5,9 +5,10 @@ import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/component/image_preview.dart';
 import 'package:fast_ai/component/video_preview.dart';
-import 'package:fast_ai/data/role.dart';
+import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_page.dart';
+import 'package:fast_ai/pages/chat/role_center_page.dart';
 import 'package:fast_ai/pages/home/home_fillter_page.dart';
 import 'package:fast_ai/pages/home/search_page.dart';
 import 'package:fast_ai/pages/mian/launch_page.dart';
@@ -63,7 +64,7 @@ class Routers {
     GetPage(name: search, page: () => const SearchPage()),
     // GetPage(name: genPage, page: () => const GenPage()),
     GetPage(name: msg, page: () => MsgPage()),
-    // GetPage(name: profile, page: () => const RoleProfilePage()),
+    GetPage(name: profile, page: () => const RoleCenterPage()),
     // GetPage(
     //   name: undr,
     //   page: () => UndrPage(),

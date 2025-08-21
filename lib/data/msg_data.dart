@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:fast_ai/data/chat_level_data.dart';
 import 'package:fast_ai/values/app_values.dart';
 
 class MsgRes {
@@ -63,7 +62,7 @@ class MsgData {
   String? thumbLink;
   String? voiceUrl;
   int? voiceDur;
-  ChatLevelData? appUserChatLevel;
+  ChatAnserLevel? appUserChatLevel;
   bool? upgrade;
   int? rewards;
   String? translateAnswer;
@@ -167,7 +166,7 @@ class MsgData {
     voiceDur: json["voice_dur"],
     appUserChatLevel: json["app_user_chat_level"] == null
         ? null
-        : ChatLevelData.fromJson(json["app_user_chat_level"]),
+        : ChatAnserLevel.fromJson(json["app_user_chat_level"]),
     upgrade: json["upgrade"],
     rewards: json["rewards"],
     translateAnswer: json["translate_answer"],
@@ -222,4 +221,78 @@ class MsgData {
 
   @override
   int get hashCode => id.hashCode;
+}
+
+class ChatAnserLevel {
+  final int? id;
+  final String? userId;
+  final int? conversationId;
+  final String? charId;
+  final int? level;
+  final int? num;
+  final double? progress;
+  final double? upgradeRequirements;
+  final int? rewards;
+
+  ChatAnserLevel({
+    this.id,
+    this.userId,
+    this.conversationId,
+    this.charId,
+    this.level,
+    this.num,
+    this.progress,
+    this.upgradeRequirements,
+    this.rewards,
+  });
+
+  ChatAnserLevel copyWith({
+    int? id,
+    String? userId,
+    int? conversationId,
+    String? charId,
+    int? level,
+    int? num,
+    double? progress,
+    double? upgradeRequirements,
+    int? rewards,
+  }) => ChatAnserLevel(
+    id: id ?? this.id,
+    userId: userId ?? this.userId,
+    conversationId: conversationId ?? this.conversationId,
+    charId: charId ?? this.charId,
+    level: level ?? this.level,
+    num: num ?? this.num,
+    progress: progress ?? this.progress,
+    upgradeRequirements: upgradeRequirements ?? this.upgradeRequirements,
+    rewards: rewards ?? this.rewards,
+  );
+
+  factory ChatAnserLevel.fromRawJson(String str) => ChatAnserLevel.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory ChatAnserLevel.fromJson(Map<String, dynamic> json) => ChatAnserLevel(
+    id: json['id'],
+    userId: json['user_id'],
+    conversationId: json['conversation_id'],
+    charId: json['char_id'],
+    level: json['level'],
+    num: json['num'],
+    progress: json['progress'],
+    upgradeRequirements: json['upgrade_requirements'],
+    rewards: json['rewards'],
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'user_id': userId,
+    'conversation_id': conversationId,
+    'char_id': charId,
+    'level': level,
+    'num': num,
+    'progress': progress,
+    'upgrade_requirements': upgradeRequirements,
+    'rewards': rewards,
+  };
 }

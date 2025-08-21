@@ -5,11 +5,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
-import 'package:fast_ai/data/chat_level_data.dart';
 import 'package:fast_ai/data/clothing_data.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/data/price_config.dart';
-import 'package:fast_ai/data/role.dart';
+import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/data/session_data.dart';
 import 'package:fast_ai/data/toys_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
@@ -42,15 +41,15 @@ class MsgCtr extends GetxController {
   var roleImagesChaned = 0.obs;
 
   // 聊天等级变动
-  Rx<ChatLevelData?> chatLevel = Rx<ChatLevelData?>(null);
+  Rx<ChatAnserLevel?> chatLevel = Rx<ChatAnserLevel?>(null);
 
   List<Map<String, dynamic>> chatLevelConfigs = [];
 
   List<Map<String, dynamic>> chatLevelList = [
-    {'icon': '👋', 'text': 'Level 1 Reward:10', 'level': 1},
-    {'icon': '🥱', 'text': 'Level 2 Reward:20', 'level': 2},
-    {'icon': '😊', 'text': 'Level 3 Reward:30', 'level': 3},
-    {'icon': '💓', 'text': 'Level 4 Reward:40', 'level': 4},
+    {'icon': '👋', 'text': 'Level 1 Reward', 'level': 1, 'gems': 0},
+    {'icon': '🥱', 'text': 'Level 2 Reward', 'level': 2, 'gems': 0},
+    {'icon': '😊', 'text': 'Level 3 Reward', 'level': 3, 'gems': 0},
+    {'icon': '💓', 'text': 'Level 4 Reward', 'level': 4, 'gems': 0},
   ];
 
   // 获取玩具 衣服列表
@@ -90,7 +89,7 @@ class MsgCtr extends GetxController {
 
     loadMsg();
 
-    _loadChatLevel();
+    loadChatLevel();
 
     loadToysAndClotheConfigs();
   }
@@ -531,7 +530,7 @@ class MsgCtr extends GetxController {
   void _checkChatLevel(MsgData msg) async {
     bool upgrade = msg.upgrade ?? false;
     int rewards = msg.rewards ?? 0;
-    ChatLevelData? level = msg.appUserChatLevel;
+    var level = msg.appUserChatLevel;
     chatLevel.value = level;
     if (upgrade) {
       log.d('[AppDialog]: appUserChatLevel $upgrade');
@@ -556,7 +555,10 @@ class MsgCtr extends GetxController {
     checkSendCount();
   }
 
-  void _loadChatLevel() async {
+  Future<void> loadChatLevel() async {
+    if (chatLevelConfigs.isNotEmpty) {
+      return;
+    }
     try {
       final configs = await Api.getChatLevelConfig() ?? [];
       chatLevelConfigs = configs.isEmpty
@@ -565,10 +567,8 @@ class MsgCtr extends GetxController {
               return {
                 'icon': c.title ?? '👋',
                 'level': c.level ?? 1,
-                'text': LocaleKeys.level_up_value.trParams({
-                  'level': '${c.level}',
-                  'reward': '${c.reward}',
-                }),
+                'text': LocaleKeys.level_up_value.trParams({'level': '${c.level}'}),
+                'gems': c.reward ?? 0,
               };
             }).toList();
 

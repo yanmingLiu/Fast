@@ -27,6 +27,10 @@ class $AssetsImagesGen {
   AssetGenImage get launchLogo =>
       const AssetGenImage('assets/images/launch_logo.png');
 
+  /// File path: assets/images/level_bg.png
+  AssetGenImage get levelBg =>
+      const AssetGenImage('assets/images/level_bg.png');
+
   /// File path: assets/images/loading.png
   AssetGenImage get loading => const AssetGenImage('assets/images/loading.png');
 
@@ -48,6 +52,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/member.png
   AssetGenImage get member => const AssetGenImage('assets/images/member.png');
+
+  /// File path: assets/images/model.png
+  AssetGenImage get model => const AssetGenImage('assets/images/model.png');
 
   /// File path: assets/images/msg_auto.png
   AssetGenImage get msgAuto =>
@@ -78,6 +85,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/page_bg.png
   AssetGenImage get pageBg => const AssetGenImage('assets/images/page_bg.png');
 
+  /// File path: assets/images/page_bg_role.png
+  AssetGenImage get pageBgRole =>
+      const AssetGenImage('assets/images/page_bg_role.png');
+
   /// File path: assets/images/page_pg_me.png
   AssetGenImage get pagePgMe =>
       const AssetGenImage('assets/images/page_pg_me.png');
@@ -89,9 +100,31 @@ class $AssetsImagesGen {
   AssetGenImage get rateIcon =>
       const AssetGenImage('assets/images/rate_icon.png');
 
+  /// File path: assets/images/role_avatar_bg.png
+  AssetGenImage get roleAvatarBg =>
+      const AssetGenImage('assets/images/role_avatar_bg.png');
+
+  /// File path: assets/images/screen.png
+  AssetGenImage get screen => const AssetGenImage('assets/images/screen.png');
+
   /// File path: assets/images/selected.png
   AssetGenImage get selected =>
       const AssetGenImage('assets/images/selected.png');
+
+  /// File path: assets/images/sure.png
+  AssetGenImage get sure => const AssetGenImage('assets/images/sure.png');
+
+  /// File path: assets/images/video_call.png
+  AssetGenImage get videoCall =>
+      const AssetGenImage('assets/images/video_call.png');
+
+  /// File path: assets/images/vip_page_bg1.png
+  AssetGenImage get vipPageBg1 =>
+      const AssetGenImage('assets/images/vip_page_bg1.png');
+
+  /// File path: assets/images/vip_page_bg2.png
+  AssetGenImage get vipPageBg2 =>
+      const AssetGenImage('assets/images/vip_page_bg2.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
@@ -99,12 +132,14 @@ class $AssetsImagesGen {
         gemsSucc,
         imagePlace,
         launchLogo,
+        levelBg,
         loading,
         meVipBg0,
         meVipBg1,
         meVipIcon,
         meVipPerson,
         member,
+        model,
         msgAuto,
         msgClo,
         msgGift,
@@ -113,10 +148,17 @@ class $AssetsImagesGen {
         noLoading,
         noNetwork,
         pageBg,
+        pageBgRole,
         pagePgMe,
         phone,
         rateIcon,
-        selected
+        roleAvatarBg,
+        screen,
+        selected,
+        sure,
+        videoCall,
+        vipPageBg1,
+        vipPageBg2
       ];
 }
 
@@ -130,11 +172,24 @@ class $AssetsLocalesGen {
   List<String> get values => [en];
 }
 
+class $AssetsLottieGen {
+  const $AssetsLottieGen();
+
+  /// File path: assets/lottie/level_up.json
+  String get levelUp => 'assets/lottie/level_up.json';
+
+  /// List of all assets
+  List<String> get values => [levelUp];
+}
+
 class $AssetsSvgGen {
   const $AssetsSvgGen();
 
   /// File path: assets/svg/back.svg
   String get back => 'assets/svg/back.svg';
+
+  /// File path: assets/svg/chat.svg
+  String get chat => 'assets/svg/chat.svg';
 
   /// File path: assets/svg/close.svg
   String get close => 'assets/svg/close.svg';
@@ -147,6 +202,9 @@ class $AssetsSvgGen {
 
   /// File path: assets/svg/search.svg
   String get search => 'assets/svg/search.svg';
+
+  /// File path: assets/svg/send.svg
+  String get send => 'assets/svg/send.svg';
 
   /// File path: assets/svg/tab_chat.svg
   String get tabChat => 'assets/svg/tab_chat.svg';
@@ -161,8 +219,19 @@ class $AssetsSvgGen {
   String get tabMe => 'assets/svg/tab_me.svg';
 
   /// List of all assets
-  List<String> get values =>
-      [back, close, filter, like, search, tabChat, tabCreat, tabHome, tabMe];
+  List<String> get values => [
+        back,
+        chat,
+        close,
+        filter,
+        like,
+        search,
+        send,
+        tabChat,
+        tabCreat,
+        tabHome,
+        tabMe
+      ];
 }
 
 class Assets {
@@ -170,6 +239,7 @@ class Assets {
 
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLocalesGen locales = $AssetsLocalesGen();
+  static const $AssetsLottieGen lottie = $AssetsLottieGen();
   static const $AssetsSvgGen svg = $AssetsSvgGen();
 }
 

@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_image.dart';
-import 'package:fast_ai/data/role.dart';
+import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
@@ -192,20 +192,24 @@ class HomeItem extends StatelessWidget {
           if (text == kNSFW || text == kBDSM) {
             textColor = Color(0xFFFF4ACF);
           }
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Text(
-              text,
-              style: GoogleFonts.openSans(
-                color: textColor,
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-              ),
+          return Text(
+            text,
+            style: GoogleFonts.openSans(
+              color: textColor,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
             ),
           );
         },
         separatorBuilder: (_, _) {
-          return Center(child: Container(width: 1, height: 4, color: Color(0xffC9C9C9)));
+          return Center(
+            child: Container(
+              width: 1,
+              height: 4,
+              color: Color(0xffC9C9C9),
+              margin: EdgeInsets.symmetric(horizontal: 4),
+            ),
+          );
         },
         itemCount: result.length,
       ),

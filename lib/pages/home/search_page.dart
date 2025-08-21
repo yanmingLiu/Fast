@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_icon.dart';
-import 'package:fast_ai/data/role.dart';
+import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';

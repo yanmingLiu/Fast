@@ -107,6 +107,48 @@ class LocaleKeys {
   static const unlock_role = 'unlock_role';
   static const unlock_role_description = 'unlock_role_description';
   static const unlock_now = 'unlock_now';
+  static const max_input_length = 'max_input_length';
+  static const type_here = 'type_here';
+  static const not_support = 'not_support';
+  static const please_input_custom_text = 'please_input_custom_text';
+  static const subscribe = 'subscribe';
+  static const btn_continue = 'btn_continue';
+  static const subscription_info = 'subscription_info';
+  static const vip_price_lt_desc = 'vip_price_lt_desc';
+  static const no_subscription_available = 'no_subscription_available';
+  static const monthly = 'monthly';
+  static const yearly = 'yearly';
+  static const weekly = 'weekly';
+  static const lifetime = 'lifetime';
+  static const year = 'year';
+  static const month = 'month';
+  static const week = 'week';
+  static const day = 'day';
+  static const restore = 'restore';
+  static const vip_get_2 = 'vip_get_2';
+  static const vip_get_1 = 'vip_get_1';
+  static const best_offer = 'best_offer';
+  static const fifty_off = 'fifty_off';
+  static const best_chat_experience = 'best_chat_experience';
+  static const level_up_intimacy = 'level_up_intimacy';
+  static const delete_chat_confirmation = 'delete_chat_confirmation';
+  static const clear_history_confirmation = 'clear_history_confirmation';
+  static const clear_history_success = 'clear_history_success';
+  static const clear_history_failed = 'clear_history_failed';
+  static const report_successful = 'report_successful';
+  static const spam = 'spam';
+  static const violence = 'violence';
+  static const child_abuse = 'child_abuse';
+  static const copyright = 'copyright';
+  static const personal_details = 'personal_details';
+  static const illegal_drugs = 'illegal_drugs';
+  static const intro_title = 'intro_title';
+  static const tags_title = 'tags_title';
+  static const option_title = 'option_title';
+  static const clear_history = 'clear_history';
+  static const report = 'report';
+  static const delete_chat = 'delete_chat';
+  static const age_years_olds = 'age_years_olds';
 }
 
 class Locales {
@@ -180,7 +222,7 @@ class Locales {
         'Congrats on unlocking the Easter egg feature! You can now upload images to explore the undress function. Give it a shot!',
     'yes': 'Yes',
     'some_error_try_again': 'Some error, please wait and try again!',
-    'level_up_value': 'Level @level Reward: @reward',
+    'level_up_value': 'Level @level Reward',
     'aoto_trans': 'Enable automatic translation?',
     'reply_mode': 'Reply mode',
     'short_reply': 'Short Reply: like sms',
@@ -188,7 +230,7 @@ class Locales {
     'edit_scenario': 'Edit scenario',
     'gems_per_edit': '@num gems/edit',
     'scenario_restart_warning':
-        'To active the new scenario，the chat wil be restart and the history will lose.',
+        'To active the new scenario,the chat wil be restart and the history will lose.',
     'profile_mask_description':
         'Here you can set your own profile to achieve the desired chat effect. Please note that only one mask can be used in a chat, but you can open a new chat to use other cards.',
     'select_profile_mask': 'Select Your Profile Mask',
@@ -221,5 +263,51 @@ class Locales {
     'unlock_role_description':
         'Become a premium to unlock hot roles and get unlimited chats.',
     'unlock_now': 'Unlock Now',
+    'max_input_length': 'Maximum input length: 500 characters',
+    'type_here': 'Type here...',
+    'not_support': 'Not support',
+    'please_input_custom_text': 'Please input your custom text here...',
+    'subscribe': 'Subscribe',
+    'btn_continue': 'Continue',
+    'subscription_info':
+        'You will be charged @price immediately, then @price/@unit thereafter. Your subscription automatically renews unless canceled at least 24 hours before the end of the current period.',
+    'vip_price_lt_desc':
+        'You will be charged @price immediately for lifetime access.',
+    'no_subscription_available': 'No subscription available',
+    'monthly': 'Monthly',
+    'yearly': 'Yearly',
+    'weekly': 'Weekly',
+    'lifetime': 'Lifetime',
+    'year': 'year',
+    'month': 'month',
+    'week': 'week',
+    'day': 'day',
+    'restore': 'Restore',
+    'vip_get_2':
+        '{{icon}}😄 Call your AI Girlfriend\n{{icon}}🥰 Spicy Photo, Video & Audio\n{{icon}}💎One-time gift of @gems gems\n{{icon}}👏🏻 Unlimited messages & NSFW chats\n{{icon}}🔥 All access to premium features\n{{icon}}❤️ No ads',
+    'vip_get_1':
+        '{{icon}}😄 Endless chatting\n{{icon}}🥰 Unlock all filters\n{{icon}}💎 Advanced mode & long memory\n{{icon}}👏🏻 Ad-free',
+    'best_offer': 'BEST OFFER',
+    'fifty_off': '50% OFF',
+    'best_chat_experience': 'Enjoy The Best Chat Experience',
+    'level_up_intimacy': 'Level up Intimacy',
+    'delete_chat_confirmation': 'Are you sure to delete this chat?',
+    'clear_history_confirmation': 'Are you sure to clear all history messages?',
+    'clear_history_success': 'Clear history messages success!',
+    'clear_history_failed': 'Clear history messages failed!',
+    'report_successful': 'Report successful',
+    'spam': 'Spam',
+    'violence': 'Violence',
+    'child_abuse': 'Child abuse',
+    'copyright': 'Copyright',
+    'personal_details': 'Personal details',
+    'illegal_drugs': 'Illegal drugs',
+    'intro_title': 'Intro:',
+    'tags_title': 'Tags:',
+    'option_title': 'Option:',
+    'clear_history': 'Clear history',
+    'report': 'Report',
+    'delete_chat': 'Delete chat',
+    'age_years_olds': '@age years old',
   };
 }

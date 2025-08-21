@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:adjust_sdk/adjust.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:fast_ai/data/base_data.dart';
-import 'package:fast_ai/data/chat_level_data.dart';
 import 'package:fast_ai/data/clothing_data.dart';
+import 'package:fast_ai/data/level_config.dart';
 import 'package:fast_ai/data/mask_data.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/data/order_data.dart';
 import 'package:fast_ai/data/price_config.dart';
-import 'package:fast_ai/data/role.dart';
+import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/data/role_tags.dart';
 import 'package:fast_ai/data/session_data.dart';
 import 'package:fast_ai/data/sku_data.dart';
@@ -814,12 +814,12 @@ class Api {
     }
   }
 
-  static Future<List<ChatLevelData>?> getChatLevelConfig() async {
+  static Future<List<LevelConfig>?> getChatLevelConfig() async {
     try {
       var result = await api.get(ApiPath.chatLevelConfig);
       final list = result.body;
       if (list is List) {
-        final datas = list.map((x) => ChatLevelData.fromJson(x)).toList();
+        final datas = list.map((x) => LevelConfig.fromJson(x)).toList();
         return datas;
       }
       return null;
@@ -841,7 +841,7 @@ class Api {
     }
   }
 
-  static Future<ChatLevelData?> fetchChatLevel({
+  static Future<ChatAnserLevel?> fetchChatLevel({
     required String charId,
     required String userId,
   }) async {
@@ -852,7 +852,7 @@ class Api {
 
       var result = await api.post(ApiPath.chatLevel, queryParameters: qb);
       if (result.isOk) {
-        var res = BaseData.fromJson(result.body, (json) => ChatLevelData.fromJson(json));
+        var res = BaseData.fromJson(result.body, (json) => ChatAnserLevel.fromJson(json));
         return res.data;
       }
       return null;

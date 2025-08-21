@@ -1,5 +1,5 @@
 import 'package:fast_ai/pages/chat/chat_page.dart';
-import 'package:fast_ai/pages/creat/ai_tab_page.dart';
+import 'package:fast_ai/pages/ai/ai_tab_page.dart';
 import 'package:fast_ai/pages/home/home_page.dart';
 import 'package:fast_ai/pages/me/me_page.dart';
 import 'package:fast_ai/pages/mian/main_tab_bar.dart';

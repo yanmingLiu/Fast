@@ -13,6 +13,7 @@ class FButton extends StatelessWidget {
     this.constraints,
     this.onTap,
     this.padding,
+    this.margin,
     this.color = const Color(0x33FFFFFF),
     this.hasShadow = false,
   });
@@ -27,6 +28,7 @@ class FButton extends StatelessWidget {
   final BoxConstraints? constraints;
   final VoidCallback? onTap;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
   final Color color;
   // 新增阴影开关参数（可选）
   final bool hasShadow;
@@ -48,6 +50,7 @@ class FButton extends StatelessWidget {
           width: width,
           constraints: constraints,
           padding: padding,
+          margin: margin,
           decoration: BoxDecoration(
             color: color,
             borderRadius: br, // 添加阴影

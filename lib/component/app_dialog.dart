@@ -6,6 +6,7 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/rate_dialog.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/chat/level_dialog.dart';
 import 'package:fast_ai/pages/vip/recharge_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -283,13 +284,7 @@ class AppDialog {
   }
 
   static Future showChatLevel() async {
-    // await ConstUtil().fetchChatLevelConfigs();
-    // return SmartDialog.show(
-    //   maskColor: Colors.black.withOpacity(0.7),
-    //   builder: (BuildContext context) {
-    //     return const ChatLevelDialog();
-    //   },
-    // );
+    return show(child: LevelDialog(), clickMaskDismiss: false);
   }
 
   static bool _isChatLevelDialogVisible = false;

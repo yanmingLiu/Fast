@@ -1,18 +1,18 @@
 import 'dart:convert';
 
-class ChatLevelData {
+class LevelConfig {
   final int? id;
   final int? level;
   final int? reward;
   final String? title;
 
-  ChatLevelData({this.id, this.level, this.reward, this.title});
+  LevelConfig({this.id, this.level, this.reward, this.title});
 
-  factory ChatLevelData.fromRawJson(String str) => ChatLevelData.fromJson(json.decode(str));
+  factory LevelConfig.fromRawJson(String str) => LevelConfig.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory ChatLevelData.fromJson(Map<String, dynamic> json) => ChatLevelData(
+  factory LevelConfig.fromJson(Map<String, dynamic> json) => LevelConfig(
     id: json['id'],
     level: json['level'],
     reward: json['reward'],

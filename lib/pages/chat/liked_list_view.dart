@@ -1,5 +1,5 @@
 import 'package:fast_ai/component/base_list_view.dart';
-import 'package:fast_ai/data/role.dart';
+import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/pages/chat/chat_item.dart';
 import 'package:fast_ai/pages/chat/liked_ctr.dart';
 import 'package:flutter/material.dart';

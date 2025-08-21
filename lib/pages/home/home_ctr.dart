@@ -1,6 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:fast_ai/component/app_dialog.dart';
-import 'package:fast_ai/data/role.dart';
+import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/data/role_tags.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/services/api.dart';

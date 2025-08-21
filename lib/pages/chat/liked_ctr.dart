@@ -1,5 +1,5 @@
 import 'package:fast_ai/component/f_empty.dart';
-import 'package:fast_ai/data/role.dart';
+import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/tools/app_router.dart';
 

@@ -36,7 +36,7 @@ class MainTabBar extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadiusGeometry.circular(kBottomNavigationBarHeight / 2),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 64, sigmaY: 64),
+              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: itemHorizontal, vertical: itemVertical),
                 child: Row(
