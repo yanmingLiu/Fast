@@ -22,6 +22,7 @@ class RoleCenterPage extends StatefulWidget {
 class _RoleCenterPageState extends State<RoleCenterPage> {
   final ScrollController _scrollController = ScrollController();
   double _appBarOpacity = 0.0;
+  double _roleAvatarBgTop = 0.0;
 
   final ctr = Get.put(RoleCenterCtr());
 
@@ -37,8 +38,14 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
     double offset = _scrollController.offset;
     final maxOffset = Get.width - kToolbarHeight;
     double opacity = (offset / maxOffset).clamp(0, 1); // 限制透明度在 0 到 1 的范围内
+
+    // 计算roleAvatarBg的top值，使其跟随滚动
+    // 使用负值，确保背景可以完全滚出屏幕
+    double newTop = -offset; // 使用1:1的滚动比例，确保可以完全滚出
+
     setState(() {
       _appBarOpacity = opacity;
+      _roleAvatarBgTop = newTop;
     });
   }
 
@@ -51,6 +58,10 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var top = MediaQuery.of(context).padding.top;
+    var bottom = MediaQuery.of(context).padding.bottom;
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -66,33 +77,40 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
             onTap: () => Get.back(),
             child: Center(child: FIcon(assetName: Assets.svg.back)),
           ),
+          title: Text(
+            ctr.role.name ?? '',
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.openSans(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: Colors.white.withValues(alpha: _appBarOpacity),
+            ),
+          ),
         ),
         body: Stack(
           children: [
             Positioned(top: 0, left: 0, right: 0, child: Assets.images.pageBgRole.image()),
+            Positioned(
+              top: _roleAvatarBgTop,
+              right: 0,
+              left: 0,
+              height: height - top - bottom,
+              child: Assets.images.roleAvatarBg.image(),
+            ),
             SafeArea(
-              child: Stack(
-                alignment: AlignmentDirectional.topCenter,
-                children: [
-                  Positioned(top: 0, right: 0, left: 0, child: Assets.images.roleAvatarBg.image()),
-                  Positioned(
-                    left: 16,
-                    right: 16,
-                    child: Container(
-                      color: Colors.orangeAccent,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // _buildAvatar(),
-                          // _buildTags(),
-                          // _buildIntro(),
-                          _buildImages(),
-                          Container(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildAvatar(),
+                    _buildTags(),
+                    _buildIntro(),
+                    _buildImages(),
+                    Container(height: 300),
+                  ],
+                ),
               ),
             ),
           ],
@@ -291,56 +309,53 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
 
   Widget _buildImages() {
     return Obx(() {
-      final images = ctr.role.images;
-      if (!AppCache().isBig || images == null || images.isEmpty) {
+      final images = ctr.images;
+      if (!AppCache().isBig || images.isEmpty) {
         return const SizedBox();
       }
       final imageCount = images.length;
-      return Container(
-        color: Colors.amber,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              "Enticing picture",
-              style: GoogleFonts.openSans(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 20),
+          Text(
+            "Enticing picture",
+            style: GoogleFonts.openSans(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
             ),
-            const SizedBox(height: 12),
-            GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
-                childAspectRatio: 1.0,
-              ),
+          ),
+          const SizedBox(height: 12),
+          GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              childAspectRatio: 1.0,
+            ),
 
-              itemBuilder: (_, idx) {
-                final image = images[idx];
-                final unlocked = image.unlocked ?? false;
-                return PhotoAlbumItem(
-                  image: image,
-                  unlocked: unlocked,
-                  onTap: () {
-                    if (unlocked) {
-                      ctr.msgCtr.onTapUnlockImage(image);
-                    } else {
-                      ctr.msgCtr.onTapImage(image);
-                    }
-                  },
-                );
-              },
-              itemCount: imageCount,
-            ),
-          ],
-        ),
+            itemBuilder: (_, idx) {
+              final image = images[idx];
+              final unlocked = image.unlocked ?? false;
+              return PhotoAlbumItem(
+                image: image,
+                unlocked: unlocked,
+                onTap: () {
+                  if (unlocked) {
+                    ctr.msgCtr.onTapImage(image);
+                  } else {
+                    ctr.msgCtr.onTapUnlockImage(image);
+                  }
+                },
+              );
+            },
+            itemCount: imageCount,
+          ),
+        ],
       );
     });
   }

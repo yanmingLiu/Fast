@@ -72,9 +72,9 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
                 unlocked: unlocked,
                 onTap: () {
                   if (unlocked) {
-                    ctr.onTapUnlockImage(image);
-                  } else {
                     ctr.onTapImage(image);
+                  } else {
+                    ctr.onTapUnlockImage(image);
                   }
                 },
               );
