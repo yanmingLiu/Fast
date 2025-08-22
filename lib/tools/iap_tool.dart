@@ -7,7 +7,7 @@ import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/data/order_data.dart';
 import 'package:fast_ai/data/sku_data.dart';
 import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_event.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

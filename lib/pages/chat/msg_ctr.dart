@@ -15,7 +15,7 @@ import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_event.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/tools/app_router.dart';
@@ -585,8 +585,6 @@ class MsgCtr extends GetxController {
   }
 
   Future<void> onTapUnlockImage(RoleImage image) async {
-    // await MyAd().showChatAd(placement: PlacementType.album);
-
     final gems = image.gems ?? 0;
     if (AppUser().balance.value < gems) {
       AppRouter.pushGem(ConsumeFrom.album);

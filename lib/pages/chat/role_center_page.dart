@@ -3,7 +3,10 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/chat/photo_album.dart';
 import 'package:fast_ai/pages/chat/role_center_ctr.dart';
+import 'package:fast_ai/pages/home/home_item.dart';
+import 'package:fast_ai/services/app_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -48,8 +51,6 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final imageWidth = MediaQuery.of(context).size.width - 80;
-
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -75,124 +76,19 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                 children: [
                   Positioned(top: 0, right: 0, left: 0, child: Assets.images.roleAvatarBg.image()),
                   Positioned(
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(imageWidth / 2),
-                        child: SizedBox(
-                          width: imageWidth,
-                          height: imageWidth,
-                          child: Stack(
-                            children: [
-                              Positioned.fill(child: FImage(url: ctr.role.avatar)),
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.black.withValues(alpha: 0.5),
-                                        Colors.black.withValues(alpha: 0.7),
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      stops: const [0.5, 0.8, 1.0],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    ctr.role.name ?? '',
-                                    style: GoogleFonts.openSans(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  if (ctr.role.age != null)
-                                    Text(
-                                      LocaleKeys.age_years_olds.trParams({
-                                        'age': ctr.role.age.toString(),
-                                      }),
-                                      style: GoogleFonts.openSans(
-                                        fontSize: 8,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color(0xFFDEDEDE),
-                                      ),
-                                    ),
-                                  SizedBox(height: 8),
-                                  Row(
-                                    spacing: 8,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Obx(() {
-                                        final isCollect = ctr.collect.value;
-                                        return FButton(
-                                          onTap: ctr.onCollect,
-                                          color: Colors.white.withValues(alpha: 0.1),
-                                          height: 26,
-                                          padding: EdgeInsets.symmetric(horizontal: 12),
-                                          child: Row(
-                                            spacing: 2,
-                                            children: [
-                                              FIcon(
-                                                assetName: Assets.svg.like,
-                                                width: 20,
-                                                color: isCollect ? Color(0xFFFF4ACF) : Colors.white,
-                                              ),
-                                              Text(
-                                                '${ctr.role.likes ?? 0}',
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.openSans(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: isCollect
-                                                      ? Color(0xFFFF4ACF)
-                                                      : Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                      FButton(
-                                        color: Colors.white.withValues(alpha: 0.1),
-                                        height: 26,
-                                        padding: EdgeInsets.symmetric(horizontal: 12),
-                                        child: Row(
-                                          spacing: 2,
-                                          children: [
-                                            FIcon(
-                                              assetName: Assets.svg.chat,
-                                              width: 20,
-                                              color: Colors.white,
-                                            ),
-                                            Text(
-                                              ctr.role.sessionCount ?? '0',
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.openSans(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w700,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 40),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                    left: 16,
+                    right: 16,
+                    child: Container(
+                      color: Colors.orangeAccent,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // _buildAvatar(),
+                          // _buildTags(),
+                          // _buildIntro(),
+                          _buildImages(),
+                          Container(),
+                        ],
                       ),
                     ),
                   ),
@@ -203,5 +99,249 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildAvatar() {
+    final imageWidth = MediaQuery.of(context).size.width - 80;
+
+    return Center(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(imageWidth / 2),
+        child: SizedBox(
+          width: imageWidth,
+          height: imageWidth,
+          child: Stack(
+            children: [
+              Positioned.fill(child: FImage(url: ctr.role.avatar)),
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.5),
+                        Colors.black.withValues(alpha: 0.7),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: const [0.5, 0.8, 1.0],
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    ctr.role.name ?? '',
+                    style: GoogleFonts.openSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  if (ctr.role.age != null)
+                    Text(
+                      LocaleKeys.age_years_olds.trParams({'age': ctr.role.age.toString()}),
+                      style: GoogleFonts.openSans(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFFDEDEDE),
+                      ),
+                    ),
+                  SizedBox(height: 8),
+                  Row(
+                    spacing: 8,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Obx(() {
+                        final isCollect = ctr.collect.value;
+                        return FButton(
+                          onTap: ctr.onCollect,
+                          color: Colors.white.withValues(alpha: 0.1),
+                          height: 26,
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Row(
+                            spacing: 2,
+                            children: [
+                              FIcon(
+                                assetName: Assets.svg.like,
+                                width: 20,
+                                color: isCollect ? Color(0xFFFF4ACF) : Colors.white,
+                              ),
+                              Text(
+                                '${ctr.role.likes ?? 0}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.openSans(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: isCollect ? Color(0xFFFF4ACF) : Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                      FButton(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        height: 26,
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: Row(
+                          spacing: 2,
+                          children: [
+                            FIcon(assetName: Assets.svg.chat, width: 20, color: Colors.white),
+                            Text(
+                              ctr.role.sessionCount ?? '0',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.openSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTags() {
+    if (!AppCache().isBig) {
+      return const SizedBox();
+    }
+
+    var tags = ctr.role.tags;
+    if (tags == null || tags.isEmpty) {
+      return const SizedBox();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: tags.map((text) {
+          Color textColor = Colors.white;
+          if (text == kNSFW || text == kBDSM) {
+            textColor = Color(0xFF3F8DFD);
+          }
+
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: const BoxDecoration(
+                  color: Color(0x1AFFFFFF),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  text,
+                  style: GoogleFonts.openSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: textColor,
+                  ),
+                ),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildIntro() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 12,
+      children: [
+        SizedBox(height: 20),
+        Text(
+          LocaleKeys.intro_title.tr,
+          style: GoogleFonts.openSans(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Text(
+          ctr.role.aboutMe ?? '',
+          style: GoogleFonts.openSans(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImages() {
+    return Obx(() {
+      final images = ctr.role.images;
+      if (!AppCache().isBig || images == null || images.isEmpty) {
+        return const SizedBox();
+      }
+      final imageCount = images.length;
+      return Container(
+        color: Colors.amber,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              "Enticing picture",
+              style: GoogleFonts.openSans(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 12),
+            GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                childAspectRatio: 1.0,
+              ),
+
+              itemBuilder: (_, idx) {
+                final image = images[idx];
+                final unlocked = image.unlocked ?? false;
+                return PhotoAlbumItem(
+                  image: image,
+                  unlocked: unlocked,
+                  onTap: () {
+                    if (unlocked) {
+                      ctr.msgCtr.onTapUnlockImage(image);
+                    } else {
+                      ctr.msgCtr.onTapImage(image);
+                    }
+                  },
+                );
+              },
+              itemCount: imageCount,
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

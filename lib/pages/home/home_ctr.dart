@@ -5,7 +5,7 @@ import 'package:fast_ai/data/role_tags.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_event.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/services/network_service.dart';
@@ -137,7 +137,7 @@ class HomeCtr extends GetxController {
       // 记录为重启
       AppCache().isRestart = true;
 
-      FLogEvent().logInstallEvent();
+      AppLogEvent().logInstallEvent();
 
       // 首次启动 获取指定人物聊天
       final startRole = await getSplashRole();

@@ -66,64 +66,17 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
             itemBuilder: (_, idx) {
               final image = images[idx];
               final unlocked = image.unlocked ?? false;
-              return ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                child: Container(
-                  height: imageHeight,
-                  width: imageHeight,
-                  color: const Color(0x801C1C1C),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: GestureDetector(
-                          onTap: () {
-                            ctr.onTapImage(image);
-                          },
-                          child: FImage(url: image.imageUrl),
-                        ),
-                      ),
-                      if (!unlocked)
-                        GestureDetector(
-                          onTap: () {
-                            ctr.onTapUnlockImage(image);
-                          },
-                          child: Stack(
-                            children: [
-                              BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                                child: Container(color: const Color(0x801C1C1C)),
-                              ),
-                              Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 20,
-                                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Assets.images.gems.image(width: 16, height: 16),
-                                          Text(
-                                            '${image.gems ?? 0}',
-                                            style: GoogleFonts.openSans(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+              return PhotoAlbumItem(
+                imageHeight: imageHeight,
+                image: image,
+                unlocked: unlocked,
+                onTap: () {
+                  if (unlocked) {
+                    ctr.onTapUnlockImage(image);
+                  } else {
+                    ctr.onTapImage(image);
+                  }
+                },
               );
             },
             separatorBuilder: (context, index) {
@@ -157,6 +110,80 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class PhotoAlbumItem extends StatelessWidget {
+  const PhotoAlbumItem({
+    super.key,
+    this.imageHeight,
+    required this.image,
+    required this.unlocked,
+    this.onTap,
+  });
+
+  final double? imageHeight;
+  final RoleImage image;
+  final bool unlocked;
+  final void Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      child: Container(
+        height: imageHeight,
+        width: imageHeight,
+        color: const Color(0x801C1C1C),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: onTap,
+                child: FImage(url: image.imageUrl),
+              ),
+            ),
+            if (!unlocked)
+              GestureDetector(
+                onTap: onTap,
+                child: Stack(
+                  children: [
+                    BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                      child: Container(color: const Color(0x801C1C1C)),
+                    ),
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 20,
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Assets.images.gems.image(width: 16, height: 16),
+                                Text(
+                                  '${image.gems ?? 0}',
+                                  style: GoogleFonts.openSans(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

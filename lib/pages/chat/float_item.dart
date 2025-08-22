@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
-import 'package:fast_ai/services/app_event.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/tools/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

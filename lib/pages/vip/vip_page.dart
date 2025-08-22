@@ -8,7 +8,7 @@ import 'package:fast_ai/data/sku_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_event.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/tools/ext.dart';
 import 'package:fast_ai/tools/iap_tool.dart';

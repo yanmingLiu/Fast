@@ -87,12 +87,12 @@ class AdLogService {
   }
 }
 
-class FLogEvent {
-  static final FLogEvent _instance = FLogEvent._internal();
+class AppLogEvent {
+  static final AppLogEvent _instance = AppLogEvent._internal();
 
-  factory FLogEvent() => _instance;
+  factory AppLogEvent() => _instance;
 
-  FLogEvent._internal() {
+  AppLogEvent._internal() {
     _startUploadTimer();
     _startRetryTimer();
   }

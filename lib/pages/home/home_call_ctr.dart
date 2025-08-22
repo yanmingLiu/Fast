@@ -3,7 +3,7 @@ import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/mian/main_page.dart';
 import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_event.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/tools/app_router.dart';
