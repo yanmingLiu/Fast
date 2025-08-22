@@ -93,6 +93,7 @@ class MsgCtr extends GetxController {
     loadChatLevel();
 
     loadToysAndClotheConfigs();
+    getPriceConfig();
   }
 
   Future<void> loadToysAndClotheConfigs() async {
@@ -122,6 +123,19 @@ class MsgCtr extends GetxController {
     final page = await Api.messageList(1, 10000, sessionId!);
     if (page != null) {
       final records = page.records ?? [];
+
+      // 获取已翻译消息 id
+      final Set<String> ids = AppCache().translationMsgIds;
+      // 遍历消息列表，赋值 showTranslate
+      for (var msg in records) {
+        if (msg.id != null && ids.contains(msg.id)) {
+          msg.showTranslate = true;
+        }
+        if (AppUser().user?.autoTranslate == true && msg.translateAnswer != null) {
+          msg.showTranslate = true;
+        }
+      }
+
       list.addAll(records);
     }
   }
@@ -222,12 +236,12 @@ class MsgCtr extends GetxController {
       inputTags.add({'id': 2, 'name': 'Gifts', 'icon': Assets.images.msgGift.path, 'list': []});
     }
 
-    if (AppCache().isBig) {
-      final count = AppCache().sendMsgCount;
-      if (count >= AppService().showClothingCount) {
-        inputTags.add({'id': 1, 'name': 'Undress', 'icon': Assets.images.msgClo.path, 'list': []});
-      }
-    }
+    // if (AppCache().isBig) {
+    //   final count = AppCache().sendMsgCount;
+    //   if (count >= AppService().showClothingCount) {
+    //     inputTags.add({'id': 1, 'name': 'Undress', 'icon': Assets.images.msgClo.path, 'list': []});
+    //   }
+    // }
   }
 
   Future<bool> canSendMsg(String text) async {
@@ -640,18 +654,22 @@ class MsgCtr extends GetxController {
     }
 
     final content = msg.answer;
+    final id = msg.id;
 
     // 内容为空直接返回
     if (content == null || content.isEmpty) return;
+    if (id == null) return;
 
     // 定义更新消息的方法
     Future<void> updateMessage({required bool showTranslate, String? translate}) async {
       msg.showTranslate = showTranslate;
 
+      _transCache(isAdd: showTranslate, id: id);
+
       if (translate != null) {
         msg.translateAnswer = translate;
 
-        Api.saveMsgTrans(id: msg.id ?? '', text: translate);
+        Api.saveMsgTrans(id: id, text: translate);
       }
       list.refresh();
     }
@@ -677,6 +695,16 @@ class MsgCtr extends GetxController {
 
       TransTool().handleTranslationClick();
     }
+  }
+
+  void _transCache({required bool isAdd, required String id}) {
+    final Set<String> ids = AppCache().translationMsgIds;
+    if (isAdd) {
+      ids.add(id); // 重复添加会自动忽略
+    } else {
+      ids.remove(id);
+    }
+    AppCache().translationMsgIds = ids;
   }
 
   void sendToy(ToysData toy) async {

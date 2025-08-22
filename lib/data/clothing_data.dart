@@ -16,19 +16,36 @@ class ClothingData {
 
   factory ClothingData.fromJson(Map<String, dynamic> json) => ClothingData(
     id: json["id"],
-    togsName: json["togs_name"],
-    togsType: json["togs_type"],
+    togsName: json["cname"],
+    togsType: json["ctype"],
     img: json["img"],
     cdesc: json["cdesc"],
-    itemPrice: json["item_price"],
+    itemPrice: json["price"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "togs_name": togsName,
-    "togs_type": togsType,
+    "ctype": togsType,
     "img": img,
     "cdesc": cdesc,
-    "item_price": itemPrice,
+    "price": itemPrice,
   };
+}
+
+class ChangeClothe {
+  final int? id;
+  final int? clothingType;
+  final String? modelId;
+
+  ChangeClothe({this.id, this.clothingType, this.modelId});
+
+  factory ChangeClothe.fromRawJson(String str) => ChangeClothe.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory ChangeClothe.fromJson(Map<String, dynamic> json) =>
+      ChangeClothe(id: json["id"], clothingType: json["clothing_type"], modelId: json["model_id"]);
+
+  Map<String, dynamic> toJson() => {"id": id, "clothing_type": clothingType, "model_id": modelId};
 }

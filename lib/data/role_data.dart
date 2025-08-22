@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fast_ai/data/clothing_data.dart';
+
 class RolePage {
   List<Role>? records;
   int? total;
@@ -66,8 +68,8 @@ class Role {
   bool? collect;
   String? lastMessage;
   String? intro;
-  dynamic changeClothing;
-  dynamic changeClothes;
+  bool? changeClothing;
+  List<ChangeClothe>? changeClothes;
   int? updateTime;
   int? chatNum;
   int? msgNum;
@@ -264,7 +266,9 @@ class Role {
     lastMessage: json["last_message"],
     intro: json["intro"],
     changeClothing: json["change_clothing"],
-    changeClothes: json["change_clothes"],
+    changeClothes: json["change_clothes"] == null
+        ? []
+        : List<ChangeClothe>.from(json["change_clothes"]!.map((x) => ChangeClothe.fromJson(x))),
     updateTime: json["update_time"],
     chatNum: json["chat_num"],
     msgNum: json["msg_num"],
@@ -314,7 +318,9 @@ class Role {
     "last_message": lastMessage,
     "intro": intro,
     "change_clothing": changeClothing,
-    "change_clothes": changeClothes,
+    "change_clothes": changeClothes == null
+        ? []
+        : List<dynamic>.from(changeClothes!.map((x) => x.toJson())),
     "update_time": updateTime,
     "chat_num": chatNum,
     "msg_num": msgNum,

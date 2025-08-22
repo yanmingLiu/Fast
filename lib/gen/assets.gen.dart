@@ -12,6 +12,16 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/audio_pause.png
+  AssetGenImage get audioPause =>
+      const AssetGenImage('assets/images/audio_pause.png');
+
+  /// File path: assets/images/banan.png
+  AssetGenImage get banan => const AssetGenImage('assets/images/banan.png');
+
+  /// File path: assets/images/edit.png
+  AssetGenImage get edit => const AssetGenImage('assets/images/edit.png');
+
   /// File path: assets/images/gems.png
   AssetGenImage get gems => const AssetGenImage('assets/images/gems.png');
 
@@ -33,6 +43,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/loading.png
   AssetGenImage get loading => const AssetGenImage('assets/images/loading.png');
+
+  /// File path: assets/images/lock.png
+  AssetGenImage get lock => const AssetGenImage('assets/images/lock.png');
 
   /// File path: assets/images/me_vip_bg_0.png
   AssetGenImage get meVipBg0 =>
@@ -62,6 +75,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/msg_clo.png
   AssetGenImage get msgClo => const AssetGenImage('assets/images/msg_clo.png');
+
+  /// File path: assets/images/msg_contine.png
+  AssetGenImage get msgContine =>
+      const AssetGenImage('assets/images/msg_contine.png');
 
   /// File path: assets/images/msg_gift.png
   AssetGenImage get msgGift =>
@@ -96,9 +113,15 @@ class $AssetsImagesGen {
   /// File path: assets/images/phone.png
   AssetGenImage get phone => const AssetGenImage('assets/images/phone.png');
 
+  /// File path: assets/images/player.png
+  AssetGenImage get player => const AssetGenImage('assets/images/player.png');
+
   /// File path: assets/images/rate_icon.png
   AssetGenImage get rateIcon =>
       const AssetGenImage('assets/images/rate_icon.png');
+
+  /// File path: assets/images/refresh.png
+  AssetGenImage get refresh => const AssetGenImage('assets/images/refresh.png');
 
   /// File path: assets/images/role_avatar_bg.png
   AssetGenImage get roleAvatarBg =>
@@ -114,6 +137,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/sure.png
   AssetGenImage get sure => const AssetGenImage('assets/images/sure.png');
 
+  /// File path: assets/images/video_bg.png
+  AssetGenImage get videoBg =>
+      const AssetGenImage('assets/images/video_bg.png');
+
   /// File path: assets/images/video_call.png
   AssetGenImage get videoCall =>
       const AssetGenImage('assets/images/video_call.png');
@@ -126,14 +153,22 @@ class $AssetsImagesGen {
   AssetGenImage get vipPageBg2 =>
       const AssetGenImage('assets/images/vip_page_bg2.png');
 
+  /// File path: assets/images/voiceing.png
+  AssetGenImage get voiceing =>
+      const AssetGenImage('assets/images/voiceing.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
+        audioPause,
+        banan,
+        edit,
         gems,
         gemsSucc,
         imagePlace,
         launchLogo,
         levelBg,
         loading,
+        lock,
         meVipBg0,
         meVipBg1,
         meVipIcon,
@@ -142,6 +177,7 @@ class $AssetsImagesGen {
         model,
         msgAuto,
         msgClo,
+        msgContine,
         msgGift,
         msgMask,
         noData,
@@ -151,14 +187,18 @@ class $AssetsImagesGen {
         pageBgRole,
         pagePgMe,
         phone,
+        player,
         rateIcon,
+        refresh,
         roleAvatarBg,
         screen,
         selected,
         sure,
+        videoBg,
         videoCall,
         vipPageBg1,
-        vipPageBg2
+        vipPageBg2,
+        voiceing
       ];
 }
 
@@ -175,11 +215,14 @@ class $AssetsLocalesGen {
 class $AssetsLottieGen {
   const $AssetsLottieGen();
 
+  /// File path: assets/lottie/audio.json
+  String get audio => 'assets/lottie/audio.json';
+
   /// File path: assets/lottie/level_up.json
   String get levelUp => 'assets/lottie/level_up.json';
 
   /// List of all assets
-  List<String> get values => [levelUp];
+  List<String> get values => [audio, levelUp];
 }
 
 class $AssetsSvgGen {
@@ -190,6 +233,9 @@ class $AssetsSvgGen {
 
   /// File path: assets/svg/chat.svg
   String get chat => 'assets/svg/chat.svg';
+
+  /// File path: assets/svg/choose.svg
+  String get choose => 'assets/svg/choose.svg';
 
   /// File path: assets/svg/clear.svg
   String get clear => 'assets/svg/clear.svg';
@@ -224,10 +270,14 @@ class $AssetsSvgGen {
   /// File path: assets/svg/tab_me.svg
   String get tabMe => 'assets/svg/tab_me.svg';
 
+  /// File path: assets/svg/trans.svg
+  String get trans => 'assets/svg/trans.svg';
+
   /// List of all assets
   List<String> get values => [
         back,
         chat,
+        choose,
         clear,
         close,
         filter,
@@ -238,7 +288,8 @@ class $AssetsSvgGen {
         tabChat,
         tabCreat,
         tabHome,
-        tabMe
+        tabMe,
+        trans
       ];
 }
 

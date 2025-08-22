@@ -7,6 +7,7 @@ import 'package:fast_ai/pages/chat/photo_album.dart';
 import 'package:fast_ai/pages/chat/role_center_ctr.dart';
 import 'package:fast_ai/pages/home/home_item.dart';
 import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/tools/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -400,7 +401,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
             ),
             Container(height: 1, color: const Color(0x1AFFFFFF)),
             FButton(
-              onTap: ctr.report,
+              onTap: () => AppRouter.report(),
               height: 44,
               borderRadius: BorderRadius.circular(0),
               color: Colors.transparent,

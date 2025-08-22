@@ -109,4 +109,13 @@ class AppCache {
   // 首次点击聊天输入框
   bool get firstClickChatInputBox => _box.read<bool>('dsagfa1561gfag') ?? true;
   set firstClickChatInputBox(bool value) => _box.write('dsagfa1561gfag', value);
+
+  /// translation msg ids
+  Set<String> get translationMsgIds {
+    final List<dynamic>? data = _box.read('tr_23456789');
+    return data?.cast<String>().toSet() ?? <String>{};
+  }
+
+  set translationMsgIds(Set<String> value) =>
+      _box.write('tr_23456789', value.toList()); // 存储时转为List
 }

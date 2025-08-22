@@ -6,6 +6,8 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/chat/gift_page.dart';
+import 'package:fast_ai/pages/chat/mode_sheet.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/msg_edit_page.dart';
 import 'package:fast_ai/services/app_cache.dart';
@@ -125,7 +127,7 @@ class _ChatInputState extends State<ChatInput> {
           children: [
             Text(
               LocaleKeys.edit_scenario.tr,
-              style: TextStyle(color: Color(0xFF1A1A1A), fontSize: 14, fontWeight: FontWeight.w500),
+              style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -139,18 +141,18 @@ class _ChatInputState extends State<ChatInput> {
 
   void showChatModel() {
     final isLong = ctr.session.chatModel == 'long';
-    // Get.bottomSheet(
-    //   MsgReplyModeSheet(
-    //     isLong: isLong,
-    //     onTap: (bool v) {
-    //       ctr.editChatMode(v);
-    //     },
-    //   ),
-    // );
+    Get.bottomSheet(
+      ModeSheet(
+        isLong: isLong,
+        onTap: (bool v) {
+          ctr.editChatMode(v);
+        },
+      ),
+    );
   }
 
   void showGift() {
-    // Get.bottomSheet(MsgGiftView(), isScrollControlled: true);
+    Get.bottomSheet(GiftPage(), isScrollControlled: true);
   }
 
   @override

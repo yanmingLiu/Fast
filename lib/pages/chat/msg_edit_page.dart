@@ -61,100 +61,107 @@ class _MsgEditPageState extends State<MsgEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 120),
-      decoration: BoxDecoration(
-        color: Color(0xFFF6F6FE),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+    return GestureDetector(
+      onTap: () => focusNode.requestFocus(),
+      child: Container(
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 2 - 100),
+        decoration: BoxDecoration(
+          color: const Color(0xFF333333),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                padding: EdgeInsets.all(16),
-                onPressed: () {
-                  focusNode.unfocus();
-                  Get.back();
-                },
-                icon: const Icon(Icons.close, color: Colors.black),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(height: 8),
-                    Container(
-                      width: 44,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFD9D9D9),
-                        borderRadius: BorderRadius.circular(2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () {
+                    focusNode.unfocus();
+                    Get.back();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFD9D9D9),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
+                      SizedBox(height: 8),
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: _onSure,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: Assets.images.selected.image(width: 24, height: 24),
+                  ),
+                ),
+              ],
+            ),
+            if (widget.subtitle != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                child: widget.subtitle!,
+              ),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Color(0x40808080),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    // 阻止滚动通知传播到父级，避免与底部表单的拖拽冲突
+                    return true;
+                  },
+                  child: TextField(
+                    autofocus: true,
+                    textInputAction: TextInputAction.newline, // 修改为换行操作
+                    maxLines: null, // 允许多行输入
+                    minLines: 5, // 最小显示5行
+                    maxLength: null,
+                    enableInteractiveSelection: true, // 确保文本选择功能启用
+                    dragStartBehavior: DragStartBehavior.down, // 优化拖拽行为
+                    style: const TextStyle(
+                      height: 1.5, // 增加行高
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
-                  ],
-                ),
-              ),
-              IconButton(
-                padding: EdgeInsets.all(16),
-                onPressed: _onSure,
-                icon: Assets.images.selected.image(width: 24, height: 24),
-              ),
-            ],
-          ),
-          if (widget.subtitle != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-              child: widget.subtitle!,
-            ),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (notification) {
-                  // 阻止滚动通知传播到父级，避免与底部表单的拖拽冲突
-                  return true;
-                },
-                child: TextField(
-                  autofocus: true,
-                  textInputAction: TextInputAction.newline, // 修改为换行操作
-                  maxLines: null, // 允许多行输入
-                  minLines: 5, // 最小显示5行
-                  maxLength: null,
-                  enableInteractiveSelection: true, // 确保文本选择功能启用
-                  dragStartBehavior: DragStartBehavior.down, // 优化拖拽行为
-                  style: const TextStyle(
-                    height: 1.5, // 增加行高
-                    color: Color(0xFF1A1A1A),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                    controller: textController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero, // 添加内边距
+                      hintText: LocaleKeys.please_input_custom_text.tr,
+                      counterText: '',
+                      hintStyle: const TextStyle(color: Color(0xFFB3B3B3)),
+                      fillColor: Colors.transparent,
+                      border: InputBorder.none,
+                      filled: true,
+                      isDense: true,
+                    ),
+                    focusNode: focusNode,
                   ),
-                  controller: textController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.zero, // 添加内边距
-                    hintText: LocaleKeys.please_input_custom_text.tr,
-                    counterText: '',
-                    hintStyle: const TextStyle(color: Color(0xFFB3B3B3)),
-                    fillColor: Colors.transparent,
-                    border: InputBorder.none,
-                    filled: true,
-                    isDense: true,
-                  ),
-                  focusNode: focusNode,
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

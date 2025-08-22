@@ -10,6 +10,7 @@ import 'package:fast_ai/pages/chat/chat_input.dart';
 import 'package:fast_ai/pages/chat/float_item.dart';
 import 'package:fast_ai/pages/chat/level_view.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
+import 'package:fast_ai/pages/chat/msg_list_view.dart';
 import 'package:fast_ai/pages/chat/photo_album.dart';
 import 'package:fast_ai/pages/chat/role_lock_view.dart';
 import 'package:fast_ai/services/app_cache.dart';
@@ -139,10 +140,7 @@ class MsgPage extends StatelessWidget {
             backgroundColor: Colors.transparent,
             body: Stack(
               children: [
-                // Positioned.fill(
-                //   bottom: msgBottom,
-                //   child: MsgListView(role: role, ctr: ctr),
-                // ),
+                Positioned.fill(bottom: msgBottom, child: MsgListView()),
                 Positioned(bottom: 0, left: 0, right: 0, child: ChatInput()),
               ],
             ),
