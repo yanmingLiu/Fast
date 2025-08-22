@@ -116,7 +116,6 @@
     "vip_get_2": "{{icon}}😄 Call your AI Girlfriend\n{{icon}}🥰 Spicy Photo, Video & Audio\n{{icon}}💎One-time gift of @gems gems\n{{icon}}👏🏻 Unlimited messages & NSFW chats\n{{icon}}🔥 All access to premium features\n{{icon}}❤️ No ads",
     "vip_get_1": "{{icon}}😄 Endless chatting\n{{icon}}🥰 Unlock all filters\n{{icon}}💎 Advanced mode & long memory\n{{icon}}👏🏻 Ad-free",
     "best_offer": "BEST OFFER",
-    "fifty_off": "50% OFF",
     "best_chat_experience": "Enjoy The Best Chat Experience",
     "level_up_intimacy": "Level up Intimacy",
     "delete_chat_confirmation": "Are you sure to delete this chat?",
@@ -130,11 +129,13 @@
     "copyright": "Copyright",
     "personal_details": "Personal details",
     "illegal_drugs": "Illegal drugs",
-    "intro_title": "Intro:",
-    "tags_title": "Tags:",
-    "option_title": "Option:",
+    "intro_title": "Intro",
+    "tags_title": "Tags",
+    "option_title": "Option",
     "clear_history": "Clear history",
     "report": "Report",
     "delete_chat": "Delete chat",
-    "age_years_olds": "@age years old"
+    "age_years_olds": "@age years old",
+    "enticing_picture": "Enticing picture",
+    "tips": "Tips"
 }

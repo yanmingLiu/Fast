@@ -70,6 +70,8 @@ class RoleCenterCtr extends GetxController {
       await Future.delayed(const Duration(seconds: 1));
       FLoading.dismiss();
       FToast.toast(LocaleKeys.report_successful.tr);
+
+      AppDialog.dismiss();
     }
 
     Map<String, Function> actsion = {
@@ -84,25 +86,40 @@ class RoleCenterCtr extends GetxController {
     AppDialog.show(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: Color(0xFF333333),
         ),
-        child: ListView.builder(
+        child: ListView.separated(
+          padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemCount: actsion.keys.length,
           itemBuilder: (_, index) {
-            return Text(
-              actsion.keys.toList()[index],
-              textAlign: TextAlign.center,
-              style: GoogleFonts.openSans(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            final fn = actsion.values.toList()[index];
+            return InkWell(
+              onTap: () {
+                fn.call();
+              },
+              child: SizedBox(
+                height: 54,
+                child: Center(
+                  child: Text(
+                    actsion.keys.toList()[index],
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.openSans(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
               ),
             );
+          },
+          separatorBuilder: (context, index) {
+            return Container(height: 1, color: const Color(0x1AFFFFFF));
           },
         ),
       ),

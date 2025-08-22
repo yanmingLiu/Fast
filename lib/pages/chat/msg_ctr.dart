@@ -13,6 +13,7 @@ import 'package:fast_ai/data/session_data.dart';
 import 'package:fast_ai/data/toys_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/chat/chat_ctr.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
@@ -333,7 +334,12 @@ class MsgCtr extends GetxController {
   Future<bool> deleteConv() async {
     FLoading.showLoading();
     var result = await Api.deleteSession(sessionId ?? 0);
-    // AppCache().removeSessionId(sessionId ?? 0);
+
+    if (result && Get.isRegistered<ChatCtr>()) {
+      Get.find<ChatCtr>().dataList.removeWhere((r) => r.id == sessionId);
+      Get.find<ChatCtr>().dataList.refresh();
+    }
+
     FLoading.dismiss();
     return result;
   }

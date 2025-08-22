@@ -108,7 +108,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                     _buildTags(),
                     _buildIntro(),
                     _buildImages(),
-                    Container(height: 300),
+                    _buildActions(),
                   ],
                 ),
               ),
@@ -320,7 +320,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
         children: [
           const SizedBox(height: 20),
           Text(
-            "Enticing picture",
+            LocaleKeys.enticing_picture.tr,
             style: GoogleFonts.openSans(
               color: Colors.white,
               fontSize: 16,
@@ -358,5 +358,94 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
         ],
       );
     });
+  }
+
+  Widget _buildActions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 20),
+        Text(
+          LocaleKeys.option_title.tr,
+          style: GoogleFonts.openSans(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        SizedBox(height: 12),
+        Column(
+          children: [
+            FButton(
+              height: 44,
+              borderRadius: BorderRadius.circular(0),
+              color: Colors.transparent,
+              onTap: ctr.clearHistory,
+              child: Row(
+                spacing: 4,
+                children: [
+                  FIcon(assetName: Assets.svg.clear),
+                  Text(
+                    LocaleKeys.clear_history.tr,
+                    style: GoogleFonts.openSans(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.chevron_right, color: Color(0xFF9D9D9D)),
+                ],
+              ),
+            ),
+            Container(height: 1, color: const Color(0x1AFFFFFF)),
+            FButton(
+              onTap: ctr.report,
+              height: 44,
+              borderRadius: BorderRadius.circular(0),
+              color: Colors.transparent,
+
+              child: Row(
+                spacing: 4,
+                children: [
+                  FIcon(assetName: Assets.svg.clear),
+                  Text(
+                    LocaleKeys.report.tr,
+                    style: GoogleFonts.openSans(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.chevron_right, color: Color(0xFF9D9D9D)),
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 20),
+        FButton(
+          onTap: ctr.deleteChat,
+          margin: EdgeInsets.symmetric(horizontal: 54),
+          color: Color(0x4DF31D1D),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  LocaleKeys.delete_chat.tr,
+                  style: GoogleFonts.openSans(
+                    color: const Color(0xFFF04A4C),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

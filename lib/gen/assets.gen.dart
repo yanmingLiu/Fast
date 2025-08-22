@@ -191,6 +191,9 @@ class $AssetsSvgGen {
   /// File path: assets/svg/chat.svg
   String get chat => 'assets/svg/chat.svg';
 
+  /// File path: assets/svg/clear.svg
+  String get clear => 'assets/svg/clear.svg';
+
   /// File path: assets/svg/close.svg
   String get close => 'assets/svg/close.svg';
 
@@ -199,6 +202,9 @@ class $AssetsSvgGen {
 
   /// File path: assets/svg/like.svg
   String get like => 'assets/svg/like.svg';
+
+  /// File path: assets/svg/report.svg
+  String get report => 'assets/svg/report.svg';
 
   /// File path: assets/svg/search.svg
   String get search => 'assets/svg/search.svg';
@@ -222,9 +228,11 @@ class $AssetsSvgGen {
   List<String> get values => [
         back,
         chat,
+        clear,
         close,
         filter,
         like,
+        report,
         search,
         send,
         tabChat,

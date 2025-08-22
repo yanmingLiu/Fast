@@ -53,57 +53,62 @@ class AppDialog {
     void Function()? onCancel,
     void Function()? onConfirm,
   }) async {
-    return SmartDialog.show(
-      clickMaskDismiss: clickMaskDismiss,
-      maskWidget: ClipPath(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Container(color: Color(0xCC1C1C1C)),
+    return show(
+      clickMaskDismiss: false,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Color(0xFF333333),
         ),
-      ),
-      builder: (_) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 24),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildText(title, 20, FontWeight.w700),
-                  if (title?.isNotEmpty == true) const SizedBox(height: 16),
-                  _buildText(message, 14, FontWeight.w500),
-                  if (messageWidget != null) messageWidget,
-                  const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      FButton(
-                        onTap: onConfirm,
-                        color: Color(0xFF3F8DFD),
-                        child: Center(
-                          child: Text(
-                            LocaleKeys.confirm.tr,
-                            style: GoogleFonts.openSans(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (cancelText?.isNotEmpty == true)
-                        Expanded(child: _buildCancelButton(onCancel)),
-                      if (cancelText?.isNotEmpty == true) const SizedBox(width: 16),
-                    ],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 12,
+          children: [
+            _buildText(title ?? LocaleKeys.tips.tr, 20, FontWeight.w700),
+            if (title?.isNotEmpty == true) const SizedBox(height: 16),
+            _buildText(message, 14, FontWeight.w500),
+            if (messageWidget != null) messageWidget,
+            FButton(
+              onTap: onConfirm,
+              margin: EdgeInsets.only(top: 8),
+              color: Color(0xFF3F8DFD),
+              hasShadow: true,
+              height: 48,
+              child: Center(
+                child: Text(
+                  LocaleKeys.confirm.tr,
+                  style: GoogleFonts.openSans(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+            if (cancelText?.isNotEmpty == true)
+              FButton(
+                onTap: () {
+                  onCancel ?? SmartDialog.dismiss();
+                },
+                height: 48,
+                color: Color(0x1AFFFFFF),
+                child: Center(
+                  child: Text(
+                    LocaleKeys.cancel.tr,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -265,21 +270,6 @@ class AppDialog {
       text!,
       textAlign: TextAlign.center,
       style: GoogleFonts.openSans(color: Colors.white, fontSize: fontSize, fontWeight: fontWeight),
-    );
-  }
-
-  static Widget _buildCancelButton(void Function()? onTap) {
-    return FButton(
-      onTap: () {
-        onTap ?? SmartDialog.dismiss();
-      },
-      color: Color(0x1AFFFFFF),
-      child: Center(
-        child: Text(
-          LocaleKeys.cancel.tr,
-          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
-        ),
-      ),
     );
   }
 

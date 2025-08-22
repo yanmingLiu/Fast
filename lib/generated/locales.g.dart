@@ -128,7 +128,6 @@ class LocaleKeys {
   static const vip_get_2 = 'vip_get_2';
   static const vip_get_1 = 'vip_get_1';
   static const best_offer = 'best_offer';
-  static const fifty_off = 'fifty_off';
   static const best_chat_experience = 'best_chat_experience';
   static const level_up_intimacy = 'level_up_intimacy';
   static const delete_chat_confirmation = 'delete_chat_confirmation';
@@ -149,6 +148,8 @@ class LocaleKeys {
   static const report = 'report';
   static const delete_chat = 'delete_chat';
   static const age_years_olds = 'age_years_olds';
+  static const enticing_picture = 'enticing_picture';
+  static const tips = 'tips';
 }
 
 class Locales {
@@ -288,7 +289,6 @@ class Locales {
     'vip_get_1':
         '{{icon}}😄 Endless chatting\n{{icon}}🥰 Unlock all filters\n{{icon}}💎 Advanced mode & long memory\n{{icon}}👏🏻 Ad-free',
     'best_offer': 'BEST OFFER',
-    'fifty_off': '50% OFF',
     'best_chat_experience': 'Enjoy The Best Chat Experience',
     'level_up_intimacy': 'Level up Intimacy',
     'delete_chat_confirmation': 'Are you sure to delete this chat?',
@@ -302,12 +302,14 @@ class Locales {
     'copyright': 'Copyright',
     'personal_details': 'Personal details',
     'illegal_drugs': 'Illegal drugs',
-    'intro_title': 'Intro:',
-    'tags_title': 'Tags:',
-    'option_title': 'Option:',
+    'intro_title': 'Intro',
+    'tags_title': 'Tags',
+    'option_title': 'Option',
     'clear_history': 'Clear history',
     'report': 'Report',
     'delete_chat': 'Delete chat',
     'age_years_olds': '@age years old',
+    'enticing_picture': 'Enticing picture',
+    'tips': 'Tips',
   };
 }
