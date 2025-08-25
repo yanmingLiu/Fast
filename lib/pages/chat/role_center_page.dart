@@ -7,7 +7,7 @@ import 'package:fast_ai/pages/chat/photo_album.dart';
 import 'package:fast_ai/pages/chat/role_center_ctr.dart';
 import 'package:fast_ai/pages/home/home_item.dart';
 import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/tools/app_router.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

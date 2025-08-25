@@ -80,7 +80,7 @@ class AppDialog {
               height: 48,
               child: Center(
                 child: Text(
-                  LocaleKeys.confirm.tr,
+                  confirmText ?? LocaleKeys.confirm.tr,
                   style: GoogleFonts.openSans(
                     color: Colors.white,
                     fontSize: 16,

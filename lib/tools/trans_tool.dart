@@ -2,7 +2,7 @@ import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/tools/app_router.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';

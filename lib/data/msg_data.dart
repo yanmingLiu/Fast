@@ -216,7 +216,7 @@ class MsgData {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is MsgData && other.id == id;
+    return other is MsgData && other.id == id && other.source == source;
   }
 
   @override

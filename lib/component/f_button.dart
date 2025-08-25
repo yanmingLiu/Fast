@@ -39,33 +39,35 @@ class FButton extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        focusColor: focusColor ?? color.withValues(alpha: 0.5),
-        hoverColor: hoverColor ?? color.withValues(alpha: 0.5),
-        highlightColor: highlightColor ?? color.withValues(alpha: 0.5),
-        borderRadius: br,
-        child: Container(
-          height: height,
-          width: width,
-          constraints: constraints,
-          padding: padding,
-          margin: margin,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: br, // 添加阴影
-            boxShadow: hasShadow
-                ? [
-                    BoxShadow(
-                      color: const Color(0xff4d77afff), // 阴影颜色（#4d77afff转ARGB）
-                      offset: const Offset(0, 4), // 水平偏移0，垂直偏移4
-                      blurRadius: 4, // 模糊半径4
-                      spreadRadius: 0, // 扩散半径0
-                    ),
-                  ]
-                : null,
+      child: Padding(
+        padding: margin ?? EdgeInsets.zero,
+        child: InkWell(
+          onTap: onTap,
+          focusColor: focusColor ?? color.withValues(alpha: 0.5),
+          hoverColor: hoverColor ?? color.withValues(alpha: 0.5),
+          highlightColor: highlightColor ?? color.withValues(alpha: 0.5),
+          borderRadius: br,
+          child: Container(
+            height: height,
+            width: width,
+            constraints: constraints,
+            padding: padding,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: br, // 添加阴影
+              boxShadow: hasShadow
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xff4d77afff), // 阴影颜色（#4d77afff转ARGB）
+                        offset: const Offset(0, 4), // 水平偏移0，垂直偏移4
+                        blurRadius: 4, // 模糊半径4
+                        spreadRadius: 0, // 扩散半径0
+                      ),
+                    ]
+                  : null,
+            ),
+            child: child ?? const SizedBox.shrink(),
           ),
-          child: child ?? const SizedBox.shrink(),
         ),
       ),
     );

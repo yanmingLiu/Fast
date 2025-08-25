@@ -6,7 +6,7 @@ import 'package:fast_ai/pages/me/me_item.dart';
 import 'package:fast_ai/pages/me/me_not_vip.dart';
 import 'package:fast_ai/pages/me/me_vip.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/tools/app_router.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

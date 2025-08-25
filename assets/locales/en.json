@@ -156,5 +156,8 @@
     "send": "Send",
     "sara_received_your_gift": "Sara received your gift 🎁",
     "give_her_a_moment": "Give her a moment to enjoy it and take a picture for you 📷",
-    "wait_30_seconds": "It may take up to 30 seconds.\nPlease do not close or leave the app"
+    "wait_30_seconds": "It may take up to 30 seconds.\nPlease do not close or leave the app",
+    "create": "Create",
+    "edit_choose_mask": "This chat already has a mask loaded.You can restart a chat to use another mask.After restarting, the history will lose.",
+    "restart": "Restart"
 }

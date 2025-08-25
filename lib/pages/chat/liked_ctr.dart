@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/tools/app_router.dart';
 
 import '../../component/base_list_controller.dart';
 
@@ -14,9 +14,9 @@ class LikedCtr extends BaseListController<Role> {
       isNoMoreData = newRecords.length < size;
       if (page == 1) dataList.clear();
       dataList.addAll(newRecords);
-      emptyType.value = dataList.isEmpty ? EmptyType.empty : null;
+      emptyType.value = dataList.isEmpty ? EmptyType.noData : null;
     } catch (e) {
-      emptyType.value = dataList.isEmpty ? EmptyType.empty : null;
+      emptyType.value = dataList.isEmpty ? EmptyType.noData : null;
       if (page > 1) page--;
       rethrow;
     }

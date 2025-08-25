@@ -6,9 +6,9 @@ import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/msg_edit_page.dart';
 import 'package:fast_ai/pages/chat/text_lock.dart';
 import 'package:fast_ai/pages/chat/typing_rich_text.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/tools/app_router.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -109,11 +109,24 @@ class _TextContainerState extends State<TextContainer> {
   Widget _buildText(BuildContext context) {
     final msg = widget.msg;
 
-    final showTranslate = (msg.showTranslate == true && msg.translateAnswer != null);
+    var showTranslate = (msg.showTranslate == true && msg.translateAnswer != null);
 
     String content = showTranslate ? msg.translateAnswer ?? '' : msg.answer ?? '';
 
-    final showTransBtn = AppUser().user?.autoTranslate == false && msg.id != null;
+    var showTransBtn = true;
+
+    if (AppUser().user?.autoTranslate == true) {
+      showTransBtn = false;
+      if (msg.translateAnswer == null || msg.translateAnswer!.isEmpty) {
+        showTranslate = false;
+      } else {
+        showTranslate = true;
+      }
+    } else {
+      if (Get.deviceLocale?.languageCode == 'en') {
+        showTransBtn = false;
+      }
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

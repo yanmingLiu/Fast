@@ -1,8 +1,8 @@
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/router/routers.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
-import 'package:fast_ai/tools/app_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
       title: 'Fast AI',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF3F8DFD)),
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: Color(0xFF111111),
         fontFamily: GoogleFonts.openSans().fontFamily,
       ),
       getPages: Routers.pages,

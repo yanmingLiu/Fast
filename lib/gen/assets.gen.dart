@@ -12,6 +12,9 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/add.png
+  AssetGenImage get add => const AssetGenImage('assets/images/add.png');
+
   /// File path: assets/images/audio_pause.png
   AssetGenImage get audioPause =>
       const AssetGenImage('assets/images/audio_pause.png');
@@ -21,6 +24,12 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/edit.png
   AssetGenImage get edit => const AssetGenImage('assets/images/edit.png');
+
+  /// File path: assets/images/editm.png
+  AssetGenImage get editm => const AssetGenImage('assets/images/editm.png');
+
+  /// File path: assets/images/female.png
+  AssetGenImage get female => const AssetGenImage('assets/images/female.png');
 
   /// File path: assets/images/gems.png
   AssetGenImage get gems => const AssetGenImage('assets/images/gems.png');
@@ -46,6 +55,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/lock.png
   AssetGenImage get lock => const AssetGenImage('assets/images/lock.png');
+
+  /// File path: assets/images/male.png
+  AssetGenImage get male => const AssetGenImage('assets/images/male.png');
 
   /// File path: assets/images/me_vip_bg_0.png
   AssetGenImage get meVipBg0 =>
@@ -98,6 +110,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/no_network.png
   AssetGenImage get noNetwork =>
       const AssetGenImage('assets/images/no_network.png');
+
+  /// File path: assets/images/nonbinary.png
+  AssetGenImage get nonbinary =>
+      const AssetGenImage('assets/images/nonbinary.png');
 
   /// File path: assets/images/page_bg.png
   AssetGenImage get pageBg => const AssetGenImage('assets/images/page_bg.png');
@@ -159,9 +175,12 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        add,
         audioPause,
         banan,
         edit,
+        editm,
+        female,
         gems,
         gemsSucc,
         imagePlace,
@@ -169,6 +188,7 @@ class $AssetsImagesGen {
         levelBg,
         loading,
         lock,
+        male,
         meVipBg0,
         meVipBg1,
         meVipIcon,
@@ -183,6 +203,7 @@ class $AssetsImagesGen {
         noData,
         noLoading,
         noNetwork,
+        nonbinary,
         pageBg,
         pageBgRole,
         pagePgMe,
@@ -218,11 +239,14 @@ class $AssetsLottieGen {
   /// File path: assets/lottie/audio.json
   String get audio => 'assets/lottie/audio.json';
 
+  /// File path: assets/lottie/hourglass.json
+  String get hourglass => 'assets/lottie/hourglass.json';
+
   /// File path: assets/lottie/level_up.json
   String get levelUp => 'assets/lottie/level_up.json';
 
   /// List of all assets
-  List<String> get values => [audio, levelUp];
+  List<String> get values => [audio, hourglass, levelUp];
 }
 
 class $AssetsSvgGen {

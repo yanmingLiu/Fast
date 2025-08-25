@@ -3,18 +3,9 @@ import 'dart:io';
 import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
-import 'package:fast_ai/component/image_preview.dart';
-import 'package:fast_ai/component/video_preview.dart';
 import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/chat/msg_page.dart';
-import 'package:fast_ai/pages/chat/role_center_page.dart';
-import 'package:fast_ai/pages/home/home_fillter_page.dart';
-import 'package:fast_ai/pages/home/search_page.dart';
-import 'package:fast_ai/pages/mian/launch_page.dart';
-import 'package:fast_ai/pages/mian/main_page.dart';
-import 'package:fast_ai/pages/vip/gems_page.dart';
-import 'package:fast_ai/pages/vip/vip_page.dart';
+import 'package:fast_ai/pages/router/routers.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_service.dart';
@@ -27,66 +18,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Routers {
-  Routers._();
-
-  static const String main = '/';
-  static const String splash = '/splash';
-  static const String phone = '/phone';
-  static const String phoneGuide = '/phoneGuide';
-  static const String vip = '/vip';
-  static const String imagePreview = '/imagePreview';
-  static const String videoPreview = '/videoPreview';
-  static const String search = '/search';
-  static const String genPage = '/genPage';
-  static const String gems = '/gems';
-  static const String msg = '/msg';
-  static const String profile = '/profile';
-  static const String undr = '/undr';
-  static const String undrSku = '/undrSku';
-  static const String mask = '/mask';
-  static const String maskEdit = '/maskEdit';
-  static const String homeFilter = '/fillter';
-
-  static final List<GetPage> pages = [
-    GetPage(name: main, page: () => const MainPage()),
-    GetPage(name: splash, page: () => const LaunchPage()),
-    // GetPage(name: phone, page: () => const PhonePage()),
-    // GetPage(name: phoneGuide, page: () => const PhoneGuidePage()),
-    GetPage(name: vip, page: () => const VipPage()),
-    GetPage(name: gems, page: () => const GemsPage()),
-    GetPage(
-      name: imagePreview,
-      page: () => const ImagePreview(),
-      transition: Transition.zoom,
-      fullscreenDialog: true,
-    ),
-    GetPage(name: videoPreview, page: () => const VideoPreview(), fullscreenDialog: true),
-    GetPage(name: homeFilter, page: () => const HomeFiltterPage(), transition: Transition.downToUp),
-    GetPage(name: search, page: () => const SearchPage()),
-    // GetPage(name: genPage, page: () => const GenPage()),
-    GetPage(name: msg, page: () => MsgPage()),
-    GetPage(name: profile, page: () => const RoleCenterPage()),
-    // GetPage(
-    //   name: undr,
-    //   page: () => UndrPage(),
-    //   fullscreenDialog: true,
-    //   transition: Transition.downToUp,
-    // ),
-    // GetPage(
-    //   name: undrSku,
-    //   page: () => UndrSkuList(),
-    //   fullscreenDialog: true,
-    //   transition: Transition.downToUp,
-    // ),
-    // GetPage(name: mask, page: () => MaskPage()),
-    // GetPage(name: maskEdit, page: () => MaskEditPage()),
-  ];
-}
-
 class AppRouter {
   AppRouter._();
 
+  /// 导航到搜索页面
   static void pushSearch() async {
     Get.toNamed(Routers.search);
   }
@@ -134,18 +69,30 @@ class AppRouter {
     FToast.toast(message);
   }
 
+  /// 导航到VIP页面
+  ///
+  /// [from] 表示从哪个入口进入VIP页面
   static void pushVip(VipFrom from) {
     Get.toNamed(Routers.vip, arguments: from);
   }
 
+  /// 导航到角色资料页面
+  ///
+  /// [role] 要查看的角色信息
   static void pushProfile(Role role) {
     Get.toNamed(Routers.profile, arguments: role);
   }
 
+  /// 导航到宝石/钻石页面
+  ///
+  /// [from] 表示从哪个入口进入宝石页面
   static void pushGem(ConsumeFrom from) {
     Get.toNamed(Routers.gems, arguments: from);
   }
 
+  /// 导航到Undr页面
+  ///
+  /// [role] 可选的角色信息
   static void pushUndr(Role? role) {
     Get.toNamed(Routers.undr, arguments: role);
   }
@@ -233,7 +180,12 @@ class AppRouter {
     );
   }
 
-  static Future<T?>? pushPhoneGuideFormHome<T>({required Role role}) async {
+  /// 从首页导航到电话引导页面
+  ///
+  /// [role] 角色信息
+  ///
+  /// 注意：此方法目前返回null，可能需要完善实现
+  static Future<T?>? pushPhoneGuideFromHome<T>({required Role role}) async {
     final roleId = role.id;
     if (roleId == null) {
       FToast.toast('roleId is null');
@@ -242,22 +194,37 @@ class AppRouter {
     return null;
   }
 
+  /// 导航到电话引导页面
+  ///
+  /// [role] 角色信息
   static Future<T?>? pushPhoneGuide<T>({required Role role}) {
     return Get.toNamed(Routers.phoneGuide, arguments: {'role': role});
   }
 
+  /// 导航到创建页面
+  ///
+  /// [role] 角色信息
+  /// [type] 创建类型
   static Future<T?>? pushCreate<T>({required Role role, required CreateType type}) {
-    return Get.toNamed(Routers.genPage, arguments: {'role': role, 'type': type});
+    // 注意：Routers.genPage 常量似乎未在 Routers 类中定义，应该添加该常量
+    return Get.toNamed('genPage', arguments: {'role': role, 'type': type});
   }
 
+  /// 导航到图片预览页面
+  ///
+  /// [imageUrl] 要预览的图片URL
   static void pushImagePreview(String imageUrl) {
     Get.toNamed(Routers.imagePreview, arguments: imageUrl);
   }
 
+  /// 导航到视频预览页面
+  ///
+  /// [url] 要预览的视频URL
   static void pushVideoPreview(String url) {
     Get.toNamed(Routers.videoPreview, arguments: url);
   }
 
+  /// 导航到蒙版页面
   static void pushMask() {
     Get.toNamed(Routers.mask);
   }

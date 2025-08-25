@@ -7,8 +7,8 @@ import 'package:fast_ai/data/toys_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
+import 'package:fast_ai/services/app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,58 +20,96 @@ class GiftPage extends StatefulWidget {
   State<GiftPage> createState() => _GiftPageState();
 }
 
-enum MsgGiftViewCategroy { clothing, toys }
+enum MsgGiftViewCategory { clothing, toys }
+
+/// 礼物页面常量
+class _GiftPageConstants {
+  // 颜色常量
+  static const Color backgroundColor = Color(0xFF333333);
+  static const Color primaryBlue = Color(0xFF3F8DFD);
+  static const Color primaryBlueLight = Color(0x1A3F8DFD);
+  static const Color borderColor = Color(0x33FFFFFF);
+  static const Color backgroundLight = Color(0x1AFFFFFF);
+  static const Color priceTagBackground = Color(0x801C1C1C);
+  static const Color redText = Color(0xFFF04A4C);
+
+  // 尺寸常量
+  static const double borderRadius = 16.0;
+  static const double tabBorderRadius = 24.0;
+  static const double itemSpacing = 8.0;
+  static const double gridAspectRatio = 168.0 / 247.0;
+  static const double clipSize = 50.0;
+
+  // 边距常量
+  static const EdgeInsets contentPadding = EdgeInsets.symmetric(horizontal: 16.0);
+  static const EdgeInsets tabPadding = EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
+}
 
 class _GiftPageState extends State<GiftPage> {
-  MsgGiftViewCategroy? selectedCate;
+  /// 当前选中的分类
+  MsgGiftViewCategory? _selectedCategory;
 
-  MsgCtr ctr = Get.find<MsgCtr>();
+  /// 消息控制器
+  final MsgCtr _ctr = Get.find<MsgCtr>();
 
-  List<ToysData>? toys;
-  ToysData? chooseToys;
+  /// 玩具数据列表
+  List<ToysData>? _toys;
 
-  List<ClothingData>? clothings;
-  ClothingData? chooseClothing;
+  /// 当前选中的玩具
+  ToysData? _selectedToy;
 
-  bool showClothing = false;
+  /// 服装数据列表
+  List<ClothingData>? _clothings;
 
-  final titles = [LocaleKeys.clothing.tr, LocaleKeys.toys.tr];
+  /// 当前选中的服装
+  ClothingData? _selectedClothing;
+
+  /// 是否显示服装选项
+  bool _showClothing = false;
+
+  /// 分类标题
+  final List<String> _categoryTitles = [LocaleKeys.clothing.tr, LocaleKeys.toys.tr];
+
+  /// 标签页控制器
   late LinkedTabPageController _linkedController;
 
   @override
   void initState() {
     super.initState();
-
-    _linkedController = LinkedTabPageController(items: titles);
-
-    setup();
+    _linkedController = LinkedTabPageController(items: _categoryTitles);
+    _loadData();
   }
 
-  void setup() async {
-    await ctr.loadToysAndClotheConfigs();
+  /// 加载礼物数据
+  Future<void> _loadData() async {
+    await AppUser().loadToysAndClotheConfigs();
 
-    if (AppCache().isBig) {
-      selectedCate = MsgGiftViewCategroy.clothing;
-    } else {
-      selectedCate = MsgGiftViewCategroy.toys;
-    }
+    // 加载玩具数据
+    _toys = AppUser().toysConfigs;
+    _selectedToy = _toys?.firstOrNull;
 
-    toys = ctr.toysConfigs;
-    chooseToys = toys?.firstOrNull;
+    // 加载服装数据
+    final clotheConfigs = AppUser().clotheConfigs;
+    final List<ChangeClothe> roleClothings = _ctr.role.changeClothes ?? [];
 
-    var clotheConfigs = ctr.clotheConfigs;
-    List<ChangeClothe> roleClothings = ctr.role.changeClothes ?? [];
-
-    clothings = [
-      for (var e in clotheConfigs)
-        if (roleClothings.any((r) => e.togsType == r.clothingType)) e,
+    // 过滤出角色可用的服装
+    _clothings = [
+      for (final clothing in clotheConfigs)
+        if (roleClothings.any((role) => clothing.togsType == role.clothingType)) clothing,
     ];
 
-    chooseClothing = clothings?.firstOrNull;
+    _selectedClothing = _clothings?.firstOrNull;
 
-    showClothing = ctr.role.changeClothing == true && (clothings?.isNotEmpty == true);
+    // 判断是否显示服装选项
+    _showClothing = _ctr.role.changeClothing == true && (_clothings?.isNotEmpty ?? false);
 
-    setState(() {});
+    // 根据缓存决定默认选中的分类
+    _selectedCategory = _showClothing ? MsgGiftViewCategory.clothing : MsgGiftViewCategory.toys;
+
+    // 更新UI
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -79,33 +117,29 @@ class _GiftPageState extends State<GiftPage> {
     return Container(
       margin: const EdgeInsets.only(top: kToolbarHeight + 16),
       decoration: const BoxDecoration(
-        color: Color(0xFF333333),
+        color: _GiftPageConstants.backgroundColor,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+          topLeft: Radius.circular(_GiftPageConstants.borderRadius),
+          topRight: Radius.circular(_GiftPageConstants.borderRadius),
         ),
       ),
       child: Column(
         children: [
+          // 分类标签区域
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(children: [buildCategory()]),
+            child: _buildCategorySection(),
           ),
+
+          // 内容区域
           Expanded(
             child: SafeArea(
               top: false,
-              child: showClothing
+              child: _showClothing
                   ? PageView(
                       controller: _linkedController.pageController,
                       pageSnapping: true,
-                      onPageChanged: (index) {
-                        _linkedController.handlePageChanged(index);
-                        setState(() {
-                          selectedCate = index == 0
-                              ? MsgGiftViewCategroy.clothing
-                              : MsgGiftViewCategroy.toys;
-                        });
-                      },
+                      onPageChanged: _handlePageChanged,
                       children: [_buildClothingList(), _buildToysList()],
                     )
                   : _buildToysList(),
@@ -116,25 +150,36 @@ class _GiftPageState extends State<GiftPage> {
     );
   }
 
-  Widget buildCategory() {
-    if (showClothing) {
+  /// 处理页面切换事件
+  void _handlePageChanged(int index) {
+    _linkedController.handlePageChanged(index);
+    setState(() {
+      _selectedCategory = index == 0 ? MsgGiftViewCategory.clothing : MsgGiftViewCategory.toys;
+    });
+  }
+
+  /// 构建分类选择区域
+  Widget _buildCategorySection() {
+    if (_showClothing) {
       return Container(
         height: 48,
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: _GiftPageConstants.tabPadding,
         decoration: BoxDecoration(
-          color: Color(0x1AFFFFFF),
-          border: BoxBorder.all(color: Color(0x33FFFFFF), width: 1),
-          borderRadius: BorderRadius.circular(24),
+          color: _GiftPageConstants.backgroundLight,
+          border: BoxBorder.all(color: _GiftPageConstants.borderColor, width: 1),
+          borderRadius: BorderRadius.circular(_GiftPageConstants.tabBorderRadius),
         ),
         child: Row(
-          spacing: 12,
           children: [
-            Expanded(child: _buildItem(titles[0], 0)),
-            Expanded(child: _buildItem(titles[1], 1)),
+            Expanded(child: _buildTabItem(_categoryTitles[0], 0)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildTabItem(_categoryTitles[1], 1)),
           ],
         ),
       );
     }
+
+    // 只显示玩具标题
     return Row(
       children: [
         Text(
@@ -149,46 +194,37 @@ class _GiftPageState extends State<GiftPage> {
     );
   }
 
-  Widget _buildItem(String title, int index) {
-    return GestureDetector(
-      child: AnimatedBuilder(
-        animation: _linkedController,
-        builder: (_, _) {
-          return GestureDetector(
-            child: AnimatedBuilder(
-              animation: _linkedController,
-              builder: (_, _) {
-                final isActive = _linkedController.index == index;
-                return buildTabItem(
-                  key: _linkedController.getTabKey(index),
-                  title: title,
-                  isActive: isActive,
-                  onTap: () {
-                    _linkedController.select(index);
-                  },
-                );
-              },
-            ),
-          );
-        },
-      ),
+  /// 构建标签项
+  Widget _buildTabItem(String title, int index) {
+    return AnimatedBuilder(
+      animation: _linkedController,
+      builder: (_, __) {
+        final isActive = _linkedController.index == index;
+        return _buildTabButton(
+          key: _linkedController.getTabKey(index),
+          title: title,
+          isActive: isActive,
+          onTap: () => _linkedController.select(index),
+        );
+      },
     );
   }
 
-  Widget buildTabItem({
+  /// 构建标签按钮
+  Widget _buildTabButton({
     Key? key,
     required String title,
     required bool isActive,
-    void Function()? onTap,
+    required VoidCallback onTap,
   }) {
     return FButton(
       key: key,
-      borderRadius: BorderRadius.circular(16),
-      color: isActive ? Color(0xFF3F8DFD) : Colors.transparent,
-      highlightColor: Color(0x1A3F8DFD),
+      borderRadius: BorderRadius.circular(_GiftPageConstants.borderRadius),
+      color: isActive ? _GiftPageConstants.primaryBlue : Colors.transparent,
+      highlightColor: _GiftPageConstants.primaryBlueLight,
       onTap: onTap,
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      constraints: BoxConstraints(minWidth: 50),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      constraints: const BoxConstraints(minWidth: 50),
       child: Center(
         child: Text(
           title,
@@ -203,53 +239,58 @@ class _GiftPageState extends State<GiftPage> {
     );
   }
 
+  /// 构建服装列表
   Widget _buildClothingList() {
-    var list = clothings;
+    final list = _clothings;
 
     if (list == null || list.isEmpty) {
       return const SizedBox();
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: _GiftPageConstants.contentPadding,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Text(
-                LocaleKeys.send_a_gift_and_get_a_picture.tr,
-                style: GoogleFonts.openSans(
-                  color: Color(0xFFF04A4C),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
+          // 顶部提示和发送按钮
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              children: [
+                Text(
+                  LocaleKeys.send_a_gift_and_get_a_picture.tr,
+                  style: GoogleFonts.openSans(
+                    color: _GiftPageConstants.redText,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-              ),
-              Spacer(),
-              _buildSend(),
-            ],
+                const Spacer(),
+                _buildSendButton(),
+              ],
+            ),
           ),
+
+          // 服装网格列表
           Expanded(
             child: GridView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 16),
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: 9,
-                crossAxisSpacing: 9,
-                childAspectRatio: 167.0 / 270.0,
+                mainAxisSpacing: _GiftPageConstants.itemSpacing,
+                crossAxisSpacing: _GiftPageConstants.itemSpacing,
+                childAspectRatio: _GiftPageConstants.gridAspectRatio,
               ),
               itemBuilder: (BuildContext context, int index) {
-                var item = list[index];
+                final item = list[index];
                 return _buildListItem(
-                  isSelected: chooseClothing?.id == item.id,
+                  isSelected: _selectedClothing?.id == item.id,
                   imgUrl: item.img,
                   name: item.togsName,
                   price: item.itemPrice,
                   onTap: () {
-                    chooseClothing = item;
-                    setState(() {});
+                    setState(() {
+                      _selectedClothing = item;
+                    });
                   },
                 );
               },
@@ -261,50 +302,45 @@ class _GiftPageState extends State<GiftPage> {
     );
   }
 
+  /// 构建玩具列表
   Widget _buildToysList() {
-    var list = toys;
+    final list = _toys;
 
     if (list == null || list.isEmpty) {
       return const SizedBox();
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: _GiftPageConstants.contentPadding,
       child: Column(
-        spacing: 16,
         children: [
-          Row(
-            children: [
-              Text(
-                LocaleKeys.send_a_gift_and_get_a_picture.tr,
-                style: GoogleFonts.openSans(
-                  color: Color(0xFFF04A4C),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              Spacer(),
-              _buildSend(),
-            ],
+          // 顶部发送按钮
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(children: [const Spacer(), _buildSendButton()]),
           ),
+
+          // 玩具网格列表
           Expanded(
             child: GridView.builder(
+              shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: 9,
-                crossAxisSpacing: 9,
-                childAspectRatio: 167.0 / 270.0,
+                mainAxisSpacing: _GiftPageConstants.itemSpacing,
+                crossAxisSpacing: _GiftPageConstants.itemSpacing,
+                childAspectRatio: _GiftPageConstants.gridAspectRatio,
               ),
               itemBuilder: (BuildContext context, int index) {
-                var item = list[index];
+                final item = list[index];
                 return _buildListItem(
-                  isSelected: chooseToys?.id == item.id,
+                  isSelected: _selectedToy?.id == item.id,
                   imgUrl: item.img,
                   name: item.tipName,
                   price: item.itemPrice,
                   onTap: () {
-                    chooseToys = item;
-                    setState(() {});
+                    setState(() {
+                      _selectedToy = item;
+                    });
                   },
                 );
               },
@@ -316,38 +352,50 @@ class _GiftPageState extends State<GiftPage> {
     );
   }
 
+  /// 构建礼物列表项
   Widget _buildListItem({
     required bool isSelected,
     required String? imgUrl,
     required String? name,
     required int? price,
-    required void Function() onTap,
+    required VoidCallback onTap,
   }) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(_GiftPageConstants.borderRadius),
       child: Column(
         children: [
+          // 图片区域
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(_GiftPageConstants.borderRadius),
               child: Stack(
+                fit: StackFit.expand,
                 children: [
+                  // 礼物图片
                   Positioned.fill(
-                    child: FImage(url: imgUrl, borderRadius: BorderRadius.circular(16)),
+                    child: FImage(
+                      url: imgUrl,
+                      borderRadius: BorderRadius.circular(_GiftPageConstants.borderRadius),
+                    ),
                   ),
+
+                  // 选中状态边框
                   if (isSelected)
                     Positioned.fill(
                       child: DiagonalClippedContainer(
-                        clipSize: 50,
-                        clipColor: Colors.blue,
+                        clipSize: _GiftPageConstants.clipSize,
+                        clipColor: _GiftPageConstants.primaryBlue,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Color(0xFF3F8DFD), width: 2),
+                            borderRadius: BorderRadius.circular(_GiftPageConstants.borderRadius),
+                            border: Border.all(color: _GiftPageConstants.primaryBlue, width: 2),
                           ),
                         ),
                       ),
                     ),
+
+                  // 选中状态图标
                   if (isSelected)
                     Positioned(
                       top: 10,
@@ -355,6 +403,7 @@ class _GiftPageState extends State<GiftPage> {
                       child: FIcon(assetName: Assets.svg.choose, width: 16),
                     ),
 
+                  // 价格标签
                   Positioned(
                     bottom: 10,
                     left: 10,
@@ -363,10 +412,10 @@ class _GiftPageState extends State<GiftPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: Color(0x801C1C1C),
+                            color: _GiftPageConstants.priceTagBackground,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -374,7 +423,7 @@ class _GiftPageState extends State<GiftPage> {
                               Assets.images.gems.image(width: 20),
                               const SizedBox(width: 2),
                               Text(
-                                '$price',
+                                '${price ?? 0}',
                                 style: GoogleFonts.montserrat(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -391,6 +440,8 @@ class _GiftPageState extends State<GiftPage> {
               ),
             ),
           ),
+
+          // 礼物名称
           const SizedBox(height: 2),
           Text(
             name ?? '',
@@ -405,81 +456,65 @@ class _GiftPageState extends State<GiftPage> {
     );
   }
 
-  Widget _buildSend() {
+  /// 构建发送按钮
+  Widget _buildSendButton() {
     return FButton(
       height: 26,
       width: 80,
-      color: Color(0xFF3F8DFD),
+      color: _GiftPageConstants.primaryBlue,
+      onTap: _handleSendGift,
       child: Center(
         child: Text(
           LocaleKeys.send.tr,
           style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
         ),
       ),
-      onTap: () {
-        logEvent('c_gift');
-
-        if (showClothing) {
-          switch (selectedCate) {
-            case MsgGiftViewCategroy.clothing:
-              if (chooseClothing != null) {
-                ctr.sendChothes(chooseClothing!);
-              }
-              break;
-
-            default:
-              if (chooseToys != null) {
-                ctr.sendToy(chooseToys!);
-              }
-          }
-        } else {
-          if (chooseToys != null) {
-            ctr.sendToy(chooseToys!);
-          }
-        }
-      },
     );
   }
 
-  // Widget _buildItem({required String title, required MsgGiftViewCategroy cate}) {
-  //   final isSelected = cate == selectedCate;
-  //   final index = MsgGiftViewCategroy.values.indexOf(cate);
-  //   return InkWell(
-  //     onTap: () {
-  //       selectedCate = cate;
-  //       _pageController.animateToPage(
-  //         index,
-  //         duration: const Duration(milliseconds: 300),
-  //         curve: Curves.easeInOut,
-  //       );
-  //       setState(() {});
-  //     },
-  //     child: Stack(
-  //       alignment: Alignment.bottomRight,
-  //       children: [
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             Text(
-  //               title,
-  //               style: TextStyle(
-  //                 color: isSelected ? Colors.black : Colors.white,
-  //                 fontSize: isSelected ? 16 : 14,
-  //                 fontWeight: FontWeight.w700,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  /// 处理发送礼物逻辑
+  void _handleSendGift() {
+    // 记录事件
+    logEvent('c_gift');
+
+    if (_showClothing) {
+      // 有服装选项时，根据当前选中的分类决定发送什么
+      switch (_selectedCategory) {
+        case MsgGiftViewCategory.clothing:
+          if (_selectedClothing != null) {
+            _ctr.sendChothes(_selectedClothing!);
+          }
+          break;
+
+        case MsgGiftViewCategory.toys:
+          if (_selectedToy != null) {
+            _ctr.sendToy(_selectedToy!);
+          }
+          break;
+
+        default:
+          // 未选择分类时不执行操作
+          break;
+      }
+    } else {
+      // 只有玩具选项时直接发送玩具
+      if (_selectedToy != null) {
+        _ctr.sendToy(_selectedToy!);
+      }
+    }
+  }
 }
 
+/// 带有左上角三角形裁切的容器组件
 class DiagonalClippedContainer extends StatelessWidget {
+  /// 子组件
   final Widget child;
-  final double clipSize; // 裁切区域的大小（正方形边长）
-  final Color clipColor; // 左上方裁切区域的颜色
+
+  /// 裁切区域的大小（正方形边长）
+  final double clipSize;
+
+  /// 左上方裁切区域的颜色
+  final Color clipColor;
 
   const DiagonalClippedContainer({
     super.key,
@@ -494,13 +529,14 @@ class DiagonalClippedContainer extends StatelessWidget {
       children: [
         // 主内容区域（被裁切）
         ClipPath(clipper: _DiagonalClipper(clipSize), child: child),
-        // 左上角蓝色三角形区域（在裁切区域上方）
+
+        // 左上角三角形区域
         Positioned(
           top: 0,
           left: 0,
           child: CustomPaint(
             size: Size(clipSize, clipSize),
-            painter: _BlueTrianglePainter(color: clipColor),
+            painter: _TrianglePainter(color: clipColor),
           ),
         ),
       ],
@@ -508,6 +544,7 @@ class DiagonalClippedContainer extends StatelessWidget {
   }
 }
 
+/// 对角线裁切器
 class _DiagonalClipper extends CustomClipper<Path> {
   final double clipSize;
 
@@ -516,14 +553,17 @@ class _DiagonalClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
+
     // 从左上角开始，但跳过三角形区域
     path.moveTo(clipSize, 0);
     path.lineTo(0, clipSize);
+
     // 绘制剩余的容器边界
     path.lineTo(0, size.height);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, 0);
     path.close();
+
     return path;
   }
 
@@ -533,10 +573,11 @@ class _DiagonalClipper extends CustomClipper<Path> {
   }
 }
 
-class _BlueTrianglePainter extends CustomPainter {
+/// 三角形绘制器
+class _TrianglePainter extends CustomPainter {
   final Color color;
 
-  _BlueTrianglePainter({required this.color});
+  _TrianglePainter({required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -556,6 +597,6 @@ class _BlueTrianglePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return oldDelegate is _BlueTrianglePainter && oldDelegate.color != color;
+    return oldDelegate is _TrianglePainter && oldDelegate.color != color;
   }
 }

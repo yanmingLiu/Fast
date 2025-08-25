@@ -1,3 +1,6 @@
+import 'package:fast_ai/data/clothing_data.dart';
+import 'package:fast_ai/data/price_config.dart';
+import 'package:fast_ai/data/toys_data.dart';
 import 'package:fast_ai/data/user.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_cache.dart';
@@ -27,6 +30,13 @@ class AppUser {
 
   User? get user => _user;
 
+  /// 各种价格配置
+  PriceConfig? priceConfig;
+
+  // 获取玩具 衣服列表
+  List<ToysData> toysConfigs = [];
+  List<ClothingData> clotheConfigs = [];
+
   Future<void> register() async {
     try {
       final cacheUser = AppCache().user;
@@ -49,7 +59,6 @@ class AppUser {
       if (cacheUser == null) {
         await register();
       }
-
       final user = await Api.getUserInfo();
       if (user != null) {
         cacheUserInfo(user);
@@ -101,5 +110,17 @@ class AppUser {
     } catch (e) {
       log.e('$e');
     }
+  }
+
+  Future getPriceConfig() async {
+    if (priceConfig != null) return;
+    var result = await Api.getPriceConfig();
+    if (result == null) return;
+    priceConfig = result;
+  }
+
+  Future<void> loadToysAndClotheConfigs() async {
+    toysConfigs = toysConfigs.isNotEmpty ? toysConfigs : await Api.getToysConfigs() ?? [];
+    clotheConfigs = clotheConfigs.isNotEmpty ? clotheConfigs : await Api.getClotheConfigs() ?? [];
   }
 }

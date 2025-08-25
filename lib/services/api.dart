@@ -747,34 +747,34 @@ class Api {
     }
   }
 
-  // static Future<MsgAnswer?> sendVoiceChatMsg({
-  //   required String roleId,
-  //   required String userId,
-  //   required String nickName,
-  //   required String message,
-  //   String? msgId,
-  // }) async {
-  //   try {
-  //     var res = await api.post(
-  //       ApiPath.voiceChat,
-  //       body: {
-  //         'char_id': roleId,
-  //         'user_id': userId,
-  //         'nick_name': nickName,
-  //         'message': message,
-  //         if (msgId?.isNotEmpty == true) 'msg_id': msgId,
-  //       },
-  //       queryParameters: _qp,
-  //     );
-  //     if (res.isOk) {
-  //       return MsgAnswer.fromJson(res.body);
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  static Future<MsgData?> sendVoiceChatMsg({
+    required String roleId,
+    required String userId,
+    required String nickName,
+    required String message,
+    String? msgId,
+  }) async {
+    try {
+      var res = await api.post(
+        ApiPath.voiceChat,
+        body: {
+          'char_id': roleId,
+          'user_id': userId,
+          'nick_name': nickName,
+          'message': message,
+          if (msgId?.isNotEmpty == true) 'msg_id': msgId,
+        },
+        queryParameters: _qp,
+      );
+      if (res.isOk) {
+        return MsgData.fromJson(res.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
   static Future<bool> updateEventParams({bool? autoTranslate}) async {
     try {

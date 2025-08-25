@@ -48,6 +48,7 @@ class _MsgCellState extends State<MsgCell> {
       case MsgSource.sendText:
         return TextContainer(msg: widget.msg);
       case MsgSource.text:
+      case MsgSource.maskTips:
         return TextContainer(msg: widget.msg);
       case MsgSource.photo:
       case MsgSource.clothe:

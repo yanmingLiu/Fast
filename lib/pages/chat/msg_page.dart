@@ -16,7 +16,7 @@ import 'package:fast_ai/pages/chat/role_lock_view.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/tools/app_router.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -12,7 +12,7 @@ class SearchCtr extends GetxController {
   int size = 1000;
 
   var list = <Role>[].obs;
-  var type = Rx<EmptyType?>(EmptyType.empty);
+  var type = Rx<EmptyType?>(EmptyType.noData);
 
   var searchQuery = ''.obs;
   var currentRequestId = 0.obs; // 当前请求的 ID
@@ -35,7 +35,7 @@ class SearchCtr extends GetxController {
     try {
       if (searchText.isEmpty) {
         list.clear();
-        type.value = EmptyType.empty;
+        type.value = EmptyType.noData;
         return;
       }
 
@@ -52,9 +52,9 @@ class SearchCtr extends GetxController {
       type.value = null;
       list.addAll(res?.records ?? []);
 
-      type.value = list.isEmpty ? EmptyType.empty : null;
+      type.value = list.isEmpty ? EmptyType.noData : null;
     } catch (e) {
-      type.value = list.isEmpty ? EmptyType.empty : null;
+      type.value = list.isEmpty ? EmptyType.noData : null;
     }
   }
 

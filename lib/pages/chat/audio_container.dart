@@ -5,7 +5,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/tools/app_router.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/tools/audio_tool.dart';
 import 'package:fast_ai/tools/downloader.dart';
 import 'package:fast_ai/values/app_values.dart';

@@ -151,7 +151,7 @@ class HomeListController {
         dress: changeClothing,
       );
       if (res == null || (res.records?.isEmpty ?? true)) {
-        type.value = list.isEmpty ? EmptyType.empty : null;
+        type.value = list.isEmpty ? EmptyType.noData : null;
         return null;
       }
       isNoMoreData = (res.records?.length ?? 0) < size;
@@ -167,7 +167,7 @@ class HomeListController {
       return res;
     } catch (e) {
       log.e('Error fetching home data: $e');
-      type.value = list.isEmpty ? EmptyType.empty : null;
+      type.value = list.isEmpty ? EmptyType.noData : null;
 
       return null;
     } finally {

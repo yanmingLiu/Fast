@@ -1,4 +1,7 @@
+import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/services/app_user.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 enum VipFrom {
@@ -51,19 +54,10 @@ extension GlobFromExt on ConsumeFrom {
   int get gems {
     switch (this) {
       case ConsumeFrom.text:
-        return 2;
-      case ConsumeFrom.audio:
-        return 4;
+        return AppUser().priceConfig?.textMessage ?? 2;
+
       case ConsumeFrom.call:
-        return 10;
-      case ConsumeFrom.creaimg:
-        return 8;
-      case ConsumeFrom.creavideo:
-        return 10;
-      case ConsumeFrom.unlcokText:
-        return 4;
-      case ConsumeFrom.undr:
-        return 100;
+        return AppUser().priceConfig?.callAiCharacters ?? 10;
       default:
         return 0;
     }
@@ -183,16 +177,16 @@ enum Gender {
     }
   }
 
-  // Widget get iconLight {
-  //   switch (this) {
-  //     case Gender.male:
-  //       return Assets.images.sexManS.image(width: 64);
-  //     case Gender.female:
-  //       return Assets.images.sexFemaleS.image(width: 64);
-  //     case Gender.nonBinary:
-  //       return Assets.images.sexNobinaryS.image(width: 64);
-  //     case Gender.unknown:
-  //       return Icon(Icons.question_mark);
-  //   }
-  // }
+  Widget get icon {
+    switch (this) {
+      case Gender.male:
+        return Assets.images.male.image(width: 16);
+      case Gender.female:
+        return Assets.images.female.image(width: 16);
+      case Gender.nonBinary:
+        return Assets.images.nonbinary.image(width: 16);
+      case Gender.unknown:
+        return Icon(Icons.question_mark);
+    }
+  }
 }

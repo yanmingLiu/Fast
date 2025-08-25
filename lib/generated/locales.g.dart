@@ -169,6 +169,9 @@ class LocaleKeys {
   static const sara_received_your_gift = 'sara_received_your_gift';
   static const give_her_a_moment = 'give_her_a_moment';
   static const wait_30_seconds = 'wait_30_seconds';
+  static const create = 'create';
+  static const edit_choose_mask = 'edit_choose_mask';
+  static const restart = 'restart';
 }
 
 class Locales {
@@ -351,5 +354,9 @@ class Locales {
         'Give her a moment to enjoy it and take a picture for you 📷',
     'wait_30_seconds':
         'It may take up to 30 seconds.\nPlease do not close or leave the app',
+    'create': 'Create',
+    'edit_choose_mask':
+        'This chat already has a mask loaded.You can restart a chat to use another mask.After restarting, the history will lose.',
+    'restart': 'Restart',
   };
 }

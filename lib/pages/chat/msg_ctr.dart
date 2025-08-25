@@ -7,19 +7,18 @@ import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/data/clothing_data.dart';
 import 'package:fast_ai/data/msg_data.dart';
-import 'package:fast_ai/data/price_config.dart';
 import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/data/session_data.dart';
 import 'package:fast_ai/data/toys_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/chat_ctr.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/tools/app_router.dart';
 import 'package:fast_ai/tools/trans_tool.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
@@ -52,11 +51,6 @@ class MsgCtr extends GetxController {
     {'icon': '😊', 'text': 'Level 3 Reward', 'level': 3, 'gems': 0},
     {'icon': '💓', 'text': 'Level 4 Reward', 'level': 4, 'gems': 0},
   ];
-
-  // 获取玩具 衣服列表
-  List<ToysData> toysConfigs = [];
-  List<ClothingData> clotheConfigs = []; // 各种价格配置
-  PriceConfig? priceConfig;
 
   // 发送id
   var tmpSendId = '16549084165484';
@@ -92,20 +86,9 @@ class MsgCtr extends GetxController {
 
     loadChatLevel();
 
-    loadToysAndClotheConfigs();
-    getPriceConfig();
-  }
-
-  Future<void> loadToysAndClotheConfigs() async {
-    toysConfigs = toysConfigs.isNotEmpty ? toysConfigs : await Api.getToysConfigs() ?? [];
-    clotheConfigs = clotheConfigs.isNotEmpty ? clotheConfigs : await Api.getClotheConfigs() ?? [];
-  }
-
-  Future getPriceConfig() async {
-    if (priceConfig != null) return;
-    var result = await Api.getPriceConfig();
-    if (result == null) return;
-    priceConfig = result;
+    AppUser().loadToysAndClotheConfigs();
+    AppUser().getPriceConfig();
+    AppUser().getUserInfo();
   }
 
   @override
@@ -269,7 +252,6 @@ class MsgCtr extends GetxController {
         final flag = AppUser().isBalanceEnough(ConsumeFrom.text);
         if (!flag) {
           await FToast.toast(LocaleKeys.not_enough.tr);
-          // RouterUtil.pushGem(ConsumeFrom.send);
           // v1.3.0 - 调整为跳订阅页
           AppRouter.pushVip(VipFrom.send);
           return false;
@@ -709,6 +691,7 @@ class MsgCtr extends GetxController {
 
   void sendToy(ToysData toy) async {
     try {
+      FLoading.showLoading();
       var balance = AppUser().balance.value;
       var price = toy.itemPrice ?? 0;
       if (balance < price) {
@@ -722,8 +705,9 @@ class MsgCtr extends GetxController {
       if (convId == null || giftId == null || roleId == null) {
         return;
       }
-      Get.back();
-
+      if (Get.isBottomSheetOpen == true) {
+        Get.back();
+      }
       var msg = await Api.sendToys(convId: convId, id: giftId, roleId: roleId);
       if (msg != null) {
         list.add(msg);
@@ -731,6 +715,8 @@ class MsgCtr extends GetxController {
       AppUser().getUserInfo();
     } catch (e) {
       FToast.toast(LocaleKeys.some_error_try_again.tr);
+    } finally {
+      FLoading.dismiss();
     }
   }
 
