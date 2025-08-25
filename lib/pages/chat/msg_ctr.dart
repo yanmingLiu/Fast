@@ -775,7 +775,6 @@ class MsgCtr extends GetxController {
                   }
                 },
                 onError: (dynamic exception, StackTrace? stackTrace) {
-                  log.e('图片加载失败: $exception');
                   if (!completer.isCompleted) {
                     completer.completeError(exception); // 加载失败时返回异常
                   }

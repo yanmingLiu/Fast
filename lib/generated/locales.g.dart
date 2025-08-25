@@ -168,6 +168,7 @@ class LocaleKeys {
   static const send = 'send';
   static const sara_received_your_gift = 'sara_received_your_gift';
   static const give_her_a_moment = 'give_her_a_moment';
+  static const wait_30_seconds = 'wait_30_seconds';
 }
 
 class Locales {
@@ -348,5 +349,7 @@ class Locales {
     'sara_received_your_gift': 'Sara received your gift 🎁',
     'give_her_a_moment':
         'Give her a moment to enjoy it and take a picture for you 📷',
+    'wait_30_seconds':
+        'It may take up to 30 seconds.\nPlease do not close or leave the app',
   };
 }

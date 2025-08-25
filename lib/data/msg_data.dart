@@ -172,7 +172,7 @@ class MsgData {
     translateAnswer: json["translate_answer"],
     giftId: json["gift_id"],
     giftImg: json["gift_img"],
-    src: json["src_plat"],
+    src: json["source"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -209,7 +209,7 @@ class MsgData {
     "thumb_link": thumbLink,
     "gift_id": giftId,
     "gift_img": giftImg,
-    "src_plat": src,
+    "source": src,
   };
 
   @override

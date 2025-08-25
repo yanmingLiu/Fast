@@ -64,7 +64,7 @@ class _MsgEditPageState extends State<MsgEditPage> {
     return GestureDetector(
       onTap: () => focusNode.requestFocus(),
       child: Container(
-        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 2 - 100),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 2 - 150),
         decoration: BoxDecoration(
           color: const Color(0xFF333333),
           borderRadius: BorderRadius.only(

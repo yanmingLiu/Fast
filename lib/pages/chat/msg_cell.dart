@@ -6,6 +6,7 @@ import 'package:fast_ai/pages/chat/audio_container.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/photo_container.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
+import 'package:fast_ai/pages/chat/toys_container.dart';
 import 'package:fast_ai/pages/chat/video_container.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
@@ -49,11 +50,14 @@ class _MsgCellState extends State<MsgCell> {
       case MsgSource.text:
         return TextContainer(msg: widget.msg);
       case MsgSource.photo:
+      case MsgSource.clothe:
         return PhotoContainer(msg: widget.msg);
       case MsgSource.video:
         return VideoContainer(msg: widget.msg);
       case MsgSource.audio:
         return AudioContainer(msg: widget.msg);
+      case MsgSource.gift:
+        return ToysContainer(msg: widget.msg);
 
       default:
         return Container();

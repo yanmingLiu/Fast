@@ -6,6 +6,7 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/rate_dialog.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/chat/gift_loading.dart';
 import 'package:fast_ai/pages/chat/level_dialog.dart';
 import 'package:fast_ai/pages/vip/recharge_dialog.dart';
 import 'package:flutter/material.dart';
@@ -340,18 +341,11 @@ class AppDialog {
   }
 
   static Future showGiftLoading() {
-    return SmartDialog.show(
-      clickMaskDismiss: false,
-      keepSingle: true,
-      tag: 'DialogTag.giftLoading.name',
-      builder: (BuildContext context) {
-        return Container();
-      },
-    );
+    return show(clickMaskDismiss: false, tag: '549816514tfhgerq', child: GiftLoading());
   }
 
   static Future hiddenGiftLoading() {
-    return SmartDialog.dismiss(tag: 'DialogTag.giftLoading.name');
+    return SmartDialog.dismiss(tag: '549816514tfhgerq');
   }
 
   static bool rateLevel3Shoed = false;

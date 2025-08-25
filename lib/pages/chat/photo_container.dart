@@ -36,6 +36,9 @@ class PhotoContainer extends StatelessWidget {
 
   Widget _buildImageWidget(BuildContext context) {
     var imageUrl = msg.imgUrl ?? '';
+    if (msg.source == MsgSource.clothe) {
+      imageUrl = msg.giftImg ?? '';
+    }
     var isLockImage = msg.mediaLock == LockLevel.private.value;
     var imageWidth = 200.0;
     var imageHeight = 240.0;

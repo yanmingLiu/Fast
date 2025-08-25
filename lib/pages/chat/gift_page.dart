@@ -1,6 +1,7 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_image.dart';
+import 'package:fast_ai/component/linked_tab_page_controller.dart';
 import 'package:fast_ai/data/clothing_data.dart';
 import 'package:fast_ai/data/toys_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
@@ -34,11 +35,14 @@ class _GiftPageState extends State<GiftPage> {
 
   bool showClothing = false;
 
-  final PageController _pageController = PageController();
+  final titles = [LocaleKeys.clothing.tr, LocaleKeys.toys.tr];
+  late LinkedTabPageController _linkedController;
 
   @override
   void initState() {
     super.initState();
+
+    _linkedController = LinkedTabPageController(items: titles);
 
     setup();
   }
@@ -85,29 +89,17 @@ class _GiftPageState extends State<GiftPage> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Row(
-              children: showClothing
-                  ? [
-                      _buildItem(title: LocaleKeys.clothing.tr, cate: MsgGiftViewCategroy.clothing),
-                      const SizedBox(width: 32),
-                      _buildItem(title: LocaleKeys.toys.tr, cate: MsgGiftViewCategroy.toys),
-                      const Spacer(),
-                      _buildSend(),
-                    ]
-                  : [
-                      _buildItem(title: LocaleKeys.toys.tr, cate: MsgGiftViewCategroy.toys),
-                      const Spacer(),
-                      _buildSend(),
-                    ],
-            ),
+            child: Column(children: [buildCategory()]),
           ),
           Expanded(
             child: SafeArea(
               top: false,
               child: showClothing
                   ? PageView(
-                      controller: _pageController,
+                      controller: _linkedController.pageController,
+                      pageSnapping: true,
                       onPageChanged: (index) {
+                        _linkedController.handlePageChanged(index);
                         setState(() {
                           selectedCate = index == 0
                               ? MsgGiftViewCategroy.clothing
@@ -124,6 +116,93 @@ class _GiftPageState extends State<GiftPage> {
     );
   }
 
+  Widget buildCategory() {
+    if (showClothing) {
+      return Container(
+        height: 48,
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: Color(0x1AFFFFFF),
+          border: BoxBorder.all(color: Color(0x33FFFFFF), width: 1),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Row(
+          spacing: 12,
+          children: [
+            Expanded(child: _buildItem(titles[0], 0)),
+            Expanded(child: _buildItem(titles[1], 1)),
+          ],
+        ),
+      );
+    }
+    return Row(
+      children: [
+        Text(
+          LocaleKeys.toys.tr,
+          style: GoogleFonts.montserrat(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildItem(String title, int index) {
+    return GestureDetector(
+      child: AnimatedBuilder(
+        animation: _linkedController,
+        builder: (_, _) {
+          return GestureDetector(
+            child: AnimatedBuilder(
+              animation: _linkedController,
+              builder: (_, _) {
+                final isActive = _linkedController.index == index;
+                return buildTabItem(
+                  key: _linkedController.getTabKey(index),
+                  title: title,
+                  isActive: isActive,
+                  onTap: () {
+                    _linkedController.select(index);
+                  },
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildTabItem({
+    Key? key,
+    required String title,
+    required bool isActive,
+    void Function()? onTap,
+  }) {
+    return FButton(
+      key: key,
+      borderRadius: BorderRadius.circular(16),
+      color: isActive ? Color(0xFF3F8DFD) : Colors.transparent,
+      highlightColor: Color(0x1A3F8DFD),
+      onTap: onTap,
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      constraints: BoxConstraints(minWidth: 50),
+      child: Center(
+        child: Text(
+          title,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.montserrat(
+            color: Colors.white,
+            fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildClothingList() {
     var list = clothings;
 
@@ -131,44 +210,51 @@ class _GiftPageState extends State<GiftPage> {
       return const SizedBox();
     }
 
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 4),
-          Text(
-            LocaleKeys.send_a_gift_and_get_a_picture.tr,
-            style: GoogleFonts.openSans(
-              color: Color(0xFFF04A4C),
-              fontSize: 10,
-              fontWeight: FontWeight.w400,
-            ),
+          Row(
+            children: [
+              Text(
+                LocaleKeys.send_a_gift_and_get_a_picture.tr,
+                style: GoogleFonts.openSans(
+                  color: Color(0xFFF04A4C),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Spacer(),
+              _buildSend(),
+            ],
           ),
-          GridView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 9,
-              crossAxisSpacing: 9,
-              childAspectRatio: 167.0 / 270.0,
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 9,
+                crossAxisSpacing: 9,
+                childAspectRatio: 167.0 / 270.0,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                var item = list[index];
+                return _buildListItem(
+                  isSelected: chooseClothing?.id == item.id,
+                  imgUrl: item.img,
+                  name: item.togsName,
+                  price: item.itemPrice,
+                  onTap: () {
+                    chooseClothing = item;
+                    setState(() {});
+                  },
+                );
+              },
+              itemCount: list.length,
             ),
-            itemBuilder: (BuildContext context, int index) {
-              var item = list[index];
-              return _buildListItem(
-                isSelected: chooseClothing?.id == item.id,
-                imgUrl: item.img,
-                name: item.togsName,
-                price: item.itemPrice,
-                onTap: () {
-                  chooseClothing = item;
-                  setState(() {});
-                },
-              );
-            },
-            itemCount: list.length,
           ),
         ],
       ),
@@ -182,28 +268,51 @@ class _GiftPageState extends State<GiftPage> {
       return const SizedBox();
     }
 
-    return GridView.builder(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 9,
-        crossAxisSpacing: 9,
-        childAspectRatio: 167.0 / 270.0,
+      child: Column(
+        spacing: 16,
+        children: [
+          Row(
+            children: [
+              Text(
+                LocaleKeys.send_a_gift_and_get_a_picture.tr,
+                style: GoogleFonts.openSans(
+                  color: Color(0xFFF04A4C),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Spacer(),
+              _buildSend(),
+            ],
+          ),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 9,
+                crossAxisSpacing: 9,
+                childAspectRatio: 167.0 / 270.0,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                var item = list[index];
+                return _buildListItem(
+                  isSelected: chooseToys?.id == item.id,
+                  imgUrl: item.img,
+                  name: item.tipName,
+                  price: item.itemPrice,
+                  onTap: () {
+                    chooseToys = item;
+                    setState(() {});
+                  },
+                );
+              },
+              itemCount: list.length,
+            ),
+          ),
+        ],
       ),
-      itemBuilder: (BuildContext context, int index) {
-        var item = list[index];
-        return _buildListItem(
-          isSelected: chooseToys?.id == item.id,
-          imgUrl: item.img,
-          name: item.tipName,
-          price: item.itemPrice,
-          onTap: () {
-            chooseToys = item;
-            setState(() {});
-          },
-        );
-      },
-      itemCount: list.length,
     );
   }
 
@@ -332,39 +441,39 @@ class _GiftPageState extends State<GiftPage> {
     );
   }
 
-  Widget _buildItem({required String title, required MsgGiftViewCategroy cate}) {
-    final isSelected = cate == selectedCate;
-    final index = MsgGiftViewCategroy.values.indexOf(cate);
-    return InkWell(
-      onTap: () {
-        selectedCate = cate;
-        _pageController.animateToPage(
-          index,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-        setState(() {});
-      },
-      child: Stack(
-        alignment: Alignment.bottomRight,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: isSelected ? Colors.black : Colors.white,
-                  fontSize: isSelected ? 16 : 14,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildItem({required String title, required MsgGiftViewCategroy cate}) {
+  //   final isSelected = cate == selectedCate;
+  //   final index = MsgGiftViewCategroy.values.indexOf(cate);
+  //   return InkWell(
+  //     onTap: () {
+  //       selectedCate = cate;
+  //       _pageController.animateToPage(
+  //         index,
+  //         duration: const Duration(milliseconds: 300),
+  //         curve: Curves.easeInOut,
+  //       );
+  //       setState(() {});
+  //     },
+  //     child: Stack(
+  //       alignment: Alignment.bottomRight,
+  //       children: [
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Text(
+  //               title,
+  //               style: TextStyle(
+  //                 color: isSelected ? Colors.black : Colors.white,
+  //                 fontSize: isSelected ? 16 : 14,
+  //                 fontWeight: FontWeight.w700,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
 
 class DiagonalClippedContainer extends StatelessWidget {

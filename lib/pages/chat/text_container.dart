@@ -41,6 +41,9 @@ class _TextContainerState extends State<TextContainer> {
     if (msg.source == MsgSource.sendText || sendText != null && (msg.onAnswer == false)) {
       showSend = true;
     }
+    if (msg.source == MsgSource.clothe) {
+      showSend = false;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
