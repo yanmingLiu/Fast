@@ -10,6 +10,7 @@ import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/services/network_service.dart';
 import 'package:fast_ai/services/switch_service.dart';
 import 'package:fast_ai/tools/audio_tool.dart';
+import 'package:fast_ai/tools/fb_sdk_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -71,12 +72,21 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     AppLogEvent().logSessionEvent();
 
     try {
+      _initializeAsyncServices();
+
       AppUser().getUserInfo();
       await SwitchService.request();
     } catch (e) {
       // 捕获超时异常或其他异常
       log.e('splash Setup error: $e');
     }
+  }
+
+  void _initializeAsyncServices() {
+    // 异步初始化Facebook SDK
+    FBSDKTool.initializeWithRemoteConfig().catchError((error) {
+      log.e('Facebook SDK初始化失败: $error');
+    });
   }
 
   @override

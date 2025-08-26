@@ -193,9 +193,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           children: [
             Obx(() {
               final isVip = AppUser().isVip.value;
-              if (isVip) {
-                return SizedBox();
-              }
+              // if (isVip) {
+              //   return SizedBox();
+              // }
               return FButton(
                 onTap: () {
                   AppRouter.pushVip(VipFrom.homevip);

@@ -76,7 +76,7 @@ class AppService {
     await Get.putAsync<NetworkService>(() => NetworkService().init());
 
     // await initAdjust();
-    // await initFirebase();
+    await initFirebase();
   }
 
   // Adjust 初始化

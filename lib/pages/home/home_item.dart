@@ -5,8 +5,8 @@ import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
-import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/services/app_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/export.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -181,38 +181,49 @@ class HomeItem extends StatelessWidget {
   }
 
   Widget _buildTags(List<String> result) {
+    // 限制最多显示3个标签
+    final displayTags = result.take(3).toList();
+
     return SizedBox(
       height: 16,
-      child: ListView.separated(
-        padding: EdgeInsets.all(0),
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          final text = result[index];
-          var textColor = Color(0xFF9CFC53);
-          if (text == kNSFW || text == kBDSM) {
-            textColor = Color(0xFFFF4ACF);
-          }
-          return Text(
-            text,
-            style: GoogleFonts.openSans(
-              color: textColor,
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                for (int i = 0; i < displayTags.length; i++) ...[
+                  Flexible(
+                    child: Text(
+                      displayTags[i],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.openSans(
+                        color: _getTagColor(displayTags[i]),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  if (i < displayTags.length - 1)
+                    Container(
+                      width: 1,
+                      height: 4,
+                      color: Color(0xffC9C9C9),
+                      margin: EdgeInsets.symmetric(horizontal: 4),
+                    ),
+                ],
+              ],
             ),
-          );
-        },
-        separatorBuilder: (_, _) {
-          return Center(
-            child: Container(
-              width: 1,
-              height: 4,
-              color: Color(0xffC9C9C9),
-              margin: EdgeInsets.symmetric(horizontal: 4),
-            ),
-          );
-        },
-        itemCount: result.length,
+          ),
+        ],
       ),
     );
+  }
+
+  Color _getTagColor(String text) {
+    if (text == kNSFW || text == kBDSM) {
+      return Color(0xFFFF4ACF);
+    }
+    return Color(0xFF9CFC53);
   }
 }

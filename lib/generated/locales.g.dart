@@ -186,6 +186,15 @@ class LocaleKeys {
   static const collect = 'collect';
   static const every_day = 'every_day';
   static const got_to_pro = 'got_to_pro';
+  static const text_message_cost = 'text_message_cost';
+  static const text_message_call_cost = 'text_message_call_cost';
+  static const open_chats_unlock = 'open_chats_unlock';
+  static const buy_gems_open_chats = 'buy_gems_open_chats';
+  static const one_time_purchase_note = 'one_time_purchase_note';
+  static const buy = 'buy';
+  static const subscription_auto_renew = 'subscription_auto_renew';
+  static const save_num = 'save_num';
+  static const best_choice = 'best_choice';
 }
 
 class Locales {
@@ -387,5 +396,19 @@ class Locales {
     'collect': 'Collect',
     'every_day': '/day',
     'got_to_pro': 'Go to Pro',
+    'text_message_cost':
+        '1 text message: 2 gems\n1 audio message: 4 gems\nCall AI characters: 10 gems/min\nGenerate image: 8 gems/image\nGenerate video: 10 gems/video',
+    'text_message_call_cost':
+        '1 text message: 2 gems\nCall AI characters: 10 gems/min',
+    'open_chats_unlock':
+        'Open chats and Unlock Hot photo, Porn Video, Moans, Generate Images & Videos, Call Girls!',
+    'buy_gems_open_chats': 'Buy Gems to open chats.',
+    'one_time_purchase_note':
+        'Please note that a one-time purchase will result in a one-time charge of @price to you.',
+    'buy': 'Buy',
+    'subscription_auto_renew':
+        'Subscriptions auto-renew until canceled, as described in the Terms. Cancel anytime, Cancel at least 24 hours prior to renewal to avoid additional charges. Please note that you cannot get any refund even if the subscription period is not expired.',
+    'save_num': 'Save @num%',
+    'best_choice': 'Best choice',
   };
 }

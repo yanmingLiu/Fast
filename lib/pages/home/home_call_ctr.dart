@@ -126,6 +126,7 @@ class HomeCallCtr extends GetxController {
     }
 
     if (Get.find<HomeCtr>().categroy.value != HomeListCategroy.all) {
+      log.d('-------->canCall: false categroy is not all');
       return false;
     }
 
@@ -138,6 +139,7 @@ class HomeCallCtr extends GetxController {
       return false;
     }
     if (AppDialog.checkExist('DialogTag.sigin.name')) {
+      log.d('-------->canCall: false  DialogTag.sigin.name');
       return false;
     }
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch;

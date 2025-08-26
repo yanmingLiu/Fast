@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1020672549617",
+    "project_id": "fast-52726",
+    "storage_bucket": "fast-52726.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020672549617:android:bb532657c5a733e7cf3f50",
+        "android_client_info": {
+          "package_name": "com.example.fast_ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9xy_n6u4IBxqmcYNEzKGzDnnNr7ojIDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

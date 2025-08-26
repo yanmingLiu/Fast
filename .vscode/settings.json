@@ -45,4 +45,5 @@
             "path": "/bin/zsh"
         }
     },
+    "java.configuration.updateBuildConfiguration": "interactive",
 }

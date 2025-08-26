@@ -37,8 +37,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/gem3s.png
   AssetGenImage get gem3s => const AssetGenImage('assets/images/gem3s.png');
 
+  /// File path: assets/images/gemls.png
+  AssetGenImage get gemls => const AssetGenImage('assets/images/gemls.png');
+
   /// File path: assets/images/gems.png
   AssetGenImage get gems => const AssetGenImage('assets/images/gems.png');
+
+  /// File path: assets/images/gems_bg.png
+  AssetGenImage get gemsBg => const AssetGenImage('assets/images/gems_bg.png');
 
   /// File path: assets/images/gems_succ.png
   AssetGenImage get gemsSucc =>
@@ -201,7 +207,9 @@ class $AssetsImagesGen {
         editm,
         female,
         gem3s,
+        gemls,
         gems,
+        gemsBg,
         gemsSucc,
         hangup,
         imagePlace,
@@ -300,6 +308,9 @@ class $AssetsSvgGen {
   /// File path: assets/svg/like.svg
   String get like => 'assets/svg/like.svg';
 
+  /// File path: assets/svg/questing.svg
+  String get questing => 'assets/svg/questing.svg';
+
   /// File path: assets/svg/report.svg
   String get report => 'assets/svg/report.svg';
 
@@ -333,6 +344,7 @@ class $AssetsSvgGen {
         close,
         filter,
         like,
+        questing,
         report,
         search,
         send,

@@ -2,7 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
-class FImage extends StatefulWidget {
+class FImage extends StatelessWidget {
   const FImage({
     super.key,
     this.url,
@@ -23,73 +23,41 @@ class FImage extends StatefulWidget {
   final Color? color;
 
   @override
-  State<FImage> createState() => _FImageState();
-}
-
-class _FImageState extends State<FImage> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _opacityAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    // 初始化动画控制器，持续时间300ms
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-
-    // 透明度从0到1的动画
-    _opacityAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final placeholder = Container(
-      width: widget.width,
-      height: widget.height,
+      width: width,
+      height: height,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
-        borderRadius: widget.borderRadius,
-        border: widget.border,
+        borderRadius: borderRadius,
+        border: border,
       ),
       child: Assets.images.imagePlace.image(width: 24),
     );
 
-    if (widget.url == null || widget.url!.isEmpty) {
+    if (url == null || url!.isEmpty) {
       return placeholder;
     }
 
     return ExtendedImage.network(
-      widget.url!,
-      width: widget.width,
-      height: widget.height,
+      url!,
+      width: width,
+      height: height,
       fit: BoxFit.cover,
-      borderRadius: widget.borderRadius,
-      shape: widget.shape ?? BoxShape.rectangle,
-      border: widget.border,
-      color: widget.color,
+      borderRadius: borderRadius,
+      shape: shape ?? BoxShape.rectangle,
+      border: border,
+      color: color,
+      cache: true, // 启用缓存
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
           case LoadState.failed:
-            return Center(child: placeholder);
-
+            return placeholder;
           case LoadState.completed:
-            // 图片加载完成后启动淡入动画
-            _animationController.forward();
-            // 使用FadeTransition包裹图片实现透明度过渡
-            return FadeTransition(opacity: _opacityAnimation, child: state.completedWidget);
+            // 直接返回加载完成的图片，移除动画减少性能开销
+            return state.completedWidget;
         }
       },
     );

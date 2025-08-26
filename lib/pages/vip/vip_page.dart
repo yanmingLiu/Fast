@@ -7,6 +7,7 @@ import 'package:fast_ai/component/rich_text_placeholder.dart';
 import 'package:fast_ai/data/sku_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/vip/privacy_view.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
@@ -367,7 +368,9 @@ class _VipPageState extends State<VipPage> {
                   ),
                   _buildSKU(),
                   SizedBox(height: 8),
-                  // const VipPrivacy(),
+                  PrivacyView(
+                    type: AppCache().isBig ? PolicyBottomType.vip2 : PolicyBottomType.vip1,
+                  ),
                   const SizedBox(height: 12),
                 ],
               ),
