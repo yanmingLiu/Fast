@@ -152,10 +152,7 @@ class AppRouter {
   static Future<bool> checkPermissions() async {
     // 初始化 SpeechToText 以检查语音识别权限
     SpeechToText speechToText = SpeechToText();
-    bool available = await speechToText.initialize(
-      onStatus: (status) => log.d('onStatus: $status'),
-      onError: (error) => log.e('onError: $error'),
-    );
+    bool available = await speechToText.initialize();
 
     log.d('语音识别是否可用: $available');
 
@@ -180,34 +177,11 @@ class AppRouter {
     );
   }
 
-  /// 从首页导航到电话引导页面
-  ///
-  /// [role] 角色信息
-  ///
-  /// 注意：此方法目前返回null，可能需要完善实现
-  static Future<T?>? pushPhoneGuideFromHome<T>({required Role role}) async {
-    final roleId = role.id;
-    if (roleId == null) {
-      FToast.toast('roleId is null');
-      return null;
-    }
-    return null;
-  }
-
   /// 导航到电话引导页面
   ///
   /// [role] 角色信息
   static Future<T?>? pushPhoneGuide<T>({required Role role}) {
     return Get.toNamed(Routers.phoneGuide, arguments: {'role': role});
-  }
-
-  /// 导航到创建页面
-  ///
-  /// [role] 角色信息
-  /// [type] 创建类型
-  static Future<T?>? pushCreate<T>({required Role role, required CreateType type}) {
-    // 注意：Routers.genPage 常量似乎未在 Routers 类中定义，应该添加该常量
-    return Get.toNamed('genPage', arguments: {'role': role, 'type': type});
   }
 
   /// 导航到图片预览页面

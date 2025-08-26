@@ -172,6 +172,20 @@ class LocaleKeys {
   static const create = 'create';
   static const edit_choose_mask = 'edit_choose_mask';
   static const restart = 'restart';
+  static const listening = 'listening';
+  static const waiting_response = 'waiting_response';
+  static const microphone_permission_required =
+      'microphone_permission_required';
+  static const not_enough_coins = 'not_enough_coins';
+  static const speech_recognition_not_supported =
+      'speech_recognition_not_supported';
+  static const activate_benefits = 'activate_benefits';
+  static const get_ai_interactive_video_chat = 'get_ai_interactive_video_chat';
+  static const invites_you_to_video_call = 'invites_you_to_video_call';
+  static const daily_reward = 'daily_reward';
+  static const collect = 'collect';
+  static const every_day = 'every_day';
+  static const got_to_pro = 'got_to_pro';
 }
 
 class Locales {
@@ -358,5 +372,20 @@ class Locales {
     'edit_choose_mask':
         'This chat already has a mask loaded.You can restart a chat to use another mask.After restarting, the history will lose.',
     'restart': 'Restart',
+    'listening': 'Listening...',
+    'waiting_response': 'Waiting response…',
+    'microphone_permission_required':
+        'Microphone permission is required to make a call.',
+    'not_enough_coins': 'Not enough Coins, call ended.',
+    'speech_recognition_not_supported':
+        'Speech recognition not supported on this device.',
+    'activate_benefits': 'Activate Benefits',
+    'get_ai_interactive_video_chat':
+        'Get an AI interactive video chat experience',
+    'invites_you_to_video_call': 'Invites you to video call…',
+    'daily_reward': 'Daily reward',
+    'collect': 'Collect',
+    'every_day': '/day',
+    'got_to_pro': 'Go to Pro',
   };
 }

@@ -7,8 +7,8 @@ import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/home/home_list_view.dart';
-import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -190,17 +190,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       leading: Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Row(
-          spacing: 8,
           children: [
-            FButton(
-              onTap: () {
-                AppRouter.pushVip(VipFrom.homevip);
-              },
-              width: 44,
-              height: 44,
-              borderRadius: BorderRadius.all(Radius.circular(22)),
-              child: Center(child: Assets.images.member.image(width: 24)),
-            ),
+            Obx(() {
+              final isVip = AppUser().isVip.value;
+              if (isVip) {
+                return SizedBox();
+              }
+              return FButton(
+                onTap: () {
+                  AppRouter.pushVip(VipFrom.homevip);
+                },
+                width: 44,
+                height: 44,
+                margin: EdgeInsetsDirectional.only(end: 8),
+                borderRadius: BorderRadius.all(Radius.circular(22)),
+                child: Center(child: Assets.images.member.image(width: 24)),
+              );
+            }),
             FButton(
               height: 44,
               borderRadius: BorderRadius.circular(22),

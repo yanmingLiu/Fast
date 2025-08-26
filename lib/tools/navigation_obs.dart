@@ -1,6 +1,10 @@
 import 'dart:collection';
 
+import 'package:fast_ai/pages/chat/chat_ctr.dart';
+import 'package:fast_ai/pages/chat/liked_ctr.dart';
+import 'package:fast_ai/pages/router/routers.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/router_report.dart';
 
 ///自定义这个关键类！！！！！！
@@ -8,11 +12,13 @@ class GetXRouterObserver extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     RouterReportManager.reportCurrentRoute(route);
+    NavigationObs().push(route, previousRoute);
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) async {
     RouterReportManager.reportRouteDispose(route);
+    NavigationObs().pop(route, previousRoute);
   }
 }
 
@@ -38,16 +44,24 @@ class NavigationObs {
   void push(Route<dynamic> route, Route<dynamic>? previousRoute) {
     log('Route pushed: ${route.settings.name}');
     routeQueue.add(route);
+    curRoute = route; // Update current route
   }
 
   /// 从队列中移除路由
   void pop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     log('Route popped: ${route.settings.name}');
     routeQueue.remove(route);
-    // if (route.settings.name == Routers.msg) {
-    //   Get.find<SessionCtr>().onRefresh();
-    //   Get.find<FollowCtr>().onRefresh();
-    // }
+    // Update current route to the last route in queue, or null if empty
+    curRoute = routeQueue.isNotEmpty ? routeQueue.last : null;
+
+    if (route.settings.name == Routers.msg) {
+      if (Get.isRegistered<ChatCtr>()) {
+        Get.find<ChatCtr>().onRefresh();
+      }
+      if (Get.isRegistered<LikedCtr>()) {
+        Get.find<LikedCtr>().onRefresh();
+      }
+    }
   }
 
   /// 检查队列中是否包含某个页面
@@ -62,6 +76,6 @@ class NavigationObs {
 
   void log(String message) {
     // 可以替换为自己的日志工具
-    print(message);
+    debugPrint('[NavObs] message: $message');
   }
 }

@@ -3,6 +3,8 @@ import 'package:fast_ai/component/video_preview.dart';
 import 'package:fast_ai/pages/chat/mask_edit_page.dart';
 import 'package:fast_ai/pages/chat/mask_page.dart';
 import 'package:fast_ai/pages/chat/msg_page.dart';
+import 'package:fast_ai/pages/chat/phone_guide_page.dart';
+import 'package:fast_ai/pages/chat/phone_page.dart';
 import 'package:fast_ai/pages/chat/role_center_page.dart';
 import 'package:fast_ai/pages/home/home_fillter_page.dart';
 import 'package:fast_ai/pages/home/search_page.dart';
@@ -48,6 +50,8 @@ class Routers {
     GetPage(name: profile, page: () => const RoleCenterPage()),
     GetPage(name: mask, page: () => MaskPage()),
     GetPage(name: maskEdit, page: () => MaskEditPage()),
+    GetPage(name: phone, page: () => const PhonePage()),
+    GetPage(name: phoneGuide, page: () => const PhoneGuidePage()),
 
     // 特殊过渡效果路由
     GetPage(
@@ -60,8 +64,6 @@ class Routers {
     GetPage(name: homeFilter, page: () => const HomeFiltterPage(), transition: Transition.downToUp),
 
     // 已注释路由（暂未启用）
-    // GetPage(name: phone, page: () => const PhonePage()),
-    // GetPage(name: phoneGuide, page: () => const PhoneGuidePage()),
     // GetPage(name: genPage, page: () => const GenPage()),
     // GetPage(name: undr, page: () => UndrPage(), fullscreenDialog: true, transition: Transition.downToUp),
     // GetPage(name: undrSku, page: () => UndrSkuList(), fullscreenDialog: true, transition: Transition.downToUp),

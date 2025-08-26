@@ -147,8 +147,6 @@ enum CallState { calling, incoming, listening, answering, answered, micOff }
 
 enum FollowEvent { follow, unfollow }
 
-enum DialogTag { sigin, gift, giftLoading }
-
 enum Gender {
   male(0),
   female(1),

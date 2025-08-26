@@ -7,6 +7,7 @@ import 'package:fast_ai/data/base_data.dart';
 import 'package:fast_ai/data/clothing_data.dart';
 import 'package:fast_ai/data/level_config.dart';
 import 'package:fast_ai/data/mask_data.dart';
+import 'package:fast_ai/data/msg_answer_data.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/data/order_data.dart';
 import 'package:fast_ai/data/price_config.dart';
@@ -41,7 +42,7 @@ class ApiPath {
   // 根据角色 id 查询角色
   static const String getRoleById = '/v2/characterProfile/getById';
   // 用户减钻石
-  static const String minusGems = '/v2/appUserDetails/minusGems';
+  static const String minusGems = '/v2/appUser/minusGems';
   // 通过角色随机查一条查询
   static const String genRandomOne = '/v2/characterMedia/getByRole/randomOne';
   // 支持 auto-mask 支持角色生成
@@ -747,7 +748,7 @@ class Api {
     }
   }
 
-  static Future<MsgData?> sendVoiceChatMsg({
+  static Future<MsgAnswerData?> sendVoiceChatMsg({
     required String roleId,
     required String userId,
     required String nickName,
@@ -767,7 +768,7 @@ class Api {
         queryParameters: _qp,
       );
       if (res.isOk) {
-        return MsgData.fromJson(res.body);
+        return MsgAnswerData.fromJson(res.body);
       } else {
         return null;
       }

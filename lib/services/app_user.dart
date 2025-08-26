@@ -18,6 +18,8 @@ class AppUser {
 
   AppUser._internal();
 
+  bool _isLoading = false;
+
   final balance = 0.obs;
   final isVip = false.obs;
   final unreadCount = 0.obs;
@@ -54,6 +56,10 @@ class AppUser {
   }
 
   Future<void> getUserInfo() async {
+    if (_isLoading) {
+      return;
+    }
+    _isLoading = true;
     try {
       final cacheUser = AppCache().user;
       if (cacheUser == null) {
@@ -66,6 +72,7 @@ class AppUser {
     } catch (e) {
       log.e('getUserInfo error: $e');
     }
+    _isLoading = false;
   }
 
   Future updateUser(String nickname) async {

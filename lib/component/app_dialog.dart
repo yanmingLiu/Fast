@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
+import 'package:fast_ai/component/f_login_reward_dialog.dart';
 import 'package:fast_ai/component/rate_dialog.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
@@ -14,15 +15,29 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+const String loginRewardTag = '325dfa161253f036fg';
+const String giftLoadingTag = '549816514tfhgerq';
+const String rateUsTag = 'afasdf524151';
+const String rechargeSuccTag = 'gas154hgjet61wes';
+const String chatLevelUpTag = 'hfkjetrthw454651';
+
 class AppDialog {
   static Future<void> dismiss({String? tag}) {
     return SmartDialog.dismiss(status: SmartStatus.dialog, tag: tag);
   }
 
-  static Future<void> show({required Widget child, bool? clickMaskDismiss = true, String? tag}) {
-    return SmartDialog.show(
+  static Future<void> show({
+    required Widget child,
+    bool? clickMaskDismiss = true,
+    String? tag,
+    bool? showCloseButton = true,
+  }) async {
+    final completer = Completer<void>();
+
+    SmartDialog.show(
       clickMaskDismiss: clickMaskDismiss,
       keepSingle: true,
+      debounce: true,
       tag: tag,
       maskWidget: ClipPath(
         child: BackdropFilter(
@@ -31,17 +46,26 @@ class AppDialog {
         ),
       ),
       builder: (context) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          spacing: 20,
-          children: [
-            child,
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [_buildCloseButton()]),
-          ],
-        );
+        if (showCloseButton == true) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            spacing: 20,
+            children: [
+              child,
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [_buildCloseButton()]),
+            ],
+          );
+        } else {
+          return child;
+        }
+      },
+      onDismiss: () {
+        completer.complete();
       },
     );
+
+    await completer.future;
   }
 
   static Future<void> alert({
@@ -295,57 +319,76 @@ class AppDialog {
   }
 
   static Future<void> _showLevelUpToast(int rewards) async {
-    // final toastMessage = LocaleKeys.level_up_toast.trParams({'rewards': rewards.toString()});
-    // final completer = Completer<void>();
+    final completer = Completer<void>();
 
-    // await SmartDialog.showToast(
-    //   toastMessage,
-    //   debounce: true,
-    //   onDismiss: () async {
-    //     await _showLevelUpDialog(rewards);
-    //     completer.complete();
-    //   },
-    // );
-    // await completer.future;
+    SmartDialog.show(
+      displayTime: Duration(milliseconds: 1500),
+      maskColor: Colors.transparent,
+      clickMaskDismiss: false,
+      onDismiss: () => completer.complete(),
+      builder: (context) {
+        return Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xCC1C1C1C),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 8,
+                  children: [
+                    Assets.images.gems.image(width: 24),
+                    Text(
+                      '+ $rewards',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    await completer.future;
+
+    await _showLevelUpDialog(rewards);
   }
 
   static Future<void> _showLevelUpDialog(int rewards) async {
-    // final completer = Completer<void>();
-    // await SmartDialog.show(
-    //   tag: 'chat_level_dialog',
-    //   clickMaskDismiss: false,
-    //   keepSingle: true,
-    //   maskColor: Colors.black.withOpacity(0.8),
-    //   builder: (BuildContext context) => ChatLevelUpDialog(rewards: rewards),
-    //   onDismiss: () async {
-    //     await AccountUtil().getUserInfo();
-    //     completer.complete();
-    //   },
-    // );
-    // await completer.future;
+    await SmartDialog.show(
+      tag: chatLevelUpTag,
+      clickMaskDismiss: false,
+      maskColor: Colors.transparent,
+      keepSingle: true,
+      builder: (context) {
+        return ChatLevelUpDialog(rewards: rewards);
+      },
+    );
   }
 
   static Future showLoginReward() async {
-    // if (SmartDialog.checkExist(tag: DialogTag.sigin.name)) {
-    //   return;
-    // }
-    // return SmartDialog.show(
-    //   tag: DialogTag.sigin.name,
-    //   clickMaskDismiss: false,
-    //   keepSingle: true,
-    //   maskColor: Colors.black.withOpacity(0.7),
-    //   builder: (BuildContext context) {
-    //     return const SignInView();
-    //   },
-    // );
+    if (checkExist(loginRewardTag)) {
+      return;
+    }
+    return show(tag: loginRewardTag, clickMaskDismiss: false, child: FLoginRewardDialog());
   }
 
   static Future showGiftLoading() {
-    return show(clickMaskDismiss: false, tag: '549816514tfhgerq', child: GiftLoading());
+    return show(clickMaskDismiss: false, tag: giftLoadingTag, child: GiftLoading());
   }
 
   static Future hiddenGiftLoading() {
-    return SmartDialog.dismiss(tag: '549816514tfhgerq');
+    return SmartDialog.dismiss(tag: giftLoadingTag);
   }
 
   static bool rateLevel3Shoed = false;
@@ -356,7 +399,7 @@ class AppDialog {
     AppDialog.show(
       clickMaskDismiss: false,
       child: RateDialog(msg: msg),
-      tag: 'afasdf524151',
+      tag: rateUsTag,
     );
   }
 
@@ -368,7 +411,7 @@ class AppDialog {
     return AppDialog.show(
       child: RechargeDialog(number: number),
       clickMaskDismiss: false,
-      tag: 'recharge_success',
+      tag: rechargeSuccTag,
     );
   }
 }

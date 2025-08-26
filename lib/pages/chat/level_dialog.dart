@@ -144,7 +144,7 @@ class _ChatLevelUpDialogState extends State<ChatLevelUpDialog> with SingleTicker
   Widget build(BuildContext context) {
     return Center(
       child: Lottie.asset(
-        'assets/lottie/level_up.json',
+        'assets/lottie/caht_level_up.json',
         controller: _controller,
         onLoaded: (composition) {
           // 设置动画时长

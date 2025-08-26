@@ -12,6 +12,9 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/accept.png
+  AssetGenImage get accept => const AssetGenImage('assets/images/accept.png');
+
   /// File path: assets/images/add.png
   AssetGenImage get add => const AssetGenImage('assets/images/add.png');
 
@@ -31,12 +34,18 @@ class $AssetsImagesGen {
   /// File path: assets/images/female.png
   AssetGenImage get female => const AssetGenImage('assets/images/female.png');
 
+  /// File path: assets/images/gem3s.png
+  AssetGenImage get gem3s => const AssetGenImage('assets/images/gem3s.png');
+
   /// File path: assets/images/gems.png
   AssetGenImage get gems => const AssetGenImage('assets/images/gems.png');
 
   /// File path: assets/images/gems_succ.png
   AssetGenImage get gemsSucc =>
       const AssetGenImage('assets/images/gems_succ.png');
+
+  /// File path: assets/images/hangup.png
+  AssetGenImage get hangup => const AssetGenImage('assets/images/hangup.png');
 
   /// File path: assets/images/image_place.png
   AssetGenImage get imagePlace =>
@@ -77,6 +86,15 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/member.png
   AssetGenImage get member => const AssetGenImage('assets/images/member.png');
+
+  /// File path: assets/images/micing.png
+  AssetGenImage get micing => const AssetGenImage('assets/images/micing.png');
+
+  /// File path: assets/images/micoff.png
+  AssetGenImage get micoff => const AssetGenImage('assets/images/micoff.png');
+
+  /// File path: assets/images/micon.png
+  AssetGenImage get micon => const AssetGenImage('assets/images/micon.png');
 
   /// File path: assets/images/model.png
   AssetGenImage get model => const AssetGenImage('assets/images/model.png');
@@ -175,14 +193,17 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        accept,
         add,
         audioPause,
         banan,
         edit,
         editm,
         female,
+        gem3s,
         gems,
         gemsSucc,
+        hangup,
         imagePlace,
         launchLogo,
         levelBg,
@@ -194,6 +215,9 @@ class $AssetsImagesGen {
         meVipIcon,
         meVipPerson,
         member,
+        micing,
+        micoff,
+        micon,
         model,
         msgAuto,
         msgClo,
@@ -239,6 +263,9 @@ class $AssetsLottieGen {
   /// File path: assets/lottie/audio.json
   String get audio => 'assets/lottie/audio.json';
 
+  /// File path: assets/lottie/caht_level_up.json
+  String get cahtLevelUp => 'assets/lottie/caht_level_up.json';
+
   /// File path: assets/lottie/hourglass.json
   String get hourglass => 'assets/lottie/hourglass.json';
 
@@ -246,7 +273,7 @@ class $AssetsLottieGen {
   String get levelUp => 'assets/lottie/level_up.json';
 
   /// List of all assets
-  List<String> get values => [audio, hourglass, levelUp];
+  List<String> get values => [audio, cahtLevelUp, hourglass, levelUp];
 }
 
 class $AssetsSvgGen {

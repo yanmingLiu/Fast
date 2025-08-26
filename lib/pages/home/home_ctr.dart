@@ -168,6 +168,7 @@ class HomeCtr extends GetxController {
   }
 
   Future<bool> shouldShowDailyReward() async {
+    return true;
     final installTimeMillis = AppCache().lastRewardDate;
     if (installTimeMillis <= 0) {
       // 记录安装时间

@@ -159,5 +159,17 @@
     "wait_30_seconds": "It may take up to 30 seconds.\nPlease do not close or leave the app",
     "create": "Create",
     "edit_choose_mask": "This chat already has a mask loaded.You can restart a chat to use another mask.After restarting, the history will lose.",
-    "restart": "Restart"
+    "restart": "Restart",
+    "listening": "Listening...",
+    "waiting_response": "Waiting response…",
+    "microphone_permission_required": "Microphone permission is required to make a call.",
+    "not_enough_coins": "Not enough Coins, call ended.",
+    "speech_recognition_not_supported": "Speech recognition not supported on this device.",
+    "activate_benefits": "Activate Benefits",
+    "get_ai_interactive_video_chat": "Get an AI interactive video chat experience",
+    "invites_you_to_video_call": "Invites you to video call…",
+    "daily_reward": "Daily reward",
+    "collect": "Collect",
+    "every_day": "/day",
+    "got_to_pro": "Go to Pro"
 }
