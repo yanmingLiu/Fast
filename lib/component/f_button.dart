@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+// 性能优化：预定义常量，避免重复创建对象
+const _shadowColor = Color(0x4D77AFFF);
+const _shadowOffset = Offset(0, 4);
+const _shadowBlurRadius = 4.0;
+const _shadowSpreadRadius = 0.0;
+
 class FButton extends StatelessWidget {
   const FButton({
     super.key,
@@ -35,41 +41,46 @@ class FButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BorderRadius br = borderRadius ?? BorderRadius.circular(height ?? 0 / 2);
+    final br = borderRadius ?? BorderRadius.circular((height ?? 48.0) / 2);
 
-    return Material(
-      color: Colors.transparent,
-      child: Padding(
-        padding: margin ?? EdgeInsets.zero,
-        child: InkWell(
-          onTap: onTap,
-          focusColor: focusColor ?? color.withValues(alpha: 0.5),
-          hoverColor: hoverColor ?? color.withValues(alpha: 0.5),
-          highlightColor: highlightColor ?? color.withValues(alpha: 0.5),
-          borderRadius: br,
-          child: Container(
-            height: height,
-            width: width,
-            constraints: constraints,
-            padding: padding,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: br, // 添加阴影
-              boxShadow: hasShadow
-                  ? [
-                      BoxShadow(
-                        color: const Color(0xff4d77afff), // 阴影颜色（#4d77afff转ARGB）
-                        offset: const Offset(0, 4), // 水平偏移0，垂直偏移4
-                        blurRadius: 4, // 模糊半径4
-                        spreadRadius: 0, // 扩散半径0
-                      ),
-                    ]
-                  : null,
+    // 预计算颜色，避免在InkWell中重复计算
+    final interactionColor = color.withValues(alpha: 0.5);
+
+    // 预定义阴影效果，避免每次build时创建
+    final boxShadow = hasShadow
+        ? [
+            const BoxShadow(
+              color: _shadowColor,
+              offset: _shadowOffset,
+              blurRadius: _shadowBlurRadius,
+              spreadRadius: _shadowSpreadRadius,
             ),
-            child: child ?? const SizedBox.shrink(),
-          ),
-        ),
-      ),
+          ]
+        : null;
+
+    Widget buttonChild = Container(
+      height: height,
+      width: width,
+      constraints: constraints,
+      padding: padding,
+      decoration: BoxDecoration(color: color, borderRadius: br, boxShadow: boxShadow),
+      child: child ?? const SizedBox.shrink(),
     );
+
+    // 如果没有点击事件，直接返回容器，避免InkWell开销
+    if (onTap == null) {
+      return margin != null ? Padding(padding: margin!, child: buttonChild) : buttonChild;
+    }
+
+    buttonChild = InkWell(
+      onTap: onTap,
+      focusColor: focusColor ?? interactionColor,
+      hoverColor: hoverColor ?? interactionColor,
+      highlightColor: highlightColor ?? interactionColor,
+      borderRadius: br,
+      child: buttonChild,
+    );
+
+    return margin != null ? Padding(padding: margin!, child: buttonChild) : buttonChild;
   }
 }

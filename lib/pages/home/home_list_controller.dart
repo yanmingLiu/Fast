@@ -27,7 +27,7 @@ class HomeListController {
   bool? genImg;
   bool? changeClothing;
   int page = 1;
-  int size = 10;
+  int size = 50;
   var list = <Role>[].obs;
 
   Rx<EmptyType?> type = Rx<EmptyType?>(null);

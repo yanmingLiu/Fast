@@ -56,8 +56,7 @@ class FImage extends StatelessWidget {
           case LoadState.failed:
             return placeholder;
           case LoadState.completed:
-            // 直接返回加载完成的图片，移除动画减少性能开销
-            return state.completedWidget;
+            return null;
         }
       },
     );

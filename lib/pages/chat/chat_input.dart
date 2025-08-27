@@ -10,11 +10,12 @@ import 'package:fast_ai/pages/chat/gift_page.dart';
 import 'package:fast_ai/pages/chat/mode_sheet.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/msg_edit_page.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/tools/ext.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -177,7 +178,7 @@ class _ChatInputState extends State<ChatInput> {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(
-                        color: Color(0xCC1C1C1C),
+                        color: Colors.black.withValues(alpha: 0.8),
                         child: Row(
                           children: [
                             SizedBox(width: 12),
@@ -193,7 +194,7 @@ class _ChatInputState extends State<ChatInput> {
                               child: Center(
                                 child: FIcon(
                                   assetName: Assets.svg.send,
-                                  color: isSend ? Color(0xFF3F8DFD) : Color(0x803F8DFD),
+                                  color: isSend ? AppColors.primary : AppColors.primaryMedium,
                                 ),
                               ),
                             ),
@@ -336,7 +337,7 @@ class MsgInputButtons extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.openSans(
                                     fontSize: 11,
-                                    color: Color(0xFF3F8DFD),
+                                    color: AppColors.primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

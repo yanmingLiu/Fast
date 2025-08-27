@@ -9,6 +9,7 @@ import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/home/home_list_view.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -106,7 +107,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 () => FIcon(
                   assetName: Assets.svg.filter,
                   width: 24,
-                  color: ctr.selectTags.isEmpty ? Colors.white : const Color(0xFF3F8DFD),
+                  color: ctr.selectTags.isEmpty ? Colors.white : AppColors.primary,
                 ),
               ),
             ),
@@ -116,8 +117,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               height: 44,
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Color(0x1AFFFFFF),
-                border: BoxBorder.all(color: Color(0x33FFFFFF), width: 1),
+                color: AppColors.white10,
+                border: BoxBorder.all(color: AppColors.white20, width: 1),
                 borderRadius: BorderRadius.circular(22),
               ),
               child: Obx(() {
@@ -165,7 +166,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return FButton(
       key: key,
       borderRadius: BorderRadius.circular(16),
-      color: isActive ? Color(0xFF3F8DFD) : Colors.transparent,
+      color: isActive ? AppColors.primary : Colors.transparent,
       onTap: onTap,
       padding: EdgeInsets.symmetric(horizontal: 8),
       constraints: BoxConstraints(minWidth: 50),

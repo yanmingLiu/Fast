@@ -1,5 +1,6 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +24,10 @@ class MeChatBg extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(24),
       margin: EdgeInsets.symmetric(horizontal: 24),
-      decoration: BoxDecoration(color: Color(0xFF333333), borderRadius: BorderRadius.circular(32)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF333333),
+        borderRadius: BorderRadius.circular(32),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -61,7 +65,7 @@ class MeChatBg extends StatelessWidget {
       onTap: onTap,
       height: 48,
       borderRadius: BorderRadius.circular(24),
-      color: Color(0xFF3F8DFD),
+      color: AppColors.primary,
       child: Center(
         child: Text(
           title,

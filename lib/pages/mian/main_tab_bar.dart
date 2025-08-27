@@ -5,6 +5,7 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/mian/main_page.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -131,7 +132,7 @@ class MainTabBar extends StatelessWidget {
             height: itemHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(itemRadius),
-              color: Color(0x33FFFFFF),
+              color: AppColors.white20,
             ),
             child: Center(
               child: AnimatedContainer(

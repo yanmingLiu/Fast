@@ -6,6 +6,7 @@ import 'package:fast_ai/pages/chat/chat_ctr.dart';
 import 'package:fast_ai/pages/chat/chat_list_view.dart';
 import 'package:fast_ai/pages/chat/liked_ctr.dart';
 import 'package:fast_ai/pages/chat/liked_list_view.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -72,8 +73,8 @@ class _ChatPageState extends State<ChatPage> {
         height: 48,
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: Color(0x1AFFFFFF),
-          border: BoxBorder.all(color: Color(0x33FFFFFF), width: 1),
+          color: AppColors.white10,
+          border: BoxBorder.all(color: AppColors.white20, width: 1),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
@@ -122,8 +123,8 @@ class _ChatPageState extends State<ChatPage> {
     return FButton(
       key: key,
       borderRadius: BorderRadius.circular(16),
-      color: isActive ? Color(0xFF3F8DFD) : Colors.transparent,
-      highlightColor: Color(0x1A3F8DFD),
+      color: isActive ? AppColors.primary : Colors.transparent,
+      highlightColor: AppColors.primaryLight,
       onTap: onTap,
       padding: EdgeInsets.symmetric(horizontal: 8),
       constraints: BoxConstraints(minWidth: 50),

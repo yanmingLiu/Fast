@@ -6,6 +6,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/values/app_colors.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
@@ -29,7 +30,10 @@ class FLoginRewardDialog extends StatelessWidget {
     var isVip = AppUser().isVip.value;
 
     return Container(
-      decoration: BoxDecoration(color: Color(0xFF333333), borderRadius: BorderRadius.circular(32)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF333333),
+        borderRadius: BorderRadius.circular(32),
+      ),
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       margin: EdgeInsets.symmetric(horizontal: 24),
       child: Column(
@@ -67,7 +71,7 @@ class FLoginRewardDialog extends StatelessWidget {
                   children: [
                     FButton(
                       onTap: onTopCollect,
-                      color: Color(0xFF3F8DFD),
+                      color: AppColors.primary,
                       hasShadow: true,
                       child: Center(
                         child: Text(
@@ -119,8 +123,8 @@ class FLoginRewardDialog extends StatelessWidget {
                       ],
                     ),
                     FButton(
-                      onTap: () {},
-                      color: Color(0xFF3F8DFD),
+                      onTap: onTapVip,
+                      color: AppColors.primary,
                       hasShadow: true,
                       child: Center(
                         child: Text(
@@ -135,8 +139,8 @@ class FLoginRewardDialog extends StatelessWidget {
                     ),
                     SizedBox(height: 12),
                     FButton(
-                      onTap: () {},
-                      color: Color(0x1AFFFFFF),
+                      onTap: onTopCollect,
+                      color: AppColors.white10,
                       child: Center(
                         child: Text(
                           LocaleKeys.collect.tr,

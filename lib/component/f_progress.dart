@@ -1,3 +1,4 @@
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 
 class FProgress extends StatelessWidget {
@@ -58,7 +59,7 @@ class AnimationProgress extends StatefulWidget {
     required this.progress,
     this.width = 250,
     this.height = 6,
-    this.gradientColors = const [Color(0xFF3F8DFD), Color(0xFF3F8DFD)], // 默认渐变色
+    this.gradientColors = const [AppColors.primary, AppColors.primary], // 默认渐变色
     this.trackColor = const Color(0xFFC9C9C9), // 默认轨道颜色
     this.borderRadius = 3.0,
     this.animationDuration = const Duration(milliseconds: 300), // 默认动画时长

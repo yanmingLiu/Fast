@@ -7,12 +7,16 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 引入统一颜色管理
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/export.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const kNSFW = 'NSFW';
 const kBDSM = 'BDSM';
+
+// 使用统一的颜色管理，不再需要本地常量定义
+// 改为使用 AppColors.xxx
 
 class HomeItem extends StatelessWidget {
   const HomeItem({super.key, required this.role, required this.onCollect, required this.cate});
@@ -47,7 +51,8 @@ class HomeItem extends StatelessWidget {
     if ((role.tagType?.contains(kBDSM) ?? false) && !result.contains(kBDSM)) {
       result.insert(0, kBDSM);
     }
-    bool isCollect = role.collect ?? false;
+    final isCollect = role.collect ?? false;
+    final shouldShowTags = result.isNotEmpty && AppCache().isBig; // 缓存条件判断
 
     return InkWell(
       onTap: () {
@@ -64,18 +69,18 @@ class HomeItem extends StatelessWidget {
                 url: role.avatar,
                 borderRadius: BorderRadius.circular(16),
                 border: role.vip == true
-                    ? Border.all(color: Color(0xFF3F8DFD), width: 4, style: BorderStyle.solid)
+                    ? Border.all(color: AppColors.primary, width: 4, style: BorderStyle.solid)
                     : null,
               ),
             ),
             Positioned.fill(
-              child: Container(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
+                    colors: [AppColors.warningGradient[0], AppColors.warningGradient[1]],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: const [0.5, 1.0],
+                    stops: const [0.0, 1.0],
                   ),
                 ),
               ),
@@ -115,13 +120,13 @@ class HomeItem extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  if (result.isNotEmpty && AppCache().isBig) _buildTags(result),
+                  if (shouldShowTags) _buildTags(result),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       FButton(
                         onTap: _onTap,
-                        color: Color(0xFF3F8DFD),
+                        color: AppColors.primary,
                         height: 32,
                         hasShadow: true,
                         constraints: BoxConstraints(minWidth: 90),
@@ -151,14 +156,14 @@ class HomeItem extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.1),
                 height: 20,
                 borderRadius: BorderRadius.circular(10),
-                padding: EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   spacing: 2,
                   children: [
                     FIcon(
                       assetName: Assets.svg.like,
                       width: 20,
-                      color: isCollect ? Color(0xFFFF4ACF) : Colors.white,
+                      color: isCollect ? AppColors.secondary : Colors.white,
                     ),
                     Text(
                       '${role.likes ?? 0}',
@@ -167,7 +172,7 @@ class HomeItem extends StatelessWidget {
                       style: GoogleFonts.openSans(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
-                        color: isCollect ? Color(0xFFFF4ACF) : Colors.white,
+                        color: isCollect ? AppColors.secondary : Colors.white,
                       ),
                     ),
                   ],
@@ -184,46 +189,35 @@ class HomeItem extends StatelessWidget {
     // 限制最多显示3个标签
     final displayTags = result.take(3).toList();
 
-    return SizedBox(
-      height: 16,
-      child: Row(
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                for (int i = 0; i < displayTags.length; i++) ...[
-                  Flexible(
-                    child: Text(
-                      displayTags[i],
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.openSans(
-                        color: _getTagColor(displayTags[i]),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  if (i < displayTags.length - 1)
-                    Container(
-                      width: 1,
-                      height: 4,
-                      color: Color(0xffC9C9C9),
-                      margin: EdgeInsets.symmetric(horizontal: 4),
-                    ),
-                ],
-              ],
+    return Wrap(
+      spacing: 4,
+      crossAxisAlignment: WrapCrossAlignment.center, // 垂直方向居中对齐
+      children: [
+        for (int i = 0; i < displayTags.length; i++) ...[
+          Text(
+            displayTags[i],
+            style: GoogleFonts.openSans(
+              color: _getTagColor(displayTags[i]),
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
             ),
           ),
+          if (i < displayTags.length - 1)
+            Container(
+              width: 1,
+              height: 4,
+              color: AppColors.separator,
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+            ),
         ],
-      ),
+      ],
     );
   }
 
   Color _getTagColor(String text) {
     if (text == kNSFW || text == kBDSM) {
-      return Color(0xFFFF4ACF);
+      return AppColors.secondary;
     }
-    return Color(0xFF9CFC53);
+    return AppColors.success;
   }
 }

@@ -3,9 +3,9 @@ import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/tools/audio_tool.dart';
 import 'package:fast_ai/tools/downloader.dart';
 import 'package:fast_ai/values/app_values.dart';
@@ -190,7 +190,7 @@ class _ChatMsgVoiceWidgetState extends State<AudioContainer>
                   height: 62,
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Color(0x801C1C1C),
+                    color: Colors.black.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: _getAudioUI(widget.msg),

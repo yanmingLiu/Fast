@@ -10,6 +10,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/gift_loading.dart';
 import 'package:fast_ai/pages/chat/level_dialog.dart';
 import 'package:fast_ai/pages/vip/recharge_dialog.dart';
+import 'package:fast_ai/values/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -42,7 +43,7 @@ class AppDialog {
       maskWidget: ClipPath(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Container(color: Color(0xCC1C1C1C)),
+          child: Container(color: Colors.black.withValues(alpha: 0.8)),
         ),
       ),
       builder: (context) {
@@ -85,7 +86,7 @@ class AppDialog {
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: Color(0xFF333333),
+          color: const Color(0xFF333333), // 对话框背景色
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +100,7 @@ class AppDialog {
             FButton(
               onTap: onConfirm,
               margin: EdgeInsets.only(top: 8),
-              color: Color(0xFF3F8DFD),
+              color: AppColors.primary,
               hasShadow: true,
               height: 48,
               child: Center(
@@ -119,7 +120,7 @@ class AppDialog {
                   onCancel ?? SmartDialog.dismiss();
                 },
                 height: 48,
-                color: Color(0x1AFFFFFF),
+                color: AppColors.white10,
                 child: Center(
                   child: Text(
                     LocaleKeys.cancel.tr,
@@ -159,7 +160,7 @@ class AppDialog {
       maskWidget: ClipPath(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Container(color: Color(0xCC1C1C1C)),
+          child: Container(color: Colors.black.withValues(alpha: 0.8)),
         ),
       ),
       builder: (context) {
@@ -186,7 +187,7 @@ class AppDialog {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 36),
                         decoration: BoxDecoration(
-                          color: Color(0xFF333333),
+                          color: const Color(0xFF333333), // 对话框背景色
                           borderRadius: BorderRadius.circular(32),
                         ),
                         child: Column(
@@ -243,7 +244,7 @@ class AppDialog {
                                       onTap: onConfirm,
                                       height: 48,
                                       borderRadius: BorderRadius.circular(24),
-                                      color: Color(0xFF3F8DFD),
+                                      color: AppColors.primary,
                                       child: Center(
                                         child: Text(
                                           LocaleKeys.confirm.tr,
@@ -333,7 +334,7 @@ class AppDialog {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xCC1C1C1C),
+                  color: Colors.black.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

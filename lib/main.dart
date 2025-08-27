@@ -3,6 +3,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/routers.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,6 +51,9 @@ Iterable<Locale> supportedLocales = const [
   Locale('ko'), // 韩语
 ];
 
+// 缓存语言判断结果避免重复调用
+final isArabic = Get.locale?.languageCode == 'ar';
+
 Locale get locale {
   final locale = Get.deviceLocale;
 
@@ -69,8 +73,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Fast AI',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF3F8DFD)),
-        scaffoldBackgroundColor: Color(0xFF111111),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+        scaffoldBackgroundColor: const Color(0xFF111111), // 背景色
         fontFamily: GoogleFonts.openSans().fontFamily,
       ),
       getPages: Routers.pages,

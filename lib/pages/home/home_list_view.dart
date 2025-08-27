@@ -65,10 +65,6 @@ class _HomeListViewState extends State<HomeListView> {
       itemCount: list.length,
       physics: physics,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      cacheExtent: 1000, // 预加载屏幕外1000像素的内容
-      addRepaintBoundaries: true, // 启用RepaintBoundary隔离重绘范围
-      addAutomaticKeepAlives: false, // 禁用自动保持活跃状态
-      addSemanticIndexes: true, // 保持语义索引以支持无障碍功能
       itemBuilder: (context, index) {
         final role = list[index];
         return SizedBox(

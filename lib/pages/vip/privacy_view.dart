@@ -1,4 +1,5 @@
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,9 +20,9 @@ class PrivacyView extends StatelessWidget {
       case PolicyBottomType.gems:
         return _buildGemsBottom();
       case PolicyBottomType.vip1:
-        return _buildVipBottom(const Color(0xFFA8A8A8), true);
+        return _buildVipBottom(AppColors.hintText, true);
       case PolicyBottomType.vip2:
-        return _buildVipBottom(const Color(0xFFA8A8A8), false);
+        return _buildVipBottom(AppColors.hintText, false);
     }
   }
 
@@ -44,7 +45,11 @@ class PrivacyView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Text(
               LocaleKeys.subscription_auto_renew.tr,
-              style: TextStyle(color: Color(0xFFA8A8A8), fontSize: 10, fontWeight: FontWeight.w400),
+              style: TextStyle(
+                color: AppColors.hintText,
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -82,10 +87,10 @@ class PrivacyView extends StatelessWidget {
         textAlign: TextAlign.center,
         style: GoogleFonts.montserrat(
           fontSize: 10,
-          color: color ?? const Color(0xFFA8A8A8),
+          color: color ?? AppColors.hintText,
           fontWeight: FontWeight.w500,
           decoration: TextDecoration.underline,
-          decorationColor: color ?? const Color(0xFFA8A8A8),
+          decorationColor: color ?? AppColors.hintText,
           decorationThickness: 1.0,
         ),
       ),

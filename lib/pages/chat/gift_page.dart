@@ -9,6 +9,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,10 +25,10 @@ enum MsgGiftViewCategory { clothing, toys }
 
 /// 礼物页面常量
 class _GiftPageConstants {
-  // 颜色常量
+  // 使用统一颜色管理
   static const Color backgroundColor = Color(0xFF333333);
-  static const Color primaryBlue = Color(0xFF3F8DFD);
-  static const Color primaryBlueLight = Color(0x1A3F8DFD);
+  static const Color primaryBlue = AppColors.primary; // 使用AppColors
+  static const Color primaryBlueLight = AppColors.primaryLight; // 使用AppColors
   static const Color borderColor = Color(0x33FFFFFF);
   static const Color backgroundLight = Color(0x1AFFFFFF);
   static const Color priceTagBackground = Color(0x801C1C1C);

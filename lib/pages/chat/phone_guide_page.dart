@@ -12,6 +12,7 @@ import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -231,7 +232,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
       PhoneBtn(icon: Assets.images.hangup.image(), onTap: () => Get.back()),
       PhoneBtn(
         icon: Assets.images.accept.image(),
-        animationColor: const Color(0xFF3F8DFD),
+        animationColor: AppColors.primary,
         onTap: () {
           if (AppUser().balance.value < ConsumeFrom.call.gems) {
             AppRouter.pushGem(ConsumeFrom.call);

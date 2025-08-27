@@ -1,5 +1,6 @@
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,8 +12,9 @@ class FEmpty extends StatelessWidget {
   // Constants
   static const double _defaultPaddingTop = 100.0;
   static const double _defaultImageSize = 200.0;
-  static const Color _primaryColor = Color(0xFF3F8DFD);
-  static const Color _hintTextColor = Color(0xFFA8A8A8);
+  // 使用统一颜色管理，不再需要本地常量
+  // static const Color _primaryColor = Color(0xFF3F8DFD);
+  // static const Color _hintTextColor = Color(0xFFA8A8A8);
 
   const FEmpty({
     super.key,
@@ -59,7 +61,10 @@ class FEmpty extends StatelessWidget {
         width: 81,
         height: 32,
         alignment: Alignment.center,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: _primaryColor),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: AppColors.primary,
+        ),
         child: Text(
           LocaleKeys.reload.tr,
           style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600),
@@ -98,7 +103,7 @@ class FEmpty extends StatelessWidget {
     if (type == EmptyType.loading) {
       // Loading state - show activity indicator
       widgets.add(
-        CupertinoActivityIndicator(radius: 16.0, color: loadingIconColor ?? _primaryColor),
+        CupertinoActivityIndicator(radius: 16.0, color: loadingIconColor ?? AppColors.primary),
       );
     } else {
       // Empty or No Network state
@@ -114,7 +119,7 @@ class FEmpty extends StatelessWidget {
             hintText ?? hint,
             style: GoogleFonts.openSans(
               fontSize: 14,
-              color: _hintTextColor,
+              color: AppColors.hintText,
               fontWeight: FontWeight.w500,
               fontStyle: FontStyle.italic,
             ),
