@@ -7,12 +7,14 @@ import 'package:fast_ai/component/rich_text_placeholder.dart';
 import 'package:fast_ai/data/sku_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/vip/f_vip_timer.dart';
 import 'package:fast_ai/pages/vip/privacy_view.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/tools/ext.dart';
 import 'package:fast_ai/tools/iap_tool.dart';
+import 'package:fast_ai/values/app_colors.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -246,14 +248,10 @@ class _VipPageState extends State<VipPage> {
                   ? Assets.images.vipPageBg2.image(fit: BoxFit.cover)
                   : Assets.images.vipPageBg1.image(fit: BoxFit.cover),
             ),
-            Positioned(
-              left: 0,
-              right: 0,
-              top: MediaQuery.of(context).padding.top + kToolbarHeight,
-              bottom: 16,
+            SingleChildScrollView(
+              padding: EdgeInsets.only(top: 150),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -408,7 +406,7 @@ class _VipPageState extends State<VipPage> {
     }
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
           height: 110,
@@ -419,9 +417,9 @@ class _VipPageState extends State<VipPage> {
             itemBuilder: (_, index) {
               final sku = list[index];
               final isChoosed = sku.sku == chooseProduct?.sku;
-              final isBest = sku.defaultSku ?? false;
+              final isBest = (sku.defaultSku ?? false) && AppCache().isBig;
 
-              final double width = (MediaQuery.of(context).size.width - 32 - 40) / 2;
+              double width = (MediaQuery.of(context).size.width - 32 - 40) / 2;
 
               final symbol = sku.productDetails?.currencySymbol;
               var title = '';
@@ -429,187 +427,195 @@ class _VipPageState extends State<VipPage> {
               String orginalPrice = sku.productDetails?.price ?? '';
               final skuType = sku.skuType;
               final rawPrice = sku.productDetails?.rawPrice ?? 0;
+
               if (skuType == 2) {
                 title = LocaleKeys.monthly.tr;
                 final price = numFixed(rawPrice / 4, position: 2);
-                orginalPrice = '$symbol$price /${LocaleKeys.week.tr}';
+                orginalPrice = '$symbol$price';
               } else if (skuType == 3) {
                 title = LocaleKeys.yearly.tr;
                 final price = numFixed(rawPrice / 48, position: 2);
-                orginalPrice = '$symbol$price /${LocaleKeys.week.tr}';
+                orginalPrice = '$symbol$price';
               } else if (skuType == 4) {
                 title = LocaleKeys.lifetime.tr;
                 isLifeTime = true;
                 var pric = numFixed(rawPrice * 6, position: 2);
                 orginalPrice = '$symbol$pric';
+                width += 30;
               }
 
               return Stack(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: GestureDetector(
-                      onTap: () {
-                        chooseProduct = sku;
-                        setState(() {
-                          // 在状态更新后滚动到选中的项
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            _scrollToSelectedItem();
-                          });
+                  GestureDetector(
+                    onTap: () {
+                      chooseProduct = sku;
+                      setState(() {
+                        // 在状态更新后滚动到选中的项
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _scrollToSelectedItem();
                         });
-                      },
-                      child: SizedBox(
-                        width: width,
-                        child: Stack(
-                          alignment: Alignment.topLeft,
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                                border: Border.all(color: Colors.transparent, width: 1.0),
-                                color: const Color(0xFFB9BCFF).withOpacity(0.25),
-                              ),
-                              child: AppCache().isBig
-                                  ? Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          title,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white.withOpacity(0.7),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        (isLifeTime)
-                                            ? Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Assets.images.gems.image(width: 20, height: 20),
-                                                  const SizedBox(width: 4),
-                                                  Text(
-                                                    '+${sku.number}',
-                                                    style: GoogleFonts.montserrat(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w600,
-                                                      color: const Color(0xFFD4D5FF),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            : Text(
-                                                orginalPrice,
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.lexendDeca(
-                                                  color: Colors.white,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                        const SizedBox(height: 4),
-                                        isLifeTime
-                                            ? Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(
-                                                      left: 4,
-                                                      bottom: 3,
-                                                    ),
-                                                    child: Text(
-                                                      sku.productDetails?.price ?? '',
-                                                      overflow: TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        color: Colors.white.withOpacity(0.4),
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w500,
-                                                        // decoration: TextDecoration.lineThrough,
-                                                        decorationColor: Colors.white.withOpacity(
-                                                          0.4,
-                                                        ),
-                                                        decorationThickness: 1.0,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            : Text(
-                                                sku.productDetails?.price ?? '',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: const Color(0xFFFDFFF2).withOpacity(0.3),
-                                                ),
-                                              ),
-                                      ],
-                                    )
-                                  : Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          title,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white.withOpacity(0.7),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          sku.productDetails?.price ?? '',
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xFFFDFFF2),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                            ),
-                            Container(
-                              width: 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                color: isChoosed
-                                    ? const Color(0xFF656BFF)
-                                    : Colors.white.withOpacity(0.1),
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  bottomRight: Radius.circular(8),
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.expand_more,
-                                size: 16,
-                                color: isChoosed ? Colors.white : Colors.white.withOpacity(0.1),
-                              ),
-                            ),
-                          ],
-                        ),
+                      });
+                    },
+                    child: Container(
+                      width: width,
+                      padding: EdgeInsets.all(12),
+                      margin: EdgeInsets.only(top: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(16)),
+                        border: Border.all(color: Color(0X1AFFFFFF), width: 1.0),
+                        color: isChoosed ? AppColors.primary : const Color(0x333F8DFD),
                       ),
+                      child: AppCache().isBig
+                          ? isLifeTime
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        spacing: 2,
+                                        children: [
+                                          Text(
+                                            price,
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.openSans(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4),
+                                            child: Text(
+                                              orginalPrice,
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.openSans(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(height: 1, color: Color(0x33FFFFFF)),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        spacing: 2,
+                                        children: [
+                                          Text(
+                                            title,
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.openSans(
+                                              color: isChoosed ? Colors.white : Color(0xFFA8A8A8),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Assets.images.gems.image(width: 24),
+                                          Text(
+                                            sku.number.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.openSans(
+                                              color: isChoosed ? Colors.white : Color(0xFFA8A8A8),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        spacing: 2,
+                                        children: [
+                                          Text(
+                                            orginalPrice,
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.openSans(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4),
+                                            child: Text(
+                                              '/${LocaleKeys.week.tr}',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.openSans(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(height: 1, color: Color(0x33FFFFFF)),
+                                      Text(
+                                        '$title $price',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.openSans(
+                                          color: isChoosed ? Colors.white : Color(0xFFA8A8A8),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  title,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.openSans(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Container(height: 1, color: Color(0x33FFFFFF)),
+                                Text(
+                                  price,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.openSans(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
                     ),
                   ),
-                  if (isBest && AppCache().isBig)
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFFDDB74),
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                  if (isBest)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      height: 24,
+                      alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadiusDirectional.only(
+                          topStart: Radius.circular(12),
+                          topEnd: Radius.circular(12),
+                          bottomEnd: Radius.circular(12),
                         ),
-                        child: Text(
-                          LocaleKeys.best_offer.tr,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 9,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        gradient: LinearGradient(
+                          colors: AppColors.vipTagGradient,
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                      child: Text(
+                        LocaleKeys.best_offer.tr,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -623,7 +629,7 @@ class _VipPageState extends State<VipPage> {
           ),
         ),
         SizedBox(height: 28),
-        // if (AppCache().isBig) const VipTimer(),
+        if (AppCache().isBig) const VipTimer(),
         SizedBox(height: 8),
         if (!AppCache().isBig)
           Padding(
@@ -647,8 +653,9 @@ class _VipPageState extends State<VipPage> {
               IAPTool().buy(chooseProduct!, vipFrom: from);
             }
           },
-          width: double.infinity - 48,
-          height: 48,
+          margin: EdgeInsets.symmetric(horizontal: 60),
+          hasShadow: true,
+          color: AppColors.primary,
           child: Center(
             child: Text(
               AppCache().isBig ? LocaleKeys.btn_continue.tr : LocaleKeys.subscribe.tr,

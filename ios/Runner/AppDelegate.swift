@@ -68,7 +68,7 @@ import AppTrackingTransparency
             }
         }
         
-        return true
+        return reslut
     }
     
     override func application(

@@ -61,9 +61,9 @@ class IAPTool {
 
   // 查询产品详情
   Future<void> query() async {
-    if (!consumableList.isNotEmpty && !subscriptionList.isNotEmpty) {
-      return;
-    }
+    // if (!consumableList.isNotEmpty && !subscriptionList.isNotEmpty) {
+    //   return;
+    // }
 
     if (!await _isAvailable()) return;
     // iOS 平台特定逻辑

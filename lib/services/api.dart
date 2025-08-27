@@ -52,7 +52,7 @@ class ApiPath {
   // undr styles
   static const String undrStyles = '/getStyleConfig';
   // ios 创建订单
-  static const String createIosOrder = '/rechargeList/createOrder';
+  static const String createIosOrder = '/rechargeOrders/createOrder';
   // iOS 完成订单
   static const String verifyIosReceipt = '/rechargeList/finishOrder';
   // 创建 google 订单
@@ -107,7 +107,7 @@ class ApiPath {
   static String addGems = '/v2/appUser/plusGems';
   // sku 列表
   static String skuList = '/platformConfig/getAllSku';
-  // 编辑消息 /v2/message/consumption/editMsg
+  // 编辑消息
   static String editMsg = '/v2/message/editMsg';
   // 续写
   static String continueWrite = '/v2/message/resume';

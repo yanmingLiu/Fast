@@ -195,6 +195,7 @@ class LocaleKeys {
   static const subscription_auto_renew = 'subscription_auto_renew';
   static const save_num = 'save_num';
   static const best_choice = 'best_choice';
+  static const expiration_time = 'expiration_time';
 }
 
 class Locales {
@@ -410,5 +411,6 @@ class Locales {
         'Subscriptions auto-renew until canceled, as described in the Terms. Cancel anytime, Cancel at least 24 hours prior to renewal to avoid additional charges. Please note that you cannot get any refund even if the subscription period is not expired.',
     'save_num': 'Save @num%',
     'best_choice': 'Best choice',
+    'expiration_time': 'Expiration time: ',
   };
 }
