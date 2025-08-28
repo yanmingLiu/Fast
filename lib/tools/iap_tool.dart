@@ -268,23 +268,10 @@ class IAPTool {
       final productID = purchaseDetails.productID;
       log.d('[iap] purchaseID: $purchaseID, transactionDate:$transactionDate');
 
-      final pvs = purchaseDetails.verificationData.serverVerificationData;
-      final pvl = purchaseDetails.verificationData.localVerificationData;
-      log.d('[iap] pvs: $pvs');
-      log.d('[iap] pvl: $pvl');
-
-      // 刷新并获取 v1 票据 ：
-      final iosPlatformAddition = InAppPurchase.instance
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-      PurchaseVerificationData? verificationData = await iosPlatformAddition
-          .refreshPurchaseVerificationData();
-
-      String? vdl = verificationData?.localVerificationData; // 这就是 v1 的 Base64 字符串
-      String? vds = verificationData?.serverVerificationData;
-      log.d('[iap] vdl: $vdl');
-      log.d('[iap] vds: $vds');
-
-      final receipt = vdl;
+      final receipt = purchaseDetails.verificationData.serverVerificationData;
+      final localVerificationData = purchaseDetails.verificationData.localVerificationData;
+      log.d('[iap] receipt: $receipt');
+      log.d('[iap] localVerificationData: $localVerificationData');
 
       var createImg = (_consFrom == ConsumeFrom.aiphoto || _consFrom == ConsumeFrom.undr)
           ? true

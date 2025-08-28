@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:adjust_sdk/adjust.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:fast_ai/data/base_data.dart';
 import 'package:fast_ai/data/clothing_data.dart';
@@ -54,7 +53,7 @@ class ApiPath {
   // ios 创建订单
   static const String createIosOrder = '/rechargeOrders/createOrder';
   // iOS 完成订单
-  static const String verifyIosReceipt = '/rechargeList/finishOrder';
+  static const String verifyIosReceipt = '/rechargeOrders/finishOrder';
   // 创建 google 订单
   static const String createAndOrder = '/pay/google/create';
   // 谷歌验签
@@ -510,13 +509,18 @@ class Api {
     bool? createImg,
     bool? createVideo,
   }) async {
+    log.d('verifyIosOrder----------start----------');
     try {
+      log.d('verifyIosOrder: 检查用户ID...');
       final userId = AppUser().user?.id;
-      if (userId == null || userId.isEmpty) return false;
-
+      if (userId == null || userId.isEmpty) {
+        log.w('verifyIosOrder: 用户ID为空');
+        return false;
+      }
       var chooseEnv = AppService().isDebugMode ? false : true;
-      final idfa = await Adjust.getIdfa();
-      final adid = await Adjust.getAdid();
+
+      final idfa = await AppService().getIdfa();
+      final adid = await AppService().getAdid();
 
       var params = <String, dynamic>{
         'order_id': orderId,
@@ -538,18 +542,22 @@ class Api {
       if (createVideo != null) {
         params['create_video'] = createVideo;
       }
-
       var res = await api.post(ApiPath.verifyIosReceipt, body: params);
+
       if (res.isOk) {
         var data = BaseData.fromJson(res.body, null);
         if (data.code == 0 || data.code == 200) {
+          log.d('verifyIosOrder: 验证成功 ✅');
           return true;
         }
+        log.w('verifyIosOrder: 验证失败 - code: ${data.code}');
         return false;
       } else {
+        log.e('verifyIosOrder: 网络请求失败 - 状态码: ${res.statusCode}');
         return false;
       }
     } catch (e) {
+      log.e('verifyIosOrder: 异常 - $e');
       return false;
     }
   }
@@ -593,13 +601,17 @@ class Api {
     bool? createImg,
     bool? createVideo,
   }) async {
+    log.d('verifyAndOrder----------start----------');
     try {
+      log.d('verifyAndOrder: 检查用户ID...');
       final userId = AppUser().user?.id;
-      if (userId == null || userId.isEmpty) return false;
+      if (userId == null || userId.isEmpty) {
+        log.w('verifyAndOrder: 用户ID为空');
+        return false;
+      }
       String androidId = await AppCache().phoneId(isOrigin: true);
-      final adid = await Adjust.getAdid();
-      final gpsAdid = await Adjust.getGoogleAdId();
-
+      final adid = await AppService().getAdid();
+      final gpsAdid = await AppService().getGoogleAdId();
       var body = <String, dynamic>{
         'original_json': originalJson,
         'purchase_token': purchaseToken,
@@ -620,19 +632,22 @@ class Api {
       if (createVideo != null) {
         body['create_video'] = createVideo;
       }
-
+      log.d('verifyAndOrder: 请求参数构建完成 - ${body.keys.join(", ")}');
       var res = await api.post(ApiPath.verifyAndOrder, body: body);
-
       if (res.isOk) {
         final data = BaseData.fromJson(res.body, null);
         if (data.code == 0 || data.code == 200) {
+          log.d('verifyAndOrder: 验证成功 ✅');
           return true;
         }
+        log.w('verifyAndOrder: 验证失败 - code: ${data.code}');
         return false;
       } else {
+        log.e('verifyAndOrder: 网络请求失败 - 状态码: ${res.statusCode}');
         return false;
       }
     } catch (e) {
+      log.e('verifyAndOrder: 异常 - $e');
       return false;
     }
   }
@@ -778,9 +793,22 @@ class Api {
   }
 
   static Future<bool> updateEventParams({bool? autoTranslate}) async {
+    log.d('updateEventParams----------start----------');
     try {
+      log.d('updateEventParams: 获取设备ID...');
       String deviceId = await AppCache().phoneId();
-      final adid = await Adjust.getAdid();
+      log.d('updateEventParams: 设备ID获取完成 - $deviceId');
+
+      // 使用AppService的安全方法获取ADID
+      log.d('updateEventParams: 开始获取ADID...');
+      final adid = await AppService().getAdid().timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          log.w('updateEventParams: ADID获取超时，使用空值');
+          return '';
+        },
+      );
+      log.d('updateEventParams: ADID获取完成 - $adid');
 
       Map<String, dynamic> data = {
         'adid': adid,
@@ -789,11 +817,27 @@ class Api {
       };
 
       if (Platform.isIOS) {
-        String? idfa = await Adjust.getIdfa();
+        log.d('updateEventParams: iOS平台，获取IDFA...');
+        String idfa = await AppService().getIdfa().timeout(
+          const Duration(seconds: 8),
+          onTimeout: () {
+            log.w('updateEventParams: IDFA获取超时，使用空值');
+            return '';
+          },
+        );
         data['idfa'] = idfa;
+        log.d('updateEventParams: IDFA获取完成 - $idfa');
       } else if (Platform.isAndroid) {
-        final gpsAdid = await Adjust.getGoogleAdId();
+        log.d('updateEventParams: Android平台，获取Google AdId...');
+        final gpsAdid = await AppService().getGoogleAdId().timeout(
+          const Duration(seconds: 8),
+          onTimeout: () {
+            log.w('updateEventParams: Google AdId获取超时，使用空值');
+            return '';
+          },
+        );
         data['gps_adid'] = gpsAdid;
+        log.d('updateEventParams: Google AdId获取完成 - $gpsAdid');
       }
 
       if (autoTranslate != null) {

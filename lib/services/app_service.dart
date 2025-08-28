@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:adjust_sdk/adjust.dart';
@@ -102,49 +103,47 @@ class AppService {
     try {
       FirebaseApp app = await Firebase.initializeApp();
       log.d('[Firebase]: Initialized ✅ app: ${app.name}');
+
+      // 分步初始化Firebase服务，确保核心服务先启动
+      _initFirebaseAnalytics();
+      _initRemoteConfig();
+    } catch (e) {
+      log.e('[Firebase]: 初始化失败 : $e');
+      // 即使Firebase初始化失败，也不应该影响应用启动
+    }
+  }
+
+  // 初始化Firebase Analytics（核心服务）
+  Future<void> _initFirebaseAnalytics() async {
+    try {
       FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
-      FirebaseRemoteConfig.instance.setConfigSettings(
+      log.d('[Firebase]: Analytics initialized ✅');
+    } catch (e) {
+      log.e('[Firebase]: Analytics 初始化失败: $e');
+    }
+  }
+
+  // 初始化 Firebase Remote Config 服务
+  Future<void> _initRemoteConfig() async {
+    try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      // 配置最小 fetch 时间，测试时设置为 0
+      await remoteConfig.setConfigSettings(
         RemoteConfigSettings(
-          fetchTimeout: const Duration(minutes: 1),
-          minimumFetchInterval: const Duration(minutes: 1),
+          fetchTimeout: const Duration(seconds: 5),
+          minimumFetchInterval: const Duration(seconds: 30),
         ),
       );
 
-      FirebaseRemoteConfig.instance.fetchAndActivate();
-      listenRemoteConfig();
+      // 拉取 + 激活远程配置
+      await remoteConfig.fetchAndActivate();
+
+      // 获取配置值
+      maxFreeChatCount = _getConfigValue('free_chat_count', remoteConfig.getInt, 50);
+      showClothingCount = _getConfigValue('show_clothing_count', remoteConfig.getInt, 5);
     } catch (e) {
-      log.e('[Firebase]: catch : $e');
+      log.e("Remote Config 错误: $e");
     }
-  }
-
-  // 监听 Firebase 配置更新
-  Future<void> listenRemoteConfig() async {
-    FirebaseRemoteConfig.instance.onConfigUpdated.listen((_) async {
-      await FirebaseRemoteConfig.instance.activate();
-      _refreshRemoteConfig();
-    });
-  }
-
-  // 拉取并更新 Firebase 配置
-  Future<void> fetchConfig() async {
-    try {
-      // 确保Firebase已初始化
-      if (Firebase.apps.isEmpty) {
-        await initFirebase();
-      }
-      _refreshRemoteConfig();
-    } catch (e) {
-      log.e('Error fetching remote config: $e');
-    }
-  }
-
-  // 更新配置
-  Future<void> _refreshRemoteConfig() async {
-    final remoteConfig = FirebaseRemoteConfig.instance;
-
-    // TODO: configuration
-    maxFreeChatCount = _getConfigValue('free_chat_count', remoteConfig.getInt, 50);
-    showClothingCount = _getConfigValue('show_clothing_count', remoteConfig.getInt, 5);
   }
 
   // 获取配置值
@@ -178,16 +177,55 @@ class AppService {
     if (!Platform.isIOS) {
       return '';
     }
-    final status = await AppTrackingTransparency.trackingAuthorizationStatus;
-    log.d('trackingAuthorizationStatus: $status');
+    try {
+      final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+      log.d('trackingAuthorizationStatus: $status');
 
-    if (status == TrackingStatus.notDetermined) {
-      await Future.delayed(const Duration(milliseconds: 200));
-      await AppTrackingTransparency.requestTrackingAuthorization();
+      if (status == TrackingStatus.notDetermined) {
+        await Future.delayed(const Duration(milliseconds: 200));
+        await AppTrackingTransparency.requestTrackingAuthorization();
+      }
+      final idfa = await AppTrackingTransparency.getAdvertisingIdentifier();
+      log.d('idfa: $idfa');
+      return idfa;
+    } catch (e) {
+      log.e('getIdfa error: $e');
+      return '';
     }
-    final uuid = await AppTrackingTransparency.getAdvertisingIdentifier();
-    log.d('uuid: $uuid');
-    return uuid;
+  }
+
+  // 获取Adjust ID，带超时和错误处理
+  Future<String> getAdid() async {
+    try {
+      final adid = await Adjust.getAdid().timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {
+          log.w('getAdid: 获取超时，返回空值');
+          return '';
+        },
+      );
+      return adid ?? '';
+    } catch (e) {
+      log.e('getAdid error: $e');
+      return '';
+    }
+  }
+
+  // 获取Google AdId，带超时和错误处理
+  Future<String> getGoogleAdId() async {
+    try {
+      final gpsAdid = await Adjust.getGoogleAdId().timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {
+          log.w('getGoogleAdId: 获取超时，返回空值');
+          return '';
+        },
+      );
+      return gpsAdid ?? '';
+    } catch (e) {
+      log.e('getGoogleAdId error: $e');
+      return '';
+    }
   }
 
   // 获取idfv
@@ -195,9 +233,31 @@ class AppService {
     if (!Platform.isIOS) {
       return '';
     }
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    final iosInfo = await deviceInfo.iosInfo;
-    return iosInfo.identifierForVendor ?? '';
+    try {
+      final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      final iosInfo = await deviceInfo.iosInfo;
+      return iosInfo.identifierForVendor ?? '';
+    } catch (e) {
+      log.e('getIdfv error: $e');
+      return '';
+    }
+  }
+
+  // 获取Adjust IDFV（备用方法）
+  Future<String> getAdjustIdfv() async {
+    try {
+      final idfv = await Adjust.getIdfv().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          log.w('getAdjustIdfv: 获取超时，使用空值');
+          return '';
+        },
+      );
+      return idfv ?? '';
+    } catch (e) {
+      log.e('getAdjustIdfv error: $e');
+      return '';
+    }
   }
 
   // device_model
@@ -245,8 +305,8 @@ class AppService {
 
   Future<bool> isLimitAdTrackingEnabled() async {
     if (Platform.isIOS) {
-      final attStatus = await Adjust.getAppTrackingAuthorizationStatus();
-      return attStatus == 0 || attStatus == 1; // 0=未决定,1=限制跟踪
+      final attStatus = await AppTrackingTransparency.trackingAuthorizationStatus;
+      return attStatus == TrackingStatus.authorized;
     } else if (Platform.isAndroid) {
       final isLimitAdTracking = await Adjust.isEnabled();
       return !isLimitAdTracking; // Android返回的是是否启用跟踪，取反得到是否限制

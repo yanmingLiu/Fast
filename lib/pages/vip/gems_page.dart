@@ -295,18 +295,30 @@ class _GemsPageState extends State<GemsPage> {
                       Assets.images.gemls.image(width: 48),
                       Text(
                         numericPart,
-                        style: GoogleFonts.openSans(fontSize: 20, fontWeight: FontWeight.w700),
+                        style: GoogleFonts.openSans(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
                       ),
                       const Spacer(),
                       Column(
                         children: [
                           Text(
-                            price,
-                            style: GoogleFonts.openSans(fontSize: 16, fontWeight: FontWeight.w700),
+                            discount,
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
                           ),
                           Text(
-                            discount,
-                            style: GoogleFonts.openSans(fontSize: 14, fontWeight: FontWeight.w400),
+                            price,
+                            style: GoogleFonts.openSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       ),

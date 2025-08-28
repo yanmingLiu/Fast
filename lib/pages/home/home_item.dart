@@ -77,10 +77,10 @@ class HomeItem extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.warningGradient[0], AppColors.warningGradient[1]],
+                    colors: AppColors.homeItemGradient,
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: const [0.0, 1.0],
+                    stops: const [0.0, 0.1, 0.8],
                   ),
                 ),
               ),
@@ -153,7 +153,7 @@ class HomeItem extends StatelessWidget {
               end: 8,
               child: FButton(
                 onTap: () => onCollect(role),
-                color: Colors.white.withValues(alpha: 0.1),
+                color: Color(0x1AFFFFFF),
                 height: 20,
                 borderRadius: BorderRadius.circular(10),
                 padding: EdgeInsets.symmetric(horizontal: 10),

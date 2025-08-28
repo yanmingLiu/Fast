@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:adjust_sdk/adjust.dart';
 import 'package:dio/dio.dart';
 import 'package:fast_ai/data/event_data.dart';
 import 'package:fast_ai/services/app_cache.dart';
@@ -93,8 +92,8 @@ class AppLogEvent {
   factory AppLogEvent() => _instance;
 
   AppLogEvent._internal() {
-    _startUploadTimer();
-    _startRetryTimer();
+    // _startUploadTimer();
+    // _startRetryTimer();
   }
 
   final _adLogService = AdLogService();
@@ -139,52 +138,67 @@ class AppLogEvent {
 
   // 获取通用参数
   Future<Map<String, dynamic>?> _getCommonParams() async {
-    final deviceId = await AppCache().phoneId(isOrigin: true);
-    final deviceModel = await AppService().getDeviceModel();
-    final manufacturer = await AppService().getDeviceManufacturer();
-    final idfv = await Adjust.getIdfv();
-    final version = await AppService().version();
-    final os = Platform.isIOS ? 'ibis' : 'behead';
-    final osVersion = await AppService().getOsVersion();
-    final gaid = Platform.isAndroid ? await Adjust.getGoogleAdId() : null;
+    try {
+      final deviceId = await AppCache().phoneId(isOrigin: true);
+      final deviceModel = await AppService().getDeviceModel();
+      final manufacturer = await AppService().getDeviceManufacturer();
+      final idfv = await AppService().getIdfv(); // 使用AppService的安全方法
+      final version = await AppService().version();
+      final os = Platform.isIOS ? 'ibis' : 'behead';
+      final osVersion = await AppService().getOsVersion();
 
-    if (Platform.isAndroid) {
+      // 使用AppService的安全方法获取Google AdId
+      final gaid = Platform.isAndroid
+          ? await AppService().getGoogleAdId().timeout(
+              const Duration(seconds: 5),
+              onTimeout: () {
+                log.w('_getCommonParams: Google AdId获取超时，使用空值');
+                return '';
+              },
+            )
+          : null;
+
+      if (Platform.isAndroid) {
+        return {
+          "cowhand": {"highball": manufacturer, "erosible": Get.locale.toString()},
+          "shire": {
+            "beijing": deviceModel,
+            "dahl": deviceId,
+            "tantric": "mcc",
+            "ligament": DateTime.now().millisecondsSinceEpoch,
+          },
+          "kumquat": {
+            "clannish": uuid(),
+            "stood": deviceId,
+            "nauseum": "agate",
+            "wehr": "com.dream.kirasay",
+            "staccato": osVersion,
+          },
+          "rest": {"oncoming": version},
+        };
+      }
+
       return {
-        "cowhand": {"highball": manufacturer, "erosible": Get.locale.toString()},
-        "shire": {
-          "beijing": deviceModel,
-          "dahl": deviceId,
-          "tantric": "mcc",
-          "ligament": DateTime.now().millisecondsSinceEpoch,
+        "godson": {
+          "regina": deviceId,
+          "day": uuid(),
+          "folktale": deviceModel,
+          "erode": Get.locale.toString(),
+          "flaunt": manufacturer,
+          "chasm": idfv,
         },
-        "kumquat": {
-          "clannish": uuid(),
-          "stood": deviceId,
-          "nauseum": "agate",
-          "wehr": "com.dream.kirasay",
-          "staccato": osVersion,
+        "avis": {"stirling": version, "grille": os, "kovacs": "mcc"},
+        "ladle": {"mystify": "com.rolekria.chat", "totem": DateTime.now().millisecondsSinceEpoch},
+        "franca": {
+          "innovate": Platform.isAndroid ? deviceId : null,
+          "razor": gaid,
+          "czarina": osVersion,
         },
-        "rest": {"oncoming": version},
       };
+    } catch (e) {
+      log.e('_getCommonParams error: $e');
+      return null;
     }
-
-    return {
-      "godson": {
-        "regina": deviceId,
-        "day": uuid(),
-        "folktale": deviceModel,
-        "erode": Get.locale.toString(),
-        "flaunt": manufacturer,
-        "chasm": idfv,
-      },
-      "avis": {"stirling": version, "grille": os, "kovacs": "mcc"},
-      "ladle": {"mystify": "com.rolekria.chat", "totem": DateTime.now().millisecondsSinceEpoch},
-      "franca": {
-        "innovate": Platform.isAndroid ? deviceId : null,
-        "razor": gaid,
-        "czarina": osVersion,
-      },
-    };
   }
 
   Future<void> logInstallEvent() async {

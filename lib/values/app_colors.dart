@@ -44,5 +44,10 @@ class AppColors {
     Color(0x10ED1010), // 渐变起始色
     Color(0x29002929), // 渐变结束色
   ];
+  static const List<Color> homeItemGradient = [
+    Color(0xED101010),
+    Colors.transparent,
+    Color(0xED101010),
+  ];
   static const List<Color> vipTagGradient = [Color(0xFFF4FCFF), primary];
 }

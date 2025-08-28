@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_image.dart';
@@ -151,18 +150,18 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
 
   //处理来电话播放器停止播放的操作
   void handlePhoneCall() async {
-    if (_phoneStateSub != null) {
-      return;
-    }
-    bool havePermission = true;
-    if (Platform.isAndroid) {
-      havePermission = await requestPermission() ?? true;
-    }
-    // if (havePermission) {
-    //   _phoneStateSub = PhoneState.stream.listen((event) {
-    //     _controller?.pause();
-    //   });
-    // }
+    //   if (_phoneStateSub != null) {
+    //     return;
+    //   }
+    //   bool havePermission = true;
+    //   if (Platform.isAndroid) {
+    //     havePermission = await requestPermission() ?? true;
+    //   }
+    //   // if (havePermission) {
+    //   //   _phoneStateSub = PhoneState.stream.listen((event) {
+    //   //     _controller?.pause();
+    //   //   });
+    //   // }
   }
 
   @override
