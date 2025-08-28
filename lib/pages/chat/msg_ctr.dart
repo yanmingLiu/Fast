@@ -15,6 +15,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/chat_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/api.dart';
+import 'package:fast_ai/services/api_path.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
@@ -22,8 +23,6 @@ import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/tools/trans_tool.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client_sse/constants/sse_request_type_enum.dart';
-import 'package:flutter_client_sse/flutter_client_sse.dart';
 import 'package:get/get.dart';
 
 class MsgCtr extends GetxController {
@@ -89,12 +88,6 @@ class MsgCtr extends GetxController {
     AppUser().loadToysAndClotheConfigs();
     AppUser().getPriceConfig();
     AppUser().getUserInfo();
-  }
-
-  @override
-  void onClose() {
-    closeSSE();
-    super.onClose();
   }
 
   Future loadMsg() async {
@@ -227,6 +220,12 @@ class MsgCtr extends GetxController {
     // }
   }
 
+  Future<void> rechage() async {
+    await FToast.toast(LocaleKeys.not_enough.tr);
+    // v1.3.0 - 调整为跳订阅页
+    AppRouter.pushVip(VipFrom.send);
+  }
+
   Future<bool> canSendMsg(String text) async {
     if (isRecieving) {
       FToast.toast(LocaleKeys.wait_for_response.tr);
@@ -251,9 +250,7 @@ class MsgCtr extends GetxController {
       if (role.gems == true) {
         final flag = AppUser().isBalanceEnough(ConsumeFrom.text);
         if (!flag) {
-          await FToast.toast(LocaleKeys.not_enough.tr);
-          // v1.3.0 - 调整为跳订阅页
-          AppRouter.pushVip(VipFrom.send);
+          rechage();
           return false;
         }
       } else {
@@ -340,24 +337,23 @@ class MsgCtr extends GetxController {
     return result;
   }
 
-  Future sendMsg(String text) async {
+  Future<void> sendMsg(String text) async {
     bool canSend = await canSendMsg(text);
     if (!canSend) {
       return;
     }
 
-    // 每发送5条消息触发广告
-    messageCounter++;
-    // if (messageCounter % AppService().msgSendShowAdCount == 0) {
-    //   MyAd().showChatAd(placement: PlacementType.chat);
-    // }
+    addTemSendMsg(text);
 
-    isRecieving = true;
+    await sendMsgRequest(path: ApiPath.sendMsg, text: text);
+  }
 
+  void addTemSendMsg(String text) {
     final charId = role.id;
     final conversationId = sessionId ?? 0;
     final uid = AppUser().user?.id;
     if (charId == null || uid == null) {
+      FToast.toast('charId or uid is null');
       return;
     }
 
@@ -373,160 +369,83 @@ class MsgCtr extends GetxController {
     msg.source = MsgSource.sendText;
     list.add(msg);
     tmpSendMsg = msg;
-
-    // // 确保流监听不重复
-    // await subscription?.cancel();
-    // subscription = null;
-
-    final url = '${AppService().baseUrl}${ApiPath.sendMsg}';
-    final body = {
-      'character_id': charId,
-      'conversation_id': conversationId,
-      'message': text,
-      'user_id': uid,
-    };
-    startListening(url, body);
   }
 
-  Future startListening(String url, Map<String, dynamic>? body) async {
+  Future<void> sendMsgRequest({required String path, String? text, bool? isLoading}) async {
     try {
-      isLock = false;
+      final charId = role.id;
+      final conversationId = sessionId ?? 0;
+      final uid = AppUser().user?.id;
+      if (charId == null || uid == null || conversationId == 0) {
+        FToast.toast(LocaleKeys.some_error_try_again.tr);
+        return;
+      }
 
-      log.d("开始监听...url:$url, body:$body");
+      var body = {'character_id': charId, 'conversation_id': conversationId, 'user_id': uid};
+      if (text != null) {
+        body['text'] = text;
+      }
 
-      final deviceId = await AppCache().phoneId();
-      final platform = AppService().platform;
+      isRecieving = true;
+      if (isLoading == true) {
+        FLoading.showLoading();
+      }
+      final res = await Api.sendMsg(path: path, body: body);
+      FLoading.dismiss();
 
-      final header = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        'device-id': deviceId,
-        'platform': platform,
-      };
-
-      SSEClient.subscribeToSSE(
-        maxRetries: 0,
-        method: SSERequestType.POST,
-        url: url,
-        header: header,
-        body: body,
-      ).listen(
-        (event) {
-          // 确保流未关闭时才添加数据
-          if (event.event == 'error') {
-            log.e('Error receiving SSE event: ${event.data}');
-            progressSSEError();
-          } else {
-            if (event.data!.isNotEmpty) {
-              progressSSE(event.data!);
-            }
-          }
-        },
-        onError: (e) {
-          log.e('onError: Error receiving SSE event: $e');
-          progressSSEError();
-        },
-      );
+      final msg = res?.data;
+      if (res?.code == 20003) {
+        rechage();
+        return;
+      }
+      if (msg != null) {
+        await progressReceived(msg);
+      } else {
+        progressSSEError();
+      }
     } catch (e) {
-      log.e('------->Error: $e');
+      FLoading.dismiss();
       progressSSEError();
+      log.e(e);
     }
   }
 
   void progressSSEError() {
-    closeSSE();
     tmpSendMsg?.onAnswer = false;
 
     MsgData msg = MsgData(id: DateTime.now().millisecondsSinceEpoch.toString(), answer: kErrorMsg);
     msg.source = MsgSource.error;
+    msg.answer = LocaleKeys.some_error_try_again.tr;
     list.add(msg);
-    FLoading.dismiss();
   }
 
-  void progressSSE(String data) async {
-    if (data.contains(kTagNormal)) {
-      isLock = false;
-    } else if (data.contains(kTagPrivate)) {
-      isLock = true;
+  Future<void> progressReceived(MsgData msg) async {
+    if (msg.conversationId == sessionId) {
+      return;
+    }
+    if (isLock) {
+      msg.typewriterAnimated = AppUser().isVip.value;
+    } else {
+      msg.typewriterAnimated = true;
     }
 
-    // 去掉换行符
-    data = data.replaceAll(RegExp(r'[\r\n]+'), '');
-
-    if (data.contains('Insufficient gold')) {
-      log.d('EOF Insufficient gold');
+    // 删除最后一条tmpSendMsg
+    if (list.isNotEmpty && list.last.id == tmpSendId && msg.question == list.last.question) {
       list.removeLast();
-      closeSSE();
-      AppRouter.pushGem(ConsumeFrom.send);
-      return;
     }
 
-    if (data.contains('EOF')) {
-      log.d('EOF received, clearing buffer and stopping listening');
-      closeSSE();
-      return;
+    final index = list.indexOf(msg);
+    log.d('currentMsg index: $index');
+    if (index != -1) {
+      list[index] = msg;
+    } else {
+      list.add(msg);
     }
+    _checkChatLevel(msg);
 
-    if (data.contains('MEDIA START')) {
-      isMediaStarted = true;
+    await AppUser().getUserInfo();
 
-      /// 修改发送消息的状态
-      tmpSendMsg?.onAnswer = false;
-
-      final regex = RegExp(r'MEDIA START(.*?)MEDIA END', dotAll: true);
-      final match = regex.firstMatch(data);
-
-      if (match != null) {
-        String jsonString = match.group(1)!.trim();
-        log.d('Extracted JSON: $jsonString');
-        var msg = MsgData.fromRawJson(jsonString);
-
-        if (msg.conversationId == sessionId) {
-          if (isLock) {
-            msg.typewriterAnimated = AppUser().isVip.value;
-          } else {
-            msg.typewriterAnimated = true;
-          }
-
-          // 删除最后一条tmpSendMsg
-          if (list.isNotEmpty && list.last.id == tmpSendId && msg.question == list.last.question) {
-            list.removeLast();
-          }
-
-          final index = list.indexOf(msg);
-          log.d('currentMsg index: $index');
-          if (index != -1) {
-            list[index] = msg;
-          } else {
-            list.add(msg);
-          }
-          _checkChatLevel(msg);
-        }
-      } else {
-        log.e('No match found for MEDIA START');
-      }
-
-      isRecieving = false;
-      await AppUser().getUserInfo();
-    }
-    FLoading.dismiss();
     tmpSendMsg = null;
-  }
-
-  // 消息计数器
-  var messageCounter = 0;
-
-  void closeSSE() async {
-    buffer.clear();
-    isRecieving = false;
-    isMediaStarted = false;
-
-    log.d("关闭监听...");
-    // await subscription?.cancel();
-    // SSEUtil().close();
-    // subscription = null;
-    SSEClient.unsubscribeFromSSE();
-    log.d("监听已关闭");
   }
 
   void _checkChatLevel(MsgData msg) async {
@@ -829,76 +748,37 @@ class MsgCtr extends GetxController {
 
   /// 续写
   Future<void> continueWriting() async {
-    try {
-      final msg = list.last;
-      bool canSend = await canSendMsg(msg.answer ?? '');
-      if (!canSend) {
-        return;
-      }
-
-      final charId = role.id;
-      final conversationId = sessionId ?? 0;
-      final uid = AppUser().user?.id;
-      if (charId == null || uid == null || conversationId == 0) {
-        FToast.toast(LocaleKeys.some_error_try_again.tr);
-        return;
-      }
-      isRecieving = true;
-      FLoading.showLoading();
-
-      final url = '${AppService().baseUrl}${ApiPath.continueWrite}';
-      final body = {'character_id': charId, 'conversation_id': conversationId, 'user_id': uid};
-      startListening(url, body);
-    } catch (e) {
-      FToast.toast(LocaleKeys.some_error_try_again.tr);
+    final msg = list.last;
+    bool canSend = await canSendMsg(msg.answer ?? '');
+    if (!canSend) {
+      return;
     }
+    await sendMsgRequest(path: ApiPath.continueWrite, isLoading: true);
   }
 
   /// 重新发送消息
   Future<void> resendMsg(MsgData msg) async {
-    try {
-      MsgData? last = msg;
-      if (msg.source == MsgSource.error) {
-        last = findLastServerMsg();
-      }
-      if (last == null) {
-        continueWriting();
-        return;
-      }
-
-      bool canSend = await canSendMsg(last.answer ?? '');
-      if (!canSend) {
-        return;
-      }
-
-      final id = msg.id;
-      if (id == null) {
-        FToast.toast(LocaleKeys.some_error_try_again.tr);
-        return;
-      }
-
-      final charId = role.id;
-      final conversationId = sessionId ?? 0;
-      final uid = AppUser().user?.id;
-      if (charId == null || uid == null || conversationId == 0) {
-        FToast.toast(LocaleKeys.some_error_try_again.tr);
-        return;
-      }
-      FLoading.showLoading();
-      isRecieving = true;
-
-      final url = '${AppService().baseUrl}${ApiPath.resendMsg}';
-      final body = {
-        'character_id': charId,
-        'conversation_id': conversationId,
-        'user_id': uid,
-        'msg_id': id,
-      };
-      startListening(url, body);
-    } catch (e) {
-      FLoading.dismiss();
-      FToast.toast(LocaleKeys.some_error_try_again.tr);
+    MsgData? last = msg;
+    if (msg.source == MsgSource.error) {
+      last = findLastServerMsg();
     }
+    if (last == null) {
+      continueWriting();
+      return;
+    }
+
+    bool canSend = await canSendMsg(last.answer ?? '');
+    if (!canSend) {
+      return;
+    }
+
+    final id = msg.id;
+    if (id == null) {
+      FToast.toast(LocaleKeys.some_error_try_again.tr);
+      return;
+    }
+
+    await sendMsgRequest(path: ApiPath.resendMsg, isLoading: true);
   }
 
   /// 编辑消息
