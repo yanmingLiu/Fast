@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MeItem extends StatelessWidget {
+class MeItem extends StatefulWidget {
   const MeItem({
     super.key,
     required this.title,
@@ -28,66 +28,119 @@ class MeItem extends StatelessWidget {
   final Widget? subWidget;
 
   @override
+  State<MeItem> createState() => _MeItemState();
+}
+
+class _MeItemState extends State<MeItem> {
+  int _tapCount = 0;
+  DateTime? _lastTapTime;
+
+  // 性能优化：缓存样式对象
+  static final TextStyle _sectionTitleStyle = GoogleFonts.openSans(
+    color: const Color(0xFF858585),
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+  );
+
+  static final TextStyle _titleStyle = GoogleFonts.openSans(
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+  );
+
+  static final TextStyle _subtitleStyle = GoogleFonts.openSans(
+    color: const Color(0xFF858585),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
+
+  // 性能优化：缓存常用组件
+  static const SizedBox _spacing8 = SizedBox(width: 8);
+  static const SizedBox _spacing4 = SizedBox(width: 4);
+  static const Icon _chevronIcon = Icon(Icons.chevron_right, color: Color(0xFF808080));
+
+  void _handleSectionTap() {
+    if (widget.onTapSection == null) return;
+
+    final now = DateTime.now();
+
+    // 重置计数器如果距离上次点击超过2秒
+    if (_lastTapTime == null || now.difference(_lastTapTime!).inSeconds > 2) {
+      _tapCount = 1;
+    } else {
+      _tapCount++;
+    }
+
+    _lastTapTime = now;
+
+    // 点击7次触发回调
+    if (_tapCount >= 7) {
+      _tapCount = 0;
+      _lastTapTime = null;
+      widget.onTapSection!();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: top),
-        if (sectionTitle != null)
+        if (widget.top > 0) SizedBox(height: widget.top),
+        if (widget.sectionTitle != null)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: GestureDetector(
-              onLongPress: onTapSection,
-              child: Text(
-                sectionTitle!,
-                style: GoogleFonts.openSans(
-                  color: Color(0xFF858585),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+              onTap: _handleSectionTap,
+              child: Text(widget.sectionTitle!, style: _sectionTitleStyle),
             ),
           ),
         Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: onTap,
+            onTap: widget.onTap,
+            borderRadius: BorderRadius.vertical(
+              top: widget.showTopRadius ? const Radius.circular(8) : Radius.zero,
+              bottom: widget.showBottomRadius ? const Radius.circular(8) : Radius.zero,
+            ),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               height: 52,
               child: Column(
                 children: [
                   Expanded(
                     child: Row(
                       children: [
-                        Text(
-                          title,
-                          style: GoogleFonts.openSans(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
+                        Text(widget.title, style: _titleStyle),
+                        _spacing8,
                         Expanded(
-                          child: Text(
-                            subtitle ?? '',
-                            textAlign: TextAlign.right,
-                            style: GoogleFonts.openSans(
-                              color: Color(0xFF858585),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                          child: widget.subtitle != null
+                              ? Text(
+                                  widget.subtitle!,
+                                  textAlign: TextAlign.right,
+                                  style: _subtitleStyle,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                )
+                              : const SizedBox.shrink(),
                         ),
-                        if (subWidget != null) subWidget!,
-                        if (subWidget == null) const SizedBox(width: 4),
-                        if (subWidget == null)
-                          const Icon(Icons.chevron_right, color: Color(0xFF808080)),
+                        if (widget.subWidget != null)
+                          widget.subWidget!
+                        else ...[
+                          _spacing4,
+                          _chevronIcon,
+                        ],
                       ],
                     ),
                   ),
-                  if (showLine) Container(color: Color(0xFF858585), height: 1),
+                  if (widget.showLine)
+                    const Divider(
+                      color: Color(0xFF858585),
+                      height: 1,
+                      thickness: 1,
+                      indent: 0,
+                      endIndent: 0,
+                    ),
                 ],
               ),
             ),

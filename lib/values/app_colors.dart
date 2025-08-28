@@ -47,6 +47,7 @@ class AppColors {
   static const List<Color> homeItemGradient = [
     Color(0xED101010),
     Colors.transparent,
+    Colors.transparent,
     Color(0xED101010),
   ];
   static const List<Color> vipTagGradient = [Color(0xFFF4FCFF), primary];

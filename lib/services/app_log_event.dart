@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fast_ai/data/event_data.dart';
 import 'package:fast_ai/services/app_cache.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -15,8 +17,9 @@ import 'app_service.dart';
 
 void logEvent(String name, {Map<String, Object>? parameters}) {
   try {
+    log.d('[logEvent]: $name, $parameters');
     // FirebaseAnalytics.instance.logEvent(name: name, parameters: parameters);
-    // FLogEvent().logCustomEvent(name: name, params: parameters ?? {});
+    AppLogEvent().logCustomEvent(name: name, params: parameters ?? {});
   } catch (e) {
     log.e('FirebaseAnalytics: $e');
   }
@@ -26,10 +29,11 @@ void logEvent(String name, {Map<String, Object>? parameters}) {
 ///
 /// ----------------------------------------------------------------------
 
-class AdLogService {
-  static final AdLogService _instance = AdLogService._internal();
-  factory AdLogService() => _instance;
-  AdLogService._internal();
+/// 日志数据库服务
+class LogEventDBService {
+  static final LogEventDBService _instance = LogEventDBService._internal();
+  factory LogEventDBService() => _instance;
+  LogEventDBService._internal();
 
   static Box<EventData>? _box;
   static const String boxName = 'events_logs';
@@ -92,25 +96,71 @@ class AppLogEvent {
   factory AppLogEvent() => _instance;
 
   AppLogEvent._internal() {
-    // _startUploadTimer();
-    // _startRetryTimer();
+    // _startTimersAsync();
   }
 
-  final _adLogService = AdLogService();
+  final _adLogService = LogEventDBService();
   Timer? _uploadTimer;
   Timer? _retryTimer;
+  bool _isProcessingUpload = false;
+  bool _isProcessingRetry = false;
+
+  /// 异步启动定时器，避免阻塞应用启动
+  void _startTimersAsync() {
+    // 使用微任务延迟执行，避免阻塞当前调用栈
+    scheduleMicrotask(() {
+      _startUploadTimer();
+      _startRetryTimer();
+    });
+  }
 
   void _startUploadTimer() {
     _uploadTimer?.cancel();
     _uploadTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      _uploadPendingLogs();
+      // 防止重复执行，避免并发问题
+      if (!_isProcessingUpload) {
+        _uploadPendingLogsAsync();
+      }
     });
   }
 
   void _startRetryTimer() {
     _retryTimer?.cancel();
     _retryTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      _retryFailedLogs();
+      // 防止重复执行，避免并发问题
+      if (!_isProcessingRetry) {
+        _retryFailedLogsAsync();
+      }
+    });
+  }
+
+  /// 异步执行上传操作，避免阻塞定时器
+  void _uploadPendingLogsAsync() {
+    // 使用微任务异步执行，避免阻塞定时器回调
+    scheduleMicrotask(() async {
+      try {
+        _isProcessingUpload = true;
+        await _uploadPendingLogs();
+      } catch (e) {
+        log.e('[ad]log _uploadPendingLogsAsync error: $e');
+      } finally {
+        _isProcessingUpload = false;
+      }
+    });
+  }
+
+  /// 异步执行重试操作，避免阻塞定时器
+  void _retryFailedLogsAsync() {
+    // 使用微任务异步执行，避免阻塞定时器回调
+    scheduleMicrotask(() async {
+      try {
+        _isProcessingRetry = true;
+        await _retryFailedLogs();
+      } catch (e) {
+        log.e('[ad]log _retryFailedLogsAsync error: $e');
+      } finally {
+        _isProcessingRetry = false;
+      }
     });
   }
 
@@ -316,39 +366,84 @@ class AppLogEvent {
 
   Future<void> _uploadPendingLogs() async {
     try {
-      final logs = await _adLogService.getUnuploadedLogs();
+      final logs = await _adLogService.getUnuploadedLogs().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          log.w('[ad]log getUnuploadedLogs timeout, returning empty list');
+          return <EventData>[];
+        },
+      );
+
       if (logs.isEmpty) return;
 
       final List<dynamic> dataList = logs.map((log) => jsonDecode(log.data)).toList();
 
-      // // 打印 url
-      // log.d('[ad]log logCustomEvent url: ${_dio.options.baseUrl}');
-      // // 打印 datalist json 字符串
-      // log.d('[ad]log logCustomEvent dataList: ${jsonEncode(dataList)}');
-
-      final res = await _dio.post('', data: dataList);
+      // 添加超时控制，避免网络请求卡住应用
+      final res = await _dio
+          .post('', data: dataList)
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              log.w('[ad]log Upload request timeout');
+              throw TimeoutException('Upload request timeout', const Duration(seconds: 15));
+            },
+          );
 
       if (res.statusCode == 200) {
-        await _adLogService.markLogsAsSuccess(logs);
+        await _adLogService
+            .markLogsAsSuccess(logs)
+            .timeout(
+              const Duration(seconds: 5),
+              onTimeout: () {
+                log.w('[ad]log markLogsAsSuccess timeout');
+                throw TimeoutException('markLogsAsSuccess timeout', const Duration(seconds: 5));
+              },
+            );
         log.d('[ad]log Batch upload success: ${logs.length} logs');
       } else {
         log.e('[ad]log Batch upload error: ${res.statusMessage}');
       }
     } catch (e) {
       log.e('[ad]log Batch upload catch: $e');
+      // 网络错误不应影响应用正常运行，仅记录日志
     }
   }
 
   Future<void> _retryFailedLogs() async {
     try {
-      final failedLogs = await _adLogService.getFailedLogs();
+      final failedLogs = await _adLogService.getFailedLogs().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          log.w('[ad]log getFailedLogs timeout, returning empty list');
+          return <EventData>[];
+        },
+      );
+
       if (failedLogs.isEmpty) return;
 
       final List<dynamic> dataList = failedLogs.map((log) => jsonDecode(log.data)).toList();
-      final res = await _dio.post('', data: dataList);
+
+      // 添加超时控制，避免网络请求卡住应用
+      final res = await _dio
+          .post('', data: dataList)
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              log.w('[ad]log Retry request timeout');
+              throw TimeoutException('Retry request timeout', const Duration(seconds: 15));
+            },
+          );
 
       if (res.statusCode == 200) {
-        await _adLogService.markLogsAsSuccess(failedLogs);
+        await _adLogService
+            .markLogsAsSuccess(failedLogs)
+            .timeout(
+              const Duration(seconds: 5),
+              onTimeout: () {
+                log.w('[ad]log markLogsAsSuccess timeout in retry');
+                throw TimeoutException('markLogsAsSuccess timeout', const Duration(seconds: 5));
+              },
+            );
         log.d('[ad]log Retry success for: ${failedLogs.length}');
       } else {
         final ids = failedLogs.map((e) => e.id).toList();
@@ -356,10 +451,183 @@ class AppLogEvent {
       }
     } catch (e) {
       log.e('[ad]log Retry failed catch: $e');
+      // 重试失败不应影响应用正常运行，仅记录日志
     }
+  }
+
+  /// 停止所有定时器，用于应用退出时清理资源
+  void dispose() {
+    _uploadTimer?.cancel();
+    _retryTimer?.cancel();
+    _uploadTimer = null;
+    _retryTimer = null;
+    log.d('[ad]log AppLogEvent disposed');
   }
 }
 
 extension Clannish on Map<String, dynamic> {
   dynamic get logId => Platform.isAndroid ? this['kumquat']['clannish'] : this["godson"]["day"];
+}
+
+class LogPage extends StatefulWidget {
+  const LogPage({super.key});
+
+  @override
+  State<LogPage> createState() => _LogPageState();
+}
+
+class _LogPageState extends State<LogPage> {
+  final _adLogService = LogEventDBService();
+  List<EventData> _logs = [];
+  bool _isLoading = true;
+  String _filterType = 'all'; // all, pending, failed
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLogs();
+  }
+
+  Future<void> _loadLogs() async {
+    setState(() => _isLoading = true);
+    try {
+      final box = await _adLogService.box;
+      var logs = box.values.toList();
+
+      // Apply filter
+      switch (_filterType) {
+        case 'pending':
+          logs = logs.where((log) => !log.isUploaded).toList();
+          break;
+        case 'failed':
+          logs = logs.where((log) => !log.isSuccess).toList();
+          break;
+      }
+
+      // Sort by createTime descending
+      logs.sort((a, b) => b.createTime.compareTo(a.createTime));
+
+      setState(() {
+        _logs = logs;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      Get.snackbar('Error', 'Failed to load logs');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ad Logs'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              setState(() => _filterType = value);
+              _loadLogs();
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: 'all', child: Text('All Logs')),
+              const PopupMenuItem(value: 'pending', child: Text('Pending Logs')),
+              const PopupMenuItem(value: 'failed', child: Text('Failed Logs')),
+            ],
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Icon(Icons.filter_list),
+            ),
+          ),
+        ],
+      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _logs.isEmpty
+          ? const Center(child: Text('No logs found'))
+          : RefreshIndicator(
+              onRefresh: _loadLogs,
+              color: Colors.blue,
+              child: ListView.builder(
+                itemCount: _logs.length,
+                itemBuilder: (context, index) {
+                  final log = _logs[index];
+
+                  var name = '';
+                  try {
+                    var dic = jsonDecode(log.data);
+                    name = dic["wow"];
+                  } catch (e) {}
+
+                  return ListTile(
+                    title: Text('Event: ${log.eventType}'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('id: ${log.id}', style: const TextStyle(color: Colors.blue)),
+                        if (name.isNotEmpty)
+                          Text('name: $name', style: const TextStyle(color: Colors.blue)),
+                        Text('Created: ${DateTime.fromMillisecondsSinceEpoch(log.createTime)}'),
+                        if (log.uploadTime != null)
+                          Text('Uploaded: ${DateTime.fromMillisecondsSinceEpoch(log.uploadTime!)}'),
+                        Row(
+                          children: [
+                            Icon(
+                              log.isUploaded ? Icons.cloud_done : Icons.cloud_upload,
+                              color: log.isUploaded ? Colors.green : Colors.orange,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              log.isUploaded ? 'Uploaded' : 'Pending',
+                              style: TextStyle(
+                                color: log.isUploaded ? Colors.green : Colors.orange,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            if (log.isUploaded)
+                              Icon(
+                                log.isSuccess ? Icons.check_circle : Icons.error,
+                                color: log.isSuccess ? Colors.green : Colors.red,
+                                size: 16,
+                              ),
+                            const SizedBox(width: 4),
+                            if (log.isUploaded)
+                              Text(
+                                log.isSuccess ? 'Success' : 'Failed',
+                                style: TextStyle(color: log.isSuccess ? Colors.green : Colors.red),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Log Details - ${log.eventType}'),
+                          content: SingleChildScrollView(
+                            child: SelectableText(log.data), // 替换为SelectableText
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Close'),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.content_copy),
+                              onPressed: () {
+                                Clipboard.setData(ClipboardData(text: log.data));
+                                Get.snackbar('Copied', 'Log data copied to clipboard');
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+    );
+  }
 }

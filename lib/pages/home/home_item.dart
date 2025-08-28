@@ -80,7 +80,7 @@ class HomeItem extends StatelessWidget {
                     colors: AppColors.homeItemGradient,
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    stops: const [0.0, 0.1, 0.8],
+                    stops: const [0.0, 0.15, 0.6, 1.0],
                   ),
                 ),
               ),

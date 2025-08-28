@@ -6,6 +6,7 @@ import 'package:fast_ai/pages/me/me_item.dart';
 import 'package:fast_ai/pages/me/me_not_vip.dart';
 import 'package:fast_ai/pages/me/me_vip.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,6 +49,9 @@ class MePage extends StatelessWidget {
                       title: LocaleKeys.auto_trans.tr,
                       subWidget: FSwitch(value: isAuto, onChanged: ctr.autoTranslation),
                       top: 20,
+                      onTapSection: () {
+                        Get.to(LogPage());
+                      },
                     );
                   }),
                   MeItem(title: LocaleKeys.feedback.tr, onTap: () => AppRouter.toEmail()),
