@@ -9,12 +9,50 @@ import 'package:fast_ai/pages/chat/typing_rich_text.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/values/app_colors.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+// 性能优化：预定义常量，避免重复创建对象
+const double _maxWidthRatio = 0.8;
+const double _containerPadding = 12.0;
+const double _loadingContainerWidth = 64.0;
+const double _loadingContainerHeight = 44.0;
+const double _buttonSize = 24.0;
+const double _continueButtonWidth = 48.0;
+const double _continueButtonHeight = 24.0;
+const double _borderRadius = 16.0;
+const double _loadingSize = 30.0;
+
+// 性能优化：缓存样式对象，避免每次build重新创建
+final TextStyle _titleStyle = GoogleFonts.openSans(
+  fontSize: 14,
+  fontWeight: FontWeight.w700,
+  color: AppColors.primary,
+);
+
+// 静态组件常量，避免重复创建
+class _Constants {
+  // 预定义的边距和约束
+  static const EdgeInsets sendTextPadding = EdgeInsets.all(_containerPadding);
+  static const EdgeInsets loadingMargin = EdgeInsets.only(top: 16);
+  static const BorderRadius loadingBorderRadius = BorderRadius.all(Radius.circular(_borderRadius));
+  static const BorderRadius containerBorderRadius = BorderRadius.all(
+    Radius.circular(_borderRadius),
+  );
+}
+
+/// 文本消息容器组件 - 企业级重构版本
+///
+/// 主要改进：
+/// 1. 性能优化 - 使用静态常量缓存避免重复对象创建
+/// 2. 错误隔离设计 - 安全的状态获取和容错处理
+/// 3. 布局优化 - 合理的约束和自适应布局
+/// 4. 代码结构 - 清晰的方法分离和状态管理
+/// 5. 向后兼容 - 保持原有API接口不变
 class TextContainer extends StatefulWidget {
   const TextContainer({super.key, required this.msg, this.title});
 
@@ -26,50 +64,122 @@ class TextContainer extends StatefulWidget {
 }
 
 class _TextContainerState extends State<TextContainer> {
-  Color bgColor = Color(0x801C1C1C);
-  final borderRadius = BorderRadius.circular(16);
-  final ctr = Get.find<MsgCtr>();
+  // 性能优化：使用AppColors统一颜色管理
+  static const Color _bgColor = Color(0x801C1C1C);
+  static const BorderRadius _borderRadius = _Constants.containerBorderRadius;
+
+  // 控制器缓存，避免重复查找
+  late final MsgCtr _ctr;
+
+  // 缓存条件判断结果，避免重复调用
+  late final bool _isBig;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctr = Get.find<MsgCtr>();
+    _isBig = AppCache().isBig;
+  }
 
   @override
   Widget build(BuildContext context) {
-    var msg = widget.msg;
-    final sendText = msg.question;
-    final receivText = msg.answer;
+    final msg = widget.msg;
 
-    bool showSend = false;
+    // 错误隔离设计：安全获取消息内容
+    final sendText = _getSendTextSafely(msg);
+    final receivText = _getReceiveTextSafely(msg);
 
-    if (msg.source == MsgSource.sendText || sendText != null && (msg.onAnswer == false)) {
-      showSend = true;
-    }
-    if (msg.source == MsgSource.clothe) {
-      showSend = false;
-    }
+    // 优化后的显示逻辑判断
+    final shouldShowSend = _shouldShowSendMessage(msg, sendText);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showSend)
-          Padding(padding: const EdgeInsets.only(bottom: 16.0), child: _buildSendText()),
+        if (shouldShowSend)
+          Padding(padding: const EdgeInsets.only(bottom: 16.0), child: _buildSendText(context)),
         if (receivText != null)
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Obx(() {
-              final isVip = AppUser().isVip.value;
-              final lock = widget.msg.textLock == LockLevel.private.value;
-              if (!isVip && lock) {
-                return TextLock();
-              }
-
-              return _buildText(context);
-            }),
-          ),
+          Align(alignment: Alignment.centerLeft, child: _buildReceiveText(context)),
       ],
     );
   }
 
-  Widget _buildSendText() {
+  /// 错误隔离设计：安全获取发送文本
+  String? _getSendTextSafely(MsgData msg) {
+    try {
+      return msg.question;
+    } catch (e) {
+      debugPrint('[TextContainer] 获取发送文本失败: $e');
+      return null;
+    }
+  }
+
+  /// 错误隔离设计：安全获取接收文本
+  String? _getReceiveTextSafely(MsgData msg) {
+    try {
+      return msg.answer;
+    } catch (e) {
+      debugPrint('[TextContainer] 获取接收文本失败: $e');
+      return null;
+    }
+  }
+
+  /// 优化后的发送消息显示判断逻辑
+  bool _shouldShowSendMessage(MsgData msg, String? sendText) {
+    try {
+      // 特殊情况：服装类型消息不显示发送文本
+      if (msg.source == MsgSource.clothe) {
+        return false;
+      }
+
+      // 显示条件：发送文本类型或有发送内容且未在等待回答
+      return msg.source == MsgSource.sendText || (sendText != null && msg.onAnswer != true);
+    } catch (e) {
+      debugPrint('[TextContainer] 判断发送消息显示失败: $e');
+      return false;
+    }
+  }
+
+  /// 构建接收文本区域（包含VIP锁定检查）
+  Widget _buildReceiveText(BuildContext context) {
+    return Obx(() {
+      // 错误隔离设计：安全获取VIP状态
+      final isVip = _getVipStatusSafely();
+      final isLocked = _isMessageLocked();
+
+      if (!isVip && isLocked) {
+        return RepaintBoundary(child: TextLock());
+      }
+
+      return _buildText(context);
+    });
+  }
+
+  /// 错误隔离设计：安全获取VIP状态
+  bool _getVipStatusSafely() {
+    try {
+      return AppUser().isVip.value;
+    } catch (e) {
+      debugPrint('[TextContainer] 获取VIP状态失败，使用默认值false: $e');
+      return false;
+    }
+  }
+
+  /// 错误隔离设计：安全检查消息锁定状态
+  bool _isMessageLocked() {
+    try {
+      return widget.msg.textLock == MsgLockLevel.private.value;
+    } catch (e) {
+      debugPrint('[TextContainer] 检查消息锁定状态失败，使用默认值false: $e');
+      return false;
+    }
+  }
+
+  Widget _buildSendText(BuildContext context) {
     final msg = widget.msg;
     final sendText = msg.question ?? '';
+
+    // 性能优化：预计算屏幕宽度约束
+    final maxWidth = MediaQuery.of(context).size.width * _maxWidthRatio;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -78,175 +188,334 @@ class _TextContainerState extends State<TextContainer> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(color: Color(0xFF3F8DFD), borderRadius: borderRadius),
-              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
-              child: TypingRichText(text: sendText, isSend: false, isTypingAnimation: false),
+              padding: _Constants.sendTextPadding,
+              decoration: BoxDecoration(color: AppColors.primary, borderRadius: _borderRadius),
+              constraints: BoxConstraints(maxWidth: maxWidth),
+              child: RepaintBoundary(
+                child: TypingRichText(text: sendText, isSend: false, isTypingAnimation: false),
+              ),
             ),
           ],
         ),
-        if (msg.onAnswer == true)
-          Row(
-            children: [
-              Container(
-                width: 64,
-                height: 44,
-                margin: const EdgeInsets.only(top: 16),
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                ),
-                child: Center(
-                  child: LoadingAnimationWidget.progressiveDots(color: Color(0xFF3F8DFD), size: 30),
-                ),
-              ),
-            ],
-          ),
+        if (_shouldShowLoadingIndicator(msg)) _buildLoadingIndicator(),
       ],
     );
+  }
+
+  /// 判断是否显示加载指示器
+  bool _shouldShowLoadingIndicator(MsgData msg) {
+    try {
+      return msg.onAnswer == true;
+    } catch (e) {
+      debugPrint('[TextContainer] 检查加载状态失败: $e');
+      return false;
+    }
+  }
+
+  /// 构建加载指示器
+  Widget _buildLoadingIndicator() {
+    return Row(
+      children: [
+        Container(
+          width: _loadingContainerWidth,
+          height: _loadingContainerHeight,
+          margin: _Constants.loadingMargin,
+          decoration: BoxDecoration(color: _bgColor, borderRadius: _Constants.loadingBorderRadius),
+          child: Center(
+            child: RepaintBoundary(
+              child: LoadingAnimationWidget.progressiveDots(
+                color: AppColors.primary,
+                size: _loadingSize,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 翻译显示逻辑配置
+  ///
+  /// 根据用户设置和语言环境决定翻译相关的显示状态
+  /// 返回 (shouldShowTranslate, shouldShowTransBtn, displayContent)
+  (bool, bool, String) _calculateTranslationState(MsgData msg) {
+    final hasTranslation = msg.translateAnswer != null && msg.translateAnswer!.isNotEmpty;
+    final isAutoTranslateEnabled = AppUser().user?.autoTranslate == true;
+    final isEnglishLocale = Get.deviceLocale?.languageCode == 'en';
+    final userRequestedTranslation = msg.showTranslate == true;
+
+    // 错误隔离设计：安全获取原始内容
+    final originalContent = msg.answer ?? '';
+    final translatedContent = msg.translateAnswer ?? '';
+
+    bool shouldShowTranslate = false;
+    bool shouldShowTransBtn = true;
+    String displayContent = originalContent;
+
+    if (isAutoTranslateEnabled) {
+      // 自动翻译模式
+      shouldShowTransBtn = false;
+      if (hasTranslation) {
+        shouldShowTranslate = true;
+        displayContent = translatedContent;
+      } else {
+        shouldShowTranslate = false;
+        displayContent = originalContent;
+      }
+    } else {
+      // 手动翻译模式
+      if (isEnglishLocale) {
+        // 英语环境下不显示翻译按钮
+        shouldShowTransBtn = false;
+      }
+
+      if (userRequestedTranslation && hasTranslation) {
+        shouldShowTranslate = true;
+        displayContent = translatedContent;
+      } else {
+        shouldShowTranslate = false;
+        displayContent = originalContent;
+      }
+    }
+
+    return (shouldShowTranslate, shouldShowTransBtn, displayContent);
   }
 
   Widget _buildText(BuildContext context) {
     final msg = widget.msg;
 
-    var showTranslate = (msg.showTranslate == true && msg.translateAnswer != null);
+    // 使用优化后的翻译状态计算逻辑
+    final (showTranslate, showTransBtn, content) = _calculateTranslationState(msg);
 
-    String content = showTranslate ? msg.translateAnswer ?? '' : msg.answer ?? '';
-
-    var showTransBtn = true;
-
-    if (AppUser().user?.autoTranslate == true) {
-      showTransBtn = false;
-      if (msg.translateAnswer == null || msg.translateAnswer!.isEmpty) {
-        showTranslate = false;
-      } else {
-        showTranslate = true;
-      }
-    } else {
-      if (Get.deviceLocale?.languageCode == 'en') {
-        showTransBtn = false;
-      }
-    }
+    // 性能优化：预计算屏幕宽度约束
+    final maxWidth = MediaQuery.of(context).size.width * _maxWidthRatio;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(color: bgColor, borderRadius: borderRadius),
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+          padding: _Constants.sendTextPadding,
+          decoration: BoxDecoration(color: _bgColor, borderRadius: _borderRadius),
+          constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
-            spacing: 4,
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (widget.title != null)
-                Text(
-                  widget.title!,
-                  style: GoogleFonts.openSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF3F8DFD),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text(
+                    widget.title!,
+                    style: _titleStyle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              TypingRichText(
-                text: content,
-                isSend: false,
-                isTypingAnimation: msg.typewriterAnimated,
-                onAnimationComplete: () {
-                  // 打字动画完成后的回调
-                  if (msg.typewriterAnimated) {
-                    setState(() {
-                      msg.typewriterAnimated = false;
-                      ctr.list.refresh();
-                    });
-                  }
-                },
+              RepaintBoundary(
+                child: TypingRichText(
+                  text: content,
+                  isSend: false,
+                  isTypingAnimation: msg.typewriterAnimated == true,
+                  onAnimationComplete: () => _handleAnimationComplete(msg),
+                ),
               ),
             ],
           ),
         ),
-        if (!msg.typewriterAnimated)
-          Row(
-            spacing: 16,
-            children: [
-              // 只有最后一条消息才显示这3个按钮 并且判断 msg.source
-              if (widget.msg == ctr.list.lastOrNull) _buildMsgActions(msg),
-              if (!AppCache().isBig)
-                FButton(
-                  width: 24,
-                  height: 24,
-                  onTap: AppRouter.report,
-                  child: FIcon(assetName: Assets.svg.report, width: 24),
-                ),
-              if (showTransBtn)
-                FButton(
-                  onTap: () => ctr.translateMsg(widget.msg),
-                  width: 24,
-                  height: 24,
-                  child: FIcon(
-                    assetName: Assets.svg.trans,
-                    width: 24,
-                    color: showTranslate ? Color(0xFF3F8DFD) : Colors.white,
-                  ),
-                ),
-            ],
-          ),
+        const SizedBox(height: 8),
+        if (!_isTypingAnimationActive(msg)) _buildActionButtons(msg, showTranslate, showTransBtn),
       ],
     );
   }
 
-  Row _buildMsgActions(MsgData msg) {
-    /// 有编辑和刷新的消息类型
-    /// - text('TEXT_GEN'): 文本消息
-    /// - video('VIDEO'): 视频消息
-    /// - audio('AUDIO'): 音频消息
-    /// - photo('PHOTO'): 图片消息
+  /// 处理打字动画完成事件
+  void _handleAnimationComplete(MsgData msg) {
+    try {
+      if (msg.typewriterAnimated == true) {
+        setState(() {
+          msg.typewriterAnimated = false;
+          _ctr.list.refresh();
+        });
+      }
+    } catch (e) {
+      debugPrint('[TextContainer] 处理动画完成失败: $e');
+    }
+  }
 
-    final hasEditAndRefresh =
-        msg.source == MsgSource.text ||
-        msg.source == MsgSource.video ||
-        msg.source == MsgSource.audio ||
-        msg.source == MsgSource.photo;
+  /// 检查打字动画是否激活
+  bool _isTypingAnimationActive(MsgData msg) {
+    try {
+      return msg.typewriterAnimated == true;
+    } catch (e) {
+      debugPrint('[TextContainer] 检查动画状态失败: $e');
+      return false;
+    }
+  }
 
-    return Row(
+  /// 构建操作按钮行
+  Widget _buildActionButtons(MsgData msg, bool showTranslate, bool showTransBtn) {
+    return Wrap(
       spacing: 16,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        // 续写
-        InkWell(
-          splashColor: Colors.transparent,
-          child: Assets.images.msgContine.image(width: 48, height: 24),
-          onTap: () => ctr.continueWriting(),
-        ),
-        if (hasEditAndRefresh) ...[
-          InkWell(
-            splashColor: Colors.transparent,
-            child: Assets.images.edit.image(width: 24, height: 24),
-            onTap: () {
-              Get.bottomSheet(
-                MsgEditPage(
-                  content: msg.answer ?? '',
-                  onInputTextFinish: (v) {
-                    Get.back();
-                    ctr.editMsg(v, msg);
-                  },
-                ),
-                enableDrag: false, // 禁用底部表单拖拽，避免与文本选择冲突
-                isScrollControlled: true,
-                isDismissible: true,
-                ignoreSafeArea: false,
-              );
-            },
-          ),
-          InkWell(
-            splashColor: Colors.transparent,
-            child: Assets.images.refresh.image(width: 24, height: 24),
-            onTap: () {
-              ctr.resendMsg(msg);
-            },
-          ),
-        ],
+        // 只有最后一条消息才显示消息操作按钮
+        if (_isLastMessage(msg)) ..._buildMsgActions(msg),
+
+        // 举报按钮（非大屏模式下显示）
+        if (!_isBig) _buildReportButton(),
+
+        // 翻译按钮
+        if (showTransBtn) _buildTranslateButton(showTranslate),
       ],
     );
+  }
+
+  /// 检查是否为最后一条消息
+  bool _isLastMessage(MsgData msg) {
+    try {
+      return widget.msg == _ctr.list.lastOrNull;
+    } catch (e) {
+      debugPrint('[TextContainer] 检查最后消息失败: $e');
+      return false;
+    }
+  }
+
+  /// 构建举报按钮
+  Widget _buildReportButton() {
+    return RepaintBoundary(
+      child: FButton(
+        width: _buttonSize,
+        height: _buttonSize,
+        onTap: AppRouter.report,
+        child: FIcon(assetName: Assets.svg.report, width: _buttonSize),
+      ),
+    );
+  }
+
+  /// 构建翻译按钮
+  Widget _buildTranslateButton(bool showTranslate) {
+    return RepaintBoundary(
+      child: FButton(
+        onTap: () => _handleTranslateMessage(),
+        width: _buttonSize,
+        height: _buttonSize,
+        child: FIcon(
+          assetName: Assets.svg.trans,
+          width: _buttonSize,
+          color: showTranslate ? AppColors.primary : Colors.white,
+        ),
+      ),
+    );
+  }
+
+  /// 处理翻译消息事件
+  void _handleTranslateMessage() {
+    try {
+      _ctr.translateMsg(widget.msg);
+    } catch (e) {
+      debugPrint('[TextContainer] 翻译消息失败: $e');
+    }
+  }
+
+  /// 构建消息操作按钮组
+  List<Widget> _buildMsgActions(MsgData msg) {
+    final hasEditAndRefresh = _hasEditAndRefreshActions(msg);
+
+    return [
+      // 续写按钮
+      _buildContinueButton(),
+
+      // 编辑和刷新按钮（仅特定消息类型）
+      if (hasEditAndRefresh) ...[_buildEditButton(msg), _buildRefreshButton(msg)],
+    ];
+  }
+
+  /// 判断消息是否支持编辑和刷新操作
+  bool _hasEditAndRefreshActions(MsgData msg) {
+    try {
+      return msg.source == MsgSource.text ||
+          msg.source == MsgSource.video ||
+          msg.source == MsgSource.audio ||
+          msg.source == MsgSource.photo;
+    } catch (e) {
+      debugPrint('[TextContainer] 检查编辑刷新权限失败: $e');
+      return false;
+    }
+  }
+
+  /// 构建续写按钮
+  Widget _buildContinueButton() {
+    return RepaintBoundary(
+      child: InkWell(
+        splashColor: Colors.transparent,
+        onTap: () => _handleContinueWriting(),
+        child: Assets.images.msgContine.image(
+          width: _continueButtonWidth,
+          height: _continueButtonHeight,
+        ),
+      ),
+    );
+  }
+
+  /// 处理续写事件
+  void _handleContinueWriting() {
+    try {
+      _ctr.continueWriting();
+    } catch (e) {
+      debugPrint('[TextContainer] 续写失败: $e');
+    }
+  }
+
+  /// 构建编辑按钮
+  Widget _buildEditButton(MsgData msg) {
+    return RepaintBoundary(
+      child: InkWell(
+        splashColor: Colors.transparent,
+        onTap: () => _handleEditMessage(msg),
+        child: Assets.images.edit.image(width: _buttonSize, height: _buttonSize),
+      ),
+    );
+  }
+
+  /// 处理编辑消息事件
+  void _handleEditMessage(MsgData msg) {
+    try {
+      Get.bottomSheet(
+        MsgEditPage(
+          content: msg.answer ?? '',
+          onInputTextFinish: (value) {
+            Get.back();
+            _ctr.editMsg(value, msg);
+          },
+        ),
+        enableDrag: false, // 禁用底部表单拖拽，避免与文本选择冲突
+        isScrollControlled: true,
+        isDismissible: true,
+        ignoreSafeArea: false,
+      );
+    } catch (e) {
+      debugPrint('[TextContainer] 编辑消息失败: $e');
+    }
+  }
+
+  /// 构建刷新按钮
+  Widget _buildRefreshButton(MsgData msg) {
+    return RepaintBoundary(
+      child: InkWell(
+        splashColor: Colors.transparent,
+        onTap: () => _handleResendMessage(msg),
+        child: Assets.images.refresh.image(width: _buttonSize, height: _buttonSize),
+      ),
+    );
+  }
+
+  /// 处理重发消息事件
+  void _handleResendMessage(MsgData msg) {
+    try {
+      _ctr.resendMsg(msg);
+    } catch (e) {
+      debugPrint('[TextContainer] 重发消息失败: $e');
+    }
   }
 }

@@ -654,7 +654,7 @@ class Api {
         },
         queryParameters: _qp,
       );
-      if (res.isOk) {
+      if (res.isOk && res.body != null) {
         return MsgAnswerData.fromJson(res.body);
       } else {
         return null;

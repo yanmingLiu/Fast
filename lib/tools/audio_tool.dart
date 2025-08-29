@@ -3,31 +3,25 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-//终止操作，播放下一个，上一个会被迫终止
-typedef StopAction = void Function();
-
+/// 音频工具类 - 提供基础音频操作功能
+///
+/// 重构说明：
+/// - 简化为工具类，专注于基础音频操作
+/// - 移除复杂的状态管理，由AudioManager负责
+/// - 提供静态方法，更容易使用
 class AudioTool {
-  static final AudioTool _instance = AudioTool._internal();
+  static AudioContext? _audioContextDefault;
 
-  AudioTool._internal();
-
-  factory AudioTool() {
-    return _instance;
+  /// 初始化音频播放器全局配置
+  static Future<void> initAudioPlayer() async {
+    await _setupSpeaker();
   }
 
-  AudioContext? audioContextDefault;
-
-  var players = <String, AudioPlayer>{};
-
-  StopAction? _stopAction;
-
-  final _subscriptions = <StreamSubscription>[];
-
-  void initAudioPlayer() {
-    _setupSpeaker();
-  }
-
-  String audioTimer(int value) {
+  /// 格式化音频时间显示
+  ///
+  /// [value] 时间值（秒）
+  /// 返回格式化的时间字符串，如 "1:23" 或 "1h2:34"
+  static String audioTimer(int value) {
     int hours = value ~/ 3600;
     int minutes = (value % 3600) ~/ 60;
     int seconds = value % 60;
@@ -40,20 +34,53 @@ class AudioTool {
     }
 
     // 格式化分钟和秒，确保两位数显示
-    str.write('${minutes.toString().padLeft(2, '0')}’');
-    str.write('${seconds.toString().padLeft(2, '0')}’’');
+    str.write('${minutes.toString().padLeft(2, '0')}:');
+    str.write(seconds.toString().padLeft(2, '0'));
 
     return str.toString();
   }
 
-  //初始化设置播放器属性
-  void _setupSpeaker() async {
-    audioContextDefault = await _getAudioContext();
-    await AudioPlayer.global.setAudioContext(audioContextDefault!);
+  /// 创建新的音频播放器实例
+  ///
+  /// [playerId] 播放器唯一标识
+  /// 返回配置好的AudioPlayer实例
+  static Future<AudioPlayer> createAudioPlayer(String playerId) async {
+    final player = AudioPlayer(playerId: playerId);
+
+    // 应用全局音频上下文配置
+    if (_audioContextDefault != null) {
+      await player.setAudioContext(_audioContextDefault!);
+    }
+
+    return player;
   }
 
-  //获取播放器属性
-  Future<AudioContext> _getAudioContext() async {
+  /// 获取音频文件时长
+  ///
+  /// [source] 音频源
+  /// 返回音频时长，获取失败时返回null
+  static Future<Duration?> getAudioDuration(Source source) async {
+    try {
+      final tempPlayer = AudioPlayer();
+      await tempPlayer.setSource(source);
+      final duration = await tempPlayer.getDuration();
+      await tempPlayer.dispose();
+      return duration;
+    } catch (e) {
+      debugPrint('⚠️ AudioTool: 获取音频时长失败: $e');
+      return null;
+    }
+  }
+
+  /// 初始化音频上下文配置
+  static Future<void> _setupSpeaker() async {
+    _audioContextDefault = await _getAudioContext();
+    await AudioPlayer.global.setAudioContext(_audioContextDefault!);
+    debugPrint('🎧 AudioTool: 全局音频配置初始化完成');
+  }
+
+  /// 获取平台特定的音频上下文配置
+  static Future<AudioContext> _getAudioContext() async {
     bool isSpeakerphoneOn = true;
 
     return AudioContext(
@@ -69,102 +96,6 @@ class AudioTool {
     );
   }
 
-  Future<bool> play(
-    String id,
-    Source source, {
-    required StopAction stopAction,
-    double? volume,
-    double? balance,
-    AudioContext? ctx,
-    Duration? position,
-    PlayerMode? mode,
-  }) async {
-    _setupSpeaker();
-    //回掉之前的停止操作
-    _stopAction?.call();
-
-    //构建新的播放器
-    if (players[id] == null) {
-      players[id] = AudioPlayer(playerId: id);
-    }
-    //移除之前的播放器
-    players.forEach((key, value) async {
-      if (key != id) {
-        await value.dispose();
-      }
-    });
-    _cancelSubscription();
-    players.removeWhere((key, value) => key != id);
-    //使用默认的context
-    var audioContext = ctx ?? audioContextDefault;
-
-    _stopAction = stopAction;
-    var audioPlayer = players[id];
-    _addSubscription(
-      audioPlayer!.onPlayerStateChanged.listen((event) {
-        debugPrint('onPlayerStateChanged: $event');
-        if (event == PlayerState.stopped || event == PlayerState.completed) {
-          _stopAction?.call();
-          _stopAction = null;
-        }
-      }),
-    );
-
-    try {
-      await audioPlayer.play(
-        source,
-        volume: volume,
-        balance: balance,
-        ctx: audioContext,
-        position: position,
-        mode: mode,
-      );
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  bool isPlaying(String playerId) {
-    return players[playerId]?.state == PlayerState.playing;
-  }
-
-  Future<Duration?> getCurrentPosition(String playerId) async {
-    if (players[playerId]?.state == PlayerState.playing) {
-      return players[playerId]!.getCurrentPosition();
-    }
-    return null;
-  }
-
-  void stop(String id) {
-    players[id]?.stop();
-  }
-
-  void stopAll() {
-    for (var player in players.values) {
-      player.stop();
-    }
-  }
-
-  void _addSubscription(StreamSubscription streamSubscription) {
-    _subscriptions.add(streamSubscription);
-  }
-
-  void _cancelSubscription() {
-    if (_subscriptions.isNotEmpty) {
-      for (var value in _subscriptions) {
-        value.cancel();
-      }
-      _subscriptions.clear();
-    }
-  }
-
-  void release() {
-    players.forEach((key, value) {
-      value.dispose();
-    });
-    players.clear();
-    _stopAction = null;
-    _cancelSubscription();
-  }
+  /// 获取当前全局音频上下文
+  static AudioContext? get globalAudioContext => _audioContextDefault;
 }

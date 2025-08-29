@@ -12,6 +12,7 @@ import 'package:fast_ai/pages/mian/launch_page.dart';
 import 'package:fast_ai/pages/mian/main_page.dart';
 import 'package:fast_ai/pages/vip/gems_page.dart';
 import 'package:fast_ai/pages/vip/vip_page.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
@@ -43,7 +44,6 @@ class Routers {
     // 主要路由
     GetPage(name: main, page: () => const MainPage()),
     GetPage(name: splash, page: () => const LaunchPage()),
-    GetPage(name: vip, page: () => const VipPage()),
     GetPage(name: gems, page: () => const GemsPage()),
     GetPage(name: search, page: () => const SearchPage()),
     GetPage(name: msg, page: () => MsgPage()),
@@ -62,6 +62,15 @@ class Routers {
     ),
     GetPage(name: videoPreview, page: () => const VideoPreview(), fullscreenDialog: true),
     GetPage(name: homeFilter, page: () => const HomeFiltterPage(), transition: Transition.downToUp),
+
+    GetPage(
+      name: vip,
+      page: () => PopScope(
+        canPop: false, // 禁止返回键
+        child: const VipPage(),
+      ),
+      // popGesture: false, // 禁用 iOS 侧滑返回
+    ),
 
     // 已注释路由（暂未启用）
     // GetPage(name: genPage, page: () => const GenPage()),

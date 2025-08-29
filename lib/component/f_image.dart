@@ -24,20 +24,8 @@ class FImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final placeholder = Container(
-      width: width,
-      height: height,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
-        borderRadius: borderRadius,
-        border: border,
-      ),
-      child: Assets.images.imagePlace.image(width: 24),
-    );
-
     if (url == null || url!.isEmpty) {
-      return placeholder;
+      return _buildPlaceholder();
     }
 
     return ExtendedImage.network(
@@ -54,11 +42,25 @@ class FImage extends StatelessWidget {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
           case LoadState.failed:
-            return placeholder;
+            return _buildPlaceholder();
           case LoadState.completed:
             return null;
         }
       },
+    );
+  }
+
+  Container _buildPlaceholder() {
+    return Container(
+      width: width,
+      height: height,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: borderRadius,
+        border: border,
+      ),
+      child: Assets.images.imagePlace.image(width: 24),
     );
   }
 }

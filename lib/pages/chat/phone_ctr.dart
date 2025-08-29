@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/data/msg_answer_data.dart';
@@ -13,12 +11,10 @@ import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/tools/audio_tool.dart';
-import 'package:fast_ai/tools/downloader.dart';
+import 'package:fast_ai/services/audio_manager.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -186,7 +182,7 @@ class PhoneCtr extends GetxController {
                 _callTimer = null;
                 _durationTimer?.cancel();
                 _durationTimer = null;
-                AudioTool().stopAll();
+                AudioManager.instance.stopAll();
                 Vibration.cancel();
                 log.d('All resources released');
               })
@@ -222,14 +218,16 @@ class PhoneCtr extends GetxController {
   }
 
   void _onCallTimeout() {
-    log.d('_onCallTimeout, callState: ${callState.value}, currentRoute: ${NavigationObs().curRoute?.settings.name}');
+    log.d(
+      '_onCallTimeout, callState: ${callState.value}, currentRoute: ${NavigationObs().curRoute?.settings.name}',
+    );
     _stopVibration();
     // Check if we're still on the phone route and in incoming state
     if (callState.value == CallState.incoming) {
       // Additional check to ensure we're on the correct page
       final currentRouteName = NavigationObs().curRoute?.settings.name;
       log.d('_onCallTimeout - current route: $currentRouteName, expected: ${Routers.phone}');
-      
+
       if (currentRouteName == Routers.phone || currentRouteName == null) {
         // Even if we can't determine the route, if we're in incoming state for 15+ seconds,
         // we should probably hang up
@@ -255,7 +253,7 @@ class PhoneCtr extends GetxController {
     if (AppUser().isBalanceEnough(ConsumeFrom.call)) {
       AppUser().consume(ConsumeFrom.call);
     } else {
-      SmartDialog.showToast(LocaleKeys.not_enough_coins.tr);
+      FToast.toast(LocaleKeys.not_enough_coins.tr);
       Future.delayed(const Duration(milliseconds: 1000));
       onTapHangup();
     }
@@ -273,7 +271,7 @@ class PhoneCtr extends GetxController {
     } catch (e) {
       _hasSpeech = false;
       log.d('initialize error: $e');
-      SmartDialog.showToast(LocaleKeys.speech_recognition_not_supported.tr);
+      FToast.toast(LocaleKeys.speech_recognition_not_supported.tr);
     }
   }
 
@@ -287,7 +285,7 @@ class PhoneCtr extends GetxController {
 
     if (!_hasSpeech) {
       log.d('Speech recognition not supported on this device.');
-      SmartDialog.showToast(LocaleKeys.speech_recognition_not_supported.tr);
+      FToast.toast(LocaleKeys.speech_recognition_not_supported.tr);
       onTapHangup();
       return;
     }
@@ -298,9 +296,9 @@ class PhoneCtr extends GetxController {
     _listen();
   }
 
-  void _stopListening() {
+  Future<void> _stopListening() async {
     log.d('_stopListening');
-    _speech.stop();
+    await _speech.stop();
   }
 
   Future<void> _listen() async {
@@ -335,12 +333,13 @@ class PhoneCtr extends GetxController {
         messageReplyRsp = msg;
         _playResponseAudio(msg);
       } else {
-        SmartDialog.showToast(LocaleKeys.some_error_try_again.tr);
+        FToast.toast(LocaleKeys.some_error_try_again.tr);
+        await Future.delayed(Duration(seconds: 2));
         _restartRecording();
       }
     } catch (e) {
       log.d('Error requesting answer: $e');
-      SmartDialog.showToast(LocaleKeys.some_error_try_again.tr);
+      FToast.toast(LocaleKeys.some_error_try_again.tr);
     }
   }
 
@@ -350,38 +349,46 @@ class PhoneCtr extends GetxController {
     var userId = AppUser().user?.id;
     var nickname = AppUser().user?.nickname;
     if (roleId == null || userId == null || nickname == null) {
-      SmartDialog.showToast(LocaleKeys.some_error_try_again.tr);
+      FToast.toast(LocaleKeys.some_error_try_again.tr);
       return null;
     }
 
-    return await Api.sendVoiceChatMsg(
+    final res = await Api.sendVoiceChatMsg(
       userId: userId,
       nickName: nickname,
       message: lastWords.value,
       roleId: roleId,
     );
+    if (res?.msgId != null && res?.answer != null) {
+      return res;
+    } else {
+      return null;
+    }
   }
 
-  void _restartRecording() {
+  void _restartRecording() async {
     log.d('_restartRecording');
+    await _stopListening();
     _startListening();
   }
 
   void _playResponseAudio(MsgAnswerData msg) async {
     log.d('_playResponseAudio');
     final url = msg.answer?.voiceUrl;
-    if (url == null || url.isEmpty) {
+    final id = msg.msgId;
+    if (url == null || url.isEmpty || id == null) {
       _playAudioFallback();
       return;
     }
     await Future.delayed(const Duration(seconds: 1));
-    final file = await _downloadFileWithRetry(url, 5);
-    if (file != null && file.path.isNotEmpty) {
-      _playAudioFile(file.path, msg);
-    } else {
-      _playAudioFallback();
-      log.d('Failed to download file after 5 attempts');
-    }
+    answerText = messageReplyRsp?.answer?.content ?? '';
+    callState.value = CallState.answered;
+
+    // 开始播放音频
+    await AudioManager.instance.startPlay(id, url);
+
+    // 监听音频播放状态
+    _listenToAudioState(id);
   }
 
   void _playAudioFallback() {
@@ -390,52 +397,46 @@ class PhoneCtr extends GetxController {
     Future.delayed(const Duration(seconds: 1), _restartRecording);
   }
 
-  Future<File?> _downloadFileWithRetry(String url, int retries) async {
-    File? file;
-    for (int attempt = 1; attempt <= retries; attempt++) {
-      try {
-        file = await _downloadFile(url);
-        log.d('_downloadFileWithRetry: ${file?.path}');
-        if (file != null && file.path.isNotEmpty) {
-          return file;
-        }
-      } catch (e) {
-        log.d('_downloadFileWithRetry error: $e');
-        SmartDialog.showToast(LocaleKeys.some_error_try_again.tr);
+  /// 监听指定音频的播放状态
+  void _listenToAudioState(String msgId) {
+    // 方法1: 监听全局播放状态变化
+    ever(AudioManager.instance.currentPlayingAudio, (audioInfo) {
+      if (audioInfo?.msgId == msgId && audioInfo != null) {
+        // 当前正在播放我们的音频
+        log.d('🎧 PhoneCtr: 音频开始播放, msgId: $msgId, 状态: ${audioInfo.state}');
+        _handleAudioPlaying(audioInfo);
+      } else if (audioInfo == null) {
+        // 音频播放停止或完成
+        log.d('🎧 PhoneCtr: 音频播放结束, msgId: $msgId');
+        _handleAudioStopped(msgId);
       }
-    }
-    return null;
-  }
-
-  Future<File?> _downloadFile(String url) async {
-    final path = await Downloader.downloadFile(
-      url,
-      fileType: FileType.audio,
-      fileExtension: '.mp3',
-    );
-    if (path == null || path.isEmpty) {
-      return null;
-    }
-    return File(path);
-  }
-
-  void _playAudioFile(String path, MsgAnswerData msg) async {
-    log.d('_playAudioFile: $path');
-
-    final id = messageReplyRsp?.msgId;
-    if (id != null) {
-      answerText = messageReplyRsp?.answer?.content ?? '';
-
-      callState.value = CallState.answered;
-
-      await AudioTool().play(id, DeviceFileSource(path), stopAction: _stopPlayAnimation);
-    }
-  }
-
-  void _stopPlayAnimation() {
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      log.d('_stopPlayAnimation  callState: ${callState.value}');
-      _startListening();
     });
+  }
+
+  /// 处理音频正在播放
+  void _handleAudioPlaying(AudioStateInfo audioInfo) {
+    log.d('🎧 PhoneCtr: 处理音频播放状态: ${audioInfo.state}');
+
+    switch (audioInfo.state) {
+      case AudioPlayState.downloading:
+        log.d('🎧 PhoneCtr: 音频下载中...');
+        break;
+      case AudioPlayState.playing:
+        log.d('🎧 PhoneCtr: 音频正在播放, 时长: ${audioInfo.audioDuration}ms');
+        break;
+      case AudioPlayState.error:
+        log.d('⚠️ PhoneCtr: 音频播放错误: ${audioInfo.errorMessage}');
+        _playAudioFallback();
+        break;
+      default:
+        break;
+    }
+  }
+
+  /// 处理音频停止
+  void _handleAudioStopped(String msgId) {
+    log.d('🎧 PhoneCtr: 音频播放停止, msgId: $msgId');
+    // 音频播放完成，重新开始录音
+    Future.delayed(const Duration(milliseconds: 500), _restartRecording);
   }
 }

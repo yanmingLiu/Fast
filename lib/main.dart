@@ -30,7 +30,6 @@ void main() async {
   );
 
   try {
-    // 初始化 AppFlow
     AppService().init(env: kReleaseMode ? Environment.prod : Environment.dev);
 
     await AppService().start();
@@ -99,7 +98,17 @@ class MyApp extends StatelessWidget {
           orElse: () => supportedLocales.first,
         );
       },
-      builder: FlutterSmartDialog.init(loadingBuilder: (msg) => FLoading.custom()),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(1.0), // 固定字体缩放比例为1.0，不跟随系统字体大小
+          ),
+          child: FlutterSmartDialog.init(loadingBuilder: (msg) => FLoading.custom())(
+            context,
+            child,
+          ),
+        );
+      },
     );
   }
 }

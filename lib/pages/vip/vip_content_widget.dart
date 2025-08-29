@@ -95,14 +95,14 @@ class VipContentWidget extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
           decoration: BoxDecoration(
             color: const Color(0x801C1C1C),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: const Color(0x33FFFFFF), width: 1),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 16,
             children: [if (AppCache().isBig) _buildSubtitle(), _buildContent()],
           ),

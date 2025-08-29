@@ -89,55 +89,12 @@ enum MsgSource {
   static MsgSource? fromSource(String? source) => _map[source];
 }
 
-enum SendStatus {
-  sending, // 0 - 发送中
-  sent, // 1 - 发送成功
-  failed, // 2 - 发送失败
+enum MsgLockLevel {
+  normal,
+  private;
+
+  String get value => name.toUpperCase();
 }
-
-extension SendStatusConverter on SendStatus {
-  static const Map<SendStatus, int> _statusToInt = {
-    SendStatus.sending: 0,
-    SendStatus.sent: 1,
-    SendStatus.failed: 2,
-  };
-
-  static const Map<int, SendStatus> _intToStatus = {
-    0: SendStatus.sending,
-    1: SendStatus.sent,
-    2: SendStatus.failed,
-  };
-
-  int toInt() => _statusToInt[this]!;
-
-  static SendStatus fromInt(int value) {
-    return _intToStatus[value] ?? (throw ArgumentError('Invalid value for SendStatus: $value'));
-  }
-}
-
-enum LockLevel { normal, private }
-
-extension LockLevelConverter on LockLevel {
-  static const Map<LockLevel, String> _levelToStr = {
-    LockLevel.normal: 'NORMAL',
-    LockLevel.private: 'PRIVATE',
-  };
-
-  static const Map<String, LockLevel> _strToLevel = {
-    'NORMAL': LockLevel.normal,
-    'PRIVATE': LockLevel.private,
-  };
-
-  String get value => _levelToStr[this]!;
-
-  static LockLevel fromValue(String value) => _strToLevel[value]!;
-}
-
-enum MsgEvent { add, update, remove }
-
-enum SessionEvent { add, update, remove, clear }
-
-enum LogEventName { log, error, warning }
 
 enum ClothingState { init, chooseImage, generated }
 

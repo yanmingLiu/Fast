@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,7 +39,7 @@ class PhotoContainer extends StatelessWidget {
     if (msg.source == MsgSource.clothe) {
       imageUrl = msg.giftImg ?? '';
     }
-    var isLockImage = msg.mediaLock == LockLevel.private.value;
+    var isLockImage = msg.mediaLock == MsgLockLevel.private.value;
     var imageWidth = 200.0;
     var imageHeight = 240.0;
 

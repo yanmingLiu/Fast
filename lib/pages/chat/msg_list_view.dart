@@ -1,5 +1,5 @@
-import 'package:fast_ai/pages/chat/msg_cell.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
+import 'package:fast_ai/pages/chat/msg_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -65,13 +65,19 @@ class _MsgListViewState extends State<MsgListView> {
                 padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top: top, bottom: bottom),
                 shrinkWrap: true,
                 reverse: true,
+                // 增强状态保持，解决AudioContainer被回收问题
+                addAutomaticKeepAlives: true,
+                addRepaintBoundaries: true,
+                addSemanticIndexes: false,
+                // 预加载缓存范围，提高性能
+                cacheExtent: 2000,
                 itemBuilder: (context, index) {
                   var item = list[index];
                   return AutoScrollTag(
                     controller: autoController,
                     index: index,
-                    key: ValueKey(index),
-                    child: MsgCell(msg: item),
+                    key: ValueKey('${item.id}_${item.source.name}'), // 更稳定的key
+                    child: MsgItem(msg: item),
                   );
                 },
                 separatorBuilder: (context, index) {

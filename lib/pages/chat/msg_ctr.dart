@@ -55,18 +55,7 @@ class MsgCtr extends GetxController {
   var tmpSendId = '16549084165484';
   MsgData? tmpSendMsg;
 
-  // 显示文字流的临时消息 id
-  var tempId = '';
-
   bool isRecieving = false; // 正在接收消息
-  bool isMediaStarted = false; // json 解析中
-  bool isLock = false; // 是否加密
-
-  final kTagNormal = 'TEXT-LOCK:NORMAL';
-  final kTagPrivate = 'TEXT-LOCK:PRIVATE';
-  final kErrorMsg = 'Hmm… we lost connection for a bit. Please try again!';
-
-  StringBuffer buffer = StringBuffer();
 
   @override
   void onInit() {
@@ -383,7 +372,7 @@ class MsgCtr extends GetxController {
 
       var body = {'character_id': charId, 'conversation_id': conversationId, 'user_id': uid};
       if (text != null) {
-        body['text'] = text;
+        body['message'] = text;
       }
 
       isRecieving = true;
@@ -404,26 +393,31 @@ class MsgCtr extends GetxController {
         progressSSEError();
       }
     } catch (e) {
-      FLoading.dismiss();
       progressSSEError();
       log.e(e);
+    } finally {
+      FLoading.dismiss();
+      isRecieving = false;
     }
   }
 
   void progressSSEError() {
     tmpSendMsg?.onAnswer = false;
 
-    MsgData msg = MsgData(id: DateTime.now().millisecondsSinceEpoch.toString(), answer: kErrorMsg);
+    MsgData msg = MsgData(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      answer: LocaleKeys.some_error_try_again.tr,
+    );
     msg.source = MsgSource.error;
     msg.answer = LocaleKeys.some_error_try_again.tr;
     list.add(msg);
   }
 
   Future<void> progressReceived(MsgData msg) async {
-    if (msg.conversationId == sessionId) {
+    if (msg.conversationId != sessionId) {
       return;
     }
-    if (isLock) {
+    if (msg.textLock == MsgLockLevel.private.value) {
       msg.typewriterAnimated = AppUser().isVip.value;
     } else {
       msg.typewriterAnimated = true;
@@ -559,18 +553,21 @@ class MsgCtr extends GetxController {
 
     // 内容为空直接返回
     if (content == null || content.isEmpty) return;
-    if (id == null) return;
 
     // 定义更新消息的方法
     Future<void> updateMessage({required bool showTranslate, String? translate}) async {
       msg.showTranslate = showTranslate;
 
-      _transCache(isAdd: showTranslate, id: id);
+      if (id != null) {
+        _transCache(isAdd: showTranslate, id: id);
+      }
 
       if (translate != null) {
         msg.translateAnswer = translate;
 
-        Api.saveMsgTrans(id: id, text: translate);
+        if (id != null) {
+          Api.saveMsgTrans(id: id, text: translate);
+        }
       }
       list.refresh();
     }

@@ -7,6 +7,7 @@ import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/services/audio_manager.dart';
 import 'package:fast_ai/services/network_service.dart';
 import 'package:fast_ai/services/switch_service.dart';
 import 'package:fast_ai/tools/audio_tool.dart';
@@ -35,7 +36,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.paused:
         debugPrint('App is in paused state 在后台运行');
-        AudioTool().stopAll();
+        AudioManager.instance.stopAll();
         break;
       default:
         break;

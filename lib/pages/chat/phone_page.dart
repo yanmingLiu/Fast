@@ -87,15 +87,13 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
       return Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(16),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Color(0x333F8DFD),
-                  borderRadius: BorderRadius.circular(30),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: 32,
+                color: Color(0x333F8DFD),
                 child: Row(
                   spacing: 8,
                   children: [
@@ -190,7 +188,7 @@ class PhoneBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
       child: Column(
         children: [
@@ -234,7 +232,7 @@ class PhoneTitle extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(30),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
@@ -255,30 +253,32 @@ class PhoneTitle extends StatelessWidget {
                         height: 48,
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            role.name ?? '',
-                            maxLines: 1,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.openSans(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          if (role.age != null)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              LocaleKeys.age_years_olds.trParams({'age': role.age.toString()}),
+                              role.name ?? '',
+                              maxLines: 1,
+                              textAlign: TextAlign.left, // 修改为左对齐
+                              overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.openSans(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFFDEDEDE),
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                        ],
+                            if (role.age != null)
+                              Text(
+                                LocaleKeys.age_years_olds.trParams({'age': role.age.toString()}),
+                                style: GoogleFonts.openSans(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xFFDEDEDE),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

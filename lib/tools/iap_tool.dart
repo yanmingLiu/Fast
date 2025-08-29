@@ -365,7 +365,7 @@ class IAPTool {
 
   // 工具方法：标记购买为已处理
   Future<void> _markPurchaseAsProcessed(String? purchaseID) async {
-    if (purchaseID != null) await _storage.write(key: purchaseID, value: 'processed');
+    // if (purchaseID != null) await _storage.write(key: purchaseID, value: 'processed');
   }
 
   Future<bool> _isPurchaseProcessed(String? purchaseID) async {
