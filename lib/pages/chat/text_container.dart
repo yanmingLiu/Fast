@@ -45,14 +45,7 @@ class _Constants {
   );
 }
 
-/// 文本消息容器组件 - 企业级重构版本
-///
-/// 主要改进：
-/// 1. 性能优化 - 使用静态常量缓存避免重复对象创建
-/// 2. 错误隔离设计 - 安全的状态获取和容错处理
-/// 3. 布局优化 - 合理的约束和自适应布局
-/// 4. 代码结构 - 清晰的方法分离和状态管理
-/// 5. 向后兼容 - 保持原有API接口不变
+/// 文本消息容器组件
 class TextContainer extends StatefulWidget {
   const TextContainer({super.key, required this.msg, this.title});
 
@@ -97,8 +90,7 @@ class _TextContainerState extends State<TextContainer> {
       children: [
         if (shouldShowSend)
           Padding(padding: const EdgeInsets.only(bottom: 16.0), child: _buildSendText(context)),
-        if (receivText != null)
-          Align(alignment: Alignment.centerLeft, child: _buildReceiveText(context)),
+        if (receivText != null) _buildReceiveText(context),
       ],
     );
   }
@@ -147,7 +139,7 @@ class _TextContainerState extends State<TextContainer> {
       final isLocked = _isMessageLocked();
 
       if (!isVip && isLocked) {
-        return RepaintBoundary(child: TextLock());
+        return TextLock(textContent: widget.msg.answer ?? '');
       }
 
       return _buildText(context);
@@ -159,7 +151,7 @@ class _TextContainerState extends State<TextContainer> {
     try {
       return AppUser().isVip.value;
     } catch (e) {
-      debugPrint('[TextContainer] 获取VIP状态失败，使用默认值false: $e');
+      debugPrint('[TextContainer] 获取VIP状态失败,使用默认值false: $e');
       return false;
     }
   }
@@ -169,7 +161,7 @@ class _TextContainerState extends State<TextContainer> {
     try {
       return widget.msg.textLock == MsgLockLevel.private.value;
     } catch (e) {
-      debugPrint('[TextContainer] 检查消息锁定状态失败，使用默认值false: $e');
+      debugPrint('[TextContainer] 检查消息锁定状态失败,使用默认值false: $e');
       return false;
     }
   }

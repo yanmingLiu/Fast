@@ -65,12 +65,10 @@ class _MsgListViewState extends State<MsgListView> {
                 padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top: top, bottom: bottom),
                 shrinkWrap: true,
                 reverse: true,
-                // 增强状态保持，解决AudioContainer被回收问题
                 addAutomaticKeepAlives: true,
                 addRepaintBoundaries: true,
                 addSemanticIndexes: false,
-                // 预加载缓存范围，提高性能
-                cacheExtent: 2000,
+                cacheExtent: 1000,
                 itemBuilder: (context, index) {
                   var item = list[index];
                   return AutoScrollTag(

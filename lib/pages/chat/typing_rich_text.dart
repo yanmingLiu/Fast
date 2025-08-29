@@ -25,7 +25,7 @@ class TypingRichText extends StatelessWidget {
       height: 1.3,
     );
 
-    final highlightSetyle = GoogleFonts.montserrat(
+    final highlightSetyle = GoogleFonts.openSans(
       color: Colors.white,
       fontSize: 14,
       fontWeight: FontWeight.bold,

@@ -1,20 +1,20 @@
-import 'dart:ui';
-
+import 'package:blur/blur.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TextLock extends StatelessWidget {
-  const TextLock({super.key, this.onTap});
+  const TextLock({super.key, this.onTap, required this.textContent});
 
   final void Function()? onTap;
+  final String textContent;
 
   void _unLockTextGems() async {
     logEvent('c_news_locktext');
@@ -25,15 +25,17 @@ class TextLock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(bottom: 16, end: 80),
+    return SizedBox(
+      width: 280,
+      height: 120,
       child: GestureDetector(
         onTap: _unLockTextGems,
         child: Stack(
-          alignment: Alignment.topLeft,
+          alignment: AlignmentDirectional.topStart,
           children: [
-            Padding(padding: const EdgeInsets.only(top: 10.0), child: _buildContainer()),
+            Positioned(top: 12, right: 0, bottom: 0, child: _buildContainer()),
             _buildLabel(),
+            _buildLock(),
           ],
         ),
       ),
@@ -42,48 +44,26 @@ class TextLock extends StatelessWidget {
 
   Widget _buildContainer() {
     return Container(
-      height: 82,
-      decoration: const BoxDecoration(
-        color: Color(0x1A1C1C1C),
-        borderRadius: BorderRadiusDirectional.only(
-          topEnd: Radius.circular(16),
-          bottomEnd: Radius.circular(16),
-          bottomStart: Radius.circular(16),
-        ),
+      padding: EdgeInsets.all(16),
+      alignment: Alignment.center,
+      color: Color(0x1A1C1C1C),
+      child: Text(
+        textContent,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
       ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0),
-            child: Text(
-              'This is a introductionThis is ais a This is a This is aintroductionThis is ais a aintroductionThis is ais This is ais a ... ',
-              style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
-            ),
-          ),
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                child: Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  color: Colors.black.withOpacity(0.9),
-                ),
-              ),
-            ),
-          ),
-          Positioned.fill(child: _buildLock()),
-        ],
-      ),
+    ).blurred(
+      borderRadius: BorderRadius.circular(16),
+      colorOpacity: 0.9,
+      blur: 100,
+      blurColor: Color(0x1A1C1C1C),
     );
   }
 
   Widget _buildLock() {
     return Column(
       children: [
-        const SizedBox(height: 12),
+        const SizedBox(height: 26),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -105,15 +85,15 @@ class TextLock extends StatelessWidget {
               child: Text(
                 LocaleKeys.message.tr,
                 style: GoogleFonts.openSans(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 10,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -130,9 +110,9 @@ class TextLock extends StatelessWidget {
                   Text(
                     LocaleKeys.unlock.tr,
                     style: TextStyle(
-                      color: Color(0xff1C1C1C),
+                      color: Colors.white,
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -140,6 +120,7 @@ class TextLock extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 12),
       ],
     );
   }
@@ -164,7 +145,7 @@ class TextLock extends StatelessWidget {
             style: GoogleFonts.openSans(
               color: Colors.black,
               fontSize: 10,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
