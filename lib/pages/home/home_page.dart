@@ -13,7 +13,6 @@ import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/app_service.dart';
 
@@ -174,7 +173,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         child: Text(
           title,
           overflow: TextOverflow.ellipsis,
-          style: GoogleFonts.montserrat(
+          style: TextStyle(
             color: Colors.white,
             fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
             fontSize: 14,

@@ -8,6 +8,7 @@ import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_service.dart';
+import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:get/get.dart';
 
@@ -158,7 +159,10 @@ class HomeListController {
 
       if (page == 1) {
         list.clear();
-        Get.find<HomeCallCtr>().onCall(res.records);
+
+        if (AppUser().isVip.value == false) {
+          Get.find<HomeCallCtr>().onCall(res.records);
+        }
       }
 
       type.value = null;

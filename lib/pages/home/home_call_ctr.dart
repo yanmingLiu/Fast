@@ -41,10 +41,11 @@ class HomeCallCtr extends GetxController {
 
   Future callOut() async {
     try {
-      if (!canCall() || _calling) {
+      if (_callRole == null) {
         return;
       }
-      if (_callRole == null) {
+      final roleId = _callRole?.id;
+      if (roleId == null || roleId.isEmpty) {
         return;
       }
 
@@ -61,27 +62,17 @@ class HomeCallCtr extends GetxController {
       if (url == null || url.isEmpty) {
         return;
       }
-      _calling = true;
-
-      await Future.delayed(const Duration(seconds: 6));
 
       if (!canCall() || _calling) {
         return;
       }
 
-      final roleId = _callRole?.id;
-      if (roleId == null || roleId.isEmpty) {
-        return;
-      }
+      _calling = true;
 
       _lastCallTime = DateTime.now().millisecondsSinceEpoch;
       _callCount++;
 
       const sessionId = 0;
-
-      if (!canCall()) {
-        return;
-      }
 
       AppRouter.pushPhone(
         sessionId: sessionId,
@@ -138,8 +129,8 @@ class HomeCallCtr extends GetxController {
       log.d('-------->canCall:false  _callCount > 2');
       return false;
     }
-    if (AppDialog.checkExist('DialogTag.sigin.name')) {
-      log.d('-------->canCall: false  DialogTag.sigin.name');
+    if (AppDialog.checkExist(loginRewardTag)) {
+      log.d('-------->canCall: false  loginRewardTag');
       return false;
     }
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch;

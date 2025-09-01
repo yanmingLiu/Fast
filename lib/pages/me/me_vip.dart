@@ -3,9 +3,9 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/main.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/tools/ext.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MeVip extends StatelessWidget {
   const MeVip({super.key});
@@ -38,7 +38,7 @@ class MeVip extends StatelessWidget {
                 children: [
                   Text(
                     LocaleKeys.vip_member.tr,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
@@ -51,7 +51,7 @@ class MeVip extends StatelessWidget {
                     final date = formatTimestamp(timer);
                     return Text(
                       LocaleKeys.deadline.trParams({'date': date}),
-                      style: GoogleFonts.openSans(
+                      style: AppTextStyle.openSans(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xB3FFFFFF),

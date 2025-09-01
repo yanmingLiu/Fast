@@ -5,9 +5,9 @@ import 'package:fast_ai/component/rich_text_placeholder.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class VipContentWidget extends StatelessWidget {
   final String contentText;
@@ -52,7 +52,7 @@ class VipContentWidget extends StatelessWidget {
             end: Alignment.bottomCenter,
             stops: [0.0, 1.0],
           ),
-          style: GoogleFonts.openSans(fontSize: 64, fontWeight: FontWeight.w800),
+          style: AppTextStyle.openSans(fontSize: 64, fontWeight: FontWeight.w800),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 38),
@@ -65,7 +65,7 @@ class VipContentWidget extends StatelessWidget {
               end: Alignment.bottomCenter,
               stops: [0.0, 1.0],
             ),
-            style: GoogleFonts.openSans(fontSize: 64, fontWeight: FontWeight.w800),
+            style: AppTextStyle.openSans(fontSize: 64, fontWeight: FontWeight.w800),
           ),
         ),
       ],
@@ -83,7 +83,7 @@ class VipContentWidget extends StatelessWidget {
         end: Alignment.bottomCenter,
         stops: [0.0, 1.0],
       ),
-      style: GoogleFonts.openSans(fontSize: 36, fontWeight: FontWeight.w800),
+      style: AppTextStyle.openSans(fontSize: 36, fontWeight: FontWeight.w800),
     );
   }
 
@@ -115,7 +115,7 @@ class VipContentWidget extends StatelessWidget {
   Widget _buildSubtitle() {
     return Text(
       LocaleKeys.best_chat_experience.tr,
-      style: GoogleFonts.openSans(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400),
+      style: AppTextStyle.openSans(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400),
     );
   }
 
@@ -132,7 +132,7 @@ class VipContentWidget extends StatelessWidget {
           ),
         ),
       },
-      style: GoogleFonts.openSans(
+      style: AppTextStyle.openSans(
         color: Colors.white,
         fontSize: 12,
         fontWeight: FontWeight.w500,

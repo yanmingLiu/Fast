@@ -10,10 +10,10 @@ import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -330,7 +330,7 @@ class AppRouter {
                   child: Text(
                     actsion.keys.toList()[index],
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w400,

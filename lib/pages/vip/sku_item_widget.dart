@@ -4,9 +4,9 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/tools/ext.dart';
 import 'package:fast_ai/values/app_colors.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SkuItemWidget extends StatelessWidget {
   final SkuData skuData;
@@ -76,7 +76,7 @@ class SkuItemWidget extends StatelessWidget {
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.openSans(
+              style: AppTextStyle.openSans(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -93,7 +93,7 @@ class SkuItemWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.openSans(
+              style: AppTextStyle.openSans(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -125,7 +125,7 @@ class SkuItemWidget extends StatelessWidget {
                   child: Text(
                     price,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -142,7 +142,7 @@ class SkuItemWidget extends StatelessWidget {
                     child: Text(
                       originalPrice,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.openSans(
+                      style: AppTextStyle.openSans(
                         color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -165,7 +165,7 @@ class SkuItemWidget extends StatelessWidget {
                   child: Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       color: isSelected ? Colors.white : const Color(0xFFA8A8A8),
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -182,7 +182,7 @@ class SkuItemWidget extends StatelessWidget {
                   child: Text(
                     skuData.number.toString(),
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       color: isSelected ? Colors.white : const Color(0xFFA8A8A8),
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
@@ -225,7 +225,7 @@ class SkuItemWidget extends StatelessWidget {
                   child: Text(
                     originalPrice,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -242,7 +242,7 @@ class SkuItemWidget extends StatelessWidget {
                     child: Text(
                       '/${LocaleKeys.week.tr}',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.openSans(
+                      style: AppTextStyle.openSans(
                         color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -263,7 +263,7 @@ class SkuItemWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.openSans(
+              style: AppTextStyle.openSans(
                 color: isSelected ? Colors.white : const Color(0xFFA8A8A8),
                 fontSize: 12,
                 fontWeight: FontWeight.w400,

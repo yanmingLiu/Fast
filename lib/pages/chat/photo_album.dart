@@ -5,9 +5,9 @@ import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class PhotoAlbum extends StatefulWidget {
   const PhotoAlbum({super.key});
@@ -166,7 +166,7 @@ class PhotoAlbumItem extends StatelessWidget {
                                 Assets.images.gems.image(width: 16, height: 16),
                                 Text(
                                   '${image.gems ?? 0}',
-                                  style: GoogleFonts.openSans(
+                                  style: AppTextStyle.openSans(
                                     color: Colors.white,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,

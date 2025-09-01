@@ -7,11 +7,11 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/home/home_item.dart';
 import 'package:fast_ai/pages/home/search_ctr.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -85,7 +85,7 @@ class _SearchPageState extends State<SearchPage> {
                     onEditingComplete: () {},
                     minLines: 1,
                     maxLength: 20,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       height: 1,
                       color: Colors.white,
                       fontSize: 14,
@@ -97,7 +97,7 @@ class _SearchPageState extends State<SearchPage> {
                     decoration: InputDecoration(
                       hintText: LocaleKeys.search_sirens.tr,
                       counterText: '', // 去掉字数显示
-                      hintStyle: GoogleFonts.openSans(color: Color(0x33FFFFFF)),
+                      hintStyle: AppTextStyle.openSans(color: Color(0x33FFFFFF)),
                       fillColor: Colors.transparent,
                       border: InputBorder.none,
                       filled: true,
@@ -133,7 +133,12 @@ class _SearchPageState extends State<SearchPage> {
         final type = ctr.type.value;
 
         if (type != null) {
-          return FEmpty(type: type);
+          return GestureDetector(
+            child: FEmpty(type: type),
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+          );
         }
         return Padding(
           padding: const EdgeInsets.only(top: 16),

@@ -10,10 +10,10 @@ import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_colors.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 // 性能优化：预定义常量，避免重复创建对象
@@ -28,7 +28,7 @@ const double _borderRadius = 16.0;
 const double _loadingSize = 30.0;
 
 // 性能优化：缓存样式对象，避免每次build重新创建
-final TextStyle _titleStyle = GoogleFonts.openSans(
+final TextStyle _titleStyle = AppTextStyle.openSans(
   fontSize: 14,
   fontWeight: FontWeight.w700,
   color: AppColors.primary,

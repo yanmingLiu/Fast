@@ -1,9 +1,9 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../generated/locales.g.dart';
 
@@ -41,7 +41,7 @@ class MeChatBg extends StatelessWidget {
               Text(
                 LocaleKeys.set_chat_background.tr,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.openSans(
+                style: AppTextStyle.openSans(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -69,7 +69,7 @@ class MeChatBg extends StatelessWidget {
       child: Center(
         child: Text(
           title,
-          style: GoogleFonts.openSans(
+          style: AppTextStyle.openSans(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w700,
@@ -92,7 +92,7 @@ class MeChatBg extends StatelessWidget {
         children: [
           Text(
             title,
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               color: Color(0xFF727374),
               fontSize: 16,
               fontWeight: FontWeight.w700,

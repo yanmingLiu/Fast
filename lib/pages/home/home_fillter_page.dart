@@ -3,9 +3,9 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/data/role_tags.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../generated/locales.g.dart';
@@ -80,7 +80,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
             },
             child: Text(
               containsAll ? LocaleKeys.unselect_all.tr : LocaleKeys.select_all.tr,
-              style: GoogleFonts.openSans(
+              style: AppTextStyle.openSans(
                 color: Color(0xFF3F8DFD),
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -96,11 +96,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
           children: [
             Text(
               LocaleKeys.choose_your_tags.tr,
-              style: GoogleFonts.montserrat(
-                fontSize: 32,
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
+              style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
             _buildType(),
@@ -124,7 +120,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
               child: Center(
                 child: Text(
                   LocaleKeys.confirm.tr,
-                  style: GoogleFonts.openSans(
+                  style: AppTextStyle.openSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
@@ -186,7 +182,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
       child: Center(
         child: Text(
           e.name ?? '',
-          style: GoogleFonts.openSans(
+          style: AppTextStyle.openSans(
             color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8),
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -262,7 +258,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
           Text(
             type.labelType ?? '',
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               color: isSelected ? Colors.white : Color(0xFF727374),
               fontSize: isSelected ? 16 : 14,
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,

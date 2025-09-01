@@ -10,11 +10,11 @@ import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// 聊天角色编辑页面
 /// 用于创建或编辑聊天角色的个人信息
@@ -190,6 +190,10 @@ class _MaskEditPageState extends State<MaskEditPage> {
         _otherInfoLength = _otherInfoController.text.length;
         _isChanged = _otherInfoLength > 0;
       });
+    });
+
+    _ageController.addListener(() {
+      _isChanged = true;
     });
   }
 
@@ -503,7 +507,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
             : Center(
                 child: Text(
                   idEdit ? LocaleKeys.save.tr : LocaleKeys.create.tr,
-                  style: GoogleFonts.openSans(
+                  style: AppTextStyle.openSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
@@ -520,7 +524,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
       children: [
         Text(
           title,
-          style: GoogleFonts.openSans(
+          style: AppTextStyle.openSans(
             fontSize: 14,
             color: Colors.white,
             fontWeight: FontWeight.w700,
@@ -529,7 +533,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
         if (query)
           Text(
             '*',
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               fontSize: 14,
               color: Color(0xFFFF6C2E),
               fontWeight: FontWeight.w700,
@@ -538,7 +542,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
         if (subtitle != null)
           Text(
             subtitle,
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               fontSize: 14,
               color: Colors.white,
               fontWeight: FontWeight.w700,

@@ -6,12 +6,12 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/photo_album.dart';
 import 'package:fast_ai/pages/chat/role_center_ctr.dart';
 import 'package:fast_ai/pages/home/home_item.dart';
-import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RoleCenterPage extends StatefulWidget {
   const RoleCenterPage({super.key});
@@ -81,7 +81,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
           title: Text(
             ctr.role.name ?? '',
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: Colors.white.withValues(alpha: _appBarOpacity),
@@ -153,7 +153,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                 children: [
                   Text(
                     ctr.role.name ?? '',
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
@@ -162,7 +162,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                   if (ctr.role.age != null)
                     Text(
                       LocaleKeys.age_years_olds.trParams({'age': ctr.role.age.toString()}),
-                      style: GoogleFonts.openSans(
+                      style: AppTextStyle.openSans(
                         fontSize: 8,
                         fontWeight: FontWeight.w400,
                         color: Color(0xFFDEDEDE),
@@ -192,7 +192,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                                 '${ctr.role.likes ?? 0}',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.openSans(
+                                style: AppTextStyle.openSans(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                   color: isCollect ? Color(0xFFFF4ACF) : Colors.white,
@@ -214,7 +214,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                               ctr.role.sessionCount ?? '0',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.openSans(
+                              style: AppTextStyle.openSans(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
@@ -268,7 +268,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                 alignment: Alignment.center,
                 child: Text(
                   text,
-                  style: GoogleFonts.openSans(
+                  style: AppTextStyle.openSans(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: textColor,
@@ -290,7 +290,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
         SizedBox(height: 20),
         Text(
           LocaleKeys.intro_title.tr,
-          style: GoogleFonts.openSans(
+          style: AppTextStyle.openSans(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w700,
@@ -298,7 +298,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
         ),
         Text(
           ctr.role.aboutMe ?? '',
-          style: GoogleFonts.openSans(
+          style: AppTextStyle.openSans(
             color: Colors.white,
             fontSize: 14,
             fontWeight: FontWeight.w400,
@@ -322,7 +322,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
           const SizedBox(height: 20),
           Text(
             LocaleKeys.enticing_picture.tr,
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -368,7 +368,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
         SizedBox(height: 20),
         Text(
           LocaleKeys.option_title.tr,
-          style: GoogleFonts.openSans(
+          style: AppTextStyle.openSans(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w700,
@@ -388,7 +388,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                   FIcon(assetName: Assets.svg.clear),
                   Text(
                     LocaleKeys.clear_history.tr,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       color: Colors.white,
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -412,7 +412,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                   FIcon(assetName: Assets.svg.clear),
                   Text(
                     LocaleKeys.report.tr,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       color: Colors.white,
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -436,7 +436,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
               children: [
                 Text(
                   LocaleKeys.delete_chat.tr,
-                  style: GoogleFonts.openSans(
+                  style: AppTextStyle.openSans(
                     color: const Color(0xFFF04A4C),
                     fontSize: 16,
                     fontWeight: FontWeight.w700,

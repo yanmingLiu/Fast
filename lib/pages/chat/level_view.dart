@@ -3,9 +3,9 @@ import 'package:fast_ai/component/f_progress.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LevelView extends StatelessWidget {
   const LevelView({super.key});
@@ -66,7 +66,7 @@ class LevelView extends StatelessWidget {
                         child: Text(
                           ctr.role.name ?? '',
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.openSans(
+                          style: AppTextStyle.openSans(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -82,7 +82,7 @@ class LevelView extends StatelessWidget {
                     children: [
                       Text(
                         'Lv $level',
-                        style: GoogleFonts.openSans(
+                        style: AppTextStyle.openSans(
                           fontSize: 10,
                           fontWeight: FontWeight.w400,
                           color: const Color(0xFFE4E5FF),
@@ -90,7 +90,7 @@ class LevelView extends StatelessWidget {
                       ),
                       Text(
                         '$value%',
-                        style: GoogleFonts.openSans(
+                        style: AppTextStyle.openSans(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
@@ -100,7 +100,7 @@ class LevelView extends StatelessWidget {
                       Assets.images.gems.image(width: 16),
                       Text(
                         rewards,
-                        style: GoogleFonts.openSans(
+                        style: AppTextStyle.openSans(
                           fontSize: 9,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,

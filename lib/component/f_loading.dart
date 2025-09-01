@@ -7,7 +7,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 class FLoading {
   // 缓存常用的装饰和样式对象，避免重复创建
   static final BoxDecoration _defaultDecoration = BoxDecoration(
-    color: Colors.black,
+    color: Color(0x33FFFFFF),
     borderRadius: BorderRadius.circular(8),
   );
 

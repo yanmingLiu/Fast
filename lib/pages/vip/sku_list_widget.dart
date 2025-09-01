@@ -6,9 +6,9 @@ import 'package:fast_ai/pages/vip/sku_item_widget.dart';
 import 'package:fast_ai/pages/vip/vip_controller.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/values/app_colors.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SkuListWidget extends StatelessWidget {
   const SkuListWidget({super.key});
@@ -101,7 +101,7 @@ class SkuListWidget extends StatelessWidget {
       child: Center(
         child: Text(
           AppCache().isBig ? LocaleKeys.btn_continue.tr : LocaleKeys.subscribe.tr,
-          style: GoogleFonts.openSans(
+          style: AppTextStyle.openSans(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w700,

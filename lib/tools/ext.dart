@@ -168,7 +168,7 @@ Future<bool> isSameImage(File file1, File file2) async {
 /// - Messages within this week: show weekday (e.g. Mon, Tue)
 /// - Messages within this year: show MM/DD (e.g. 08/20)
 /// - Messages from previous years: show YYYY/MM/DD (e.g. 2023/08/20)
-String formatSessionTimeEnglish(int timestamp) {
+String formatSessionTimer(int timestamp) {
   // Convert timestamp to DateTime object
   DateTime messageTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
   DateTime now = DateTime.now();
@@ -229,4 +229,29 @@ String formatSessionTimeEnglish(int timestamp) {
 
   // Previous years
   return '${messageTime.year}/${twoDigits(messageTime.month)}/${twoDigits(messageTime.day)}';
+}
+
+/// 消息时间格式化（中文）
+/// - 24小时内显示格式：hh:mm
+/// - 超过24小时显示日期格式：mm-dd
+String formatSessionTime(int timestamp) {
+  // Convert timestamp to DateTime object
+  DateTime messageTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  DateTime now = DateTime.now();
+
+  // Calculate the difference in hours
+  final difference = now.difference(messageTime);
+
+  // Format number with leading zero if needed
+  String twoDigits(int n) {
+    return n.toString().padLeft(2, '0');
+  }
+
+  // Within 24 hours
+  if (difference.inHours < 24) {
+    return '${twoDigits(messageTime.hour)}:${twoDigits(messageTime.minute)}';
+  } else {
+    // More than 24 hours, show month-day
+    return '${twoDigits(messageTime.month)}-${twoDigits(messageTime.day)}';
+  }
 }

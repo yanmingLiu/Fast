@@ -12,10 +12,10 @@ import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/tools/iap_tool.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class GemsPage extends StatefulWidget {
   const GemsPage({super.key});
@@ -157,7 +157,7 @@ class _GemsPageState extends State<GemsPage> {
                           AppCache().isBig
                               ? LocaleKeys.open_chats_unlock.tr
                               : LocaleKeys.buy_gems_open_chats.tr,
-                          style: GoogleFonts.openSans(
+                          style: AppTextStyle.openSans(
                             color: Colors.white,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -193,7 +193,7 @@ class _GemsPageState extends State<GemsPage> {
                               'price': _chooseProduct?.productDetails?.price ?? '',
                             }),
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.openSans(
+                            style: AppTextStyle.openSans(
                               color: Color(0xFF727374),
                               fontSize: 10,
                               fontWeight: FontWeight.w400,
@@ -209,7 +209,7 @@ class _GemsPageState extends State<GemsPage> {
                     child: Center(
                       child: Text(
                         AppCache().isBig ? LocaleKeys.btn_continue.tr : LocaleKeys.buy.tr,
-                        style: GoogleFonts.openSans(
+                        style: AppTextStyle.openSans(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -295,7 +295,7 @@ class _GemsPageState extends State<GemsPage> {
                       Assets.images.gemls.image(width: 48),
                       Text(
                         numericPart,
-                        style: GoogleFonts.openSans(
+                        style: AppTextStyle.openSans(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -306,7 +306,7 @@ class _GemsPageState extends State<GemsPage> {
                         children: [
                           Text(
                             discount,
-                            style: GoogleFonts.openSans(
+                            style: AppTextStyle.openSans(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -314,7 +314,7 @@ class _GemsPageState extends State<GemsPage> {
                           ),
                           Text(
                             price,
-                            style: GoogleFonts.openSans(
+                            style: AppTextStyle.openSans(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Colors.white,
@@ -341,7 +341,7 @@ class _GemsPageState extends State<GemsPage> {
                         child: Center(
                           child: Text(
                             LocaleKeys.best_choice.tr,
-                            style: GoogleFonts.openSans(fontSize: 8, fontWeight: FontWeight.w400),
+                            style: AppTextStyle.openSans(fontSize: 8, fontWeight: FontWeight.w400),
                           ),
                         ),
                       ),

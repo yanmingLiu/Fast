@@ -5,10 +5,10 @@ import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TextLock extends StatelessWidget {
   const TextLock({super.key, this.onTap, required this.textContent});
@@ -69,7 +69,7 @@ class TextLock extends StatelessWidget {
           children: [
             Text(
               LocaleKeys.tap_to_see_messages.tr,
-              style: GoogleFonts.openSans(
+              style: AppTextStyle.openSans(
                 color: Colors.white,
                 fontSize: 10,
                 fontWeight: FontWeight.w400,
@@ -84,7 +84,7 @@ class TextLock extends StatelessWidget {
               ),
               child: Text(
                 LocaleKeys.message.tr,
-                style: GoogleFonts.openSans(
+                style: AppTextStyle.openSans(
                   color: Colors.black,
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
@@ -142,7 +142,7 @@ class TextLock extends StatelessWidget {
           ),
           child: Text(
             LocaleKeys.unlock_text_reply.tr,
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               color: Colors.black,
               fontSize: 10,
               fontWeight: FontWeight.w400,

@@ -50,9 +50,9 @@ class ApiPath {
   // 消息列表
   static const String messageList = '/v2/history/getAll';
   // 语音聊天
-  static const String voiceChat = '/audioClips/chat';
+  static const String voiceChat = '/voices/chat';
   // 开屏随机角色
-  static const String splashRandomRole = '/plfC/getRecommendRole';
+  static const String splashRandomRole = '/platformConfig/getRecommendRole';
   // 上报事件 用户参数
   static String eventParams = '/v2/user/upinfo';
   // 聊天等级配置

@@ -1,10 +1,10 @@
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 class LevelDialog extends StatefulWidget {
@@ -46,7 +46,7 @@ class _LevelDialogState extends State<LevelDialog> {
           Text(
             LocaleKeys.level_up_intimacy.tr,
             textAlign: TextAlign.center,
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -75,7 +75,7 @@ class _LevelDialogState extends State<LevelDialog> {
           Text(icon, style: const TextStyle(fontSize: 27)),
           Text(
             text,
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               fontSize: 10,
               fontWeight: FontWeight.w400,
               color: Colors.white,
@@ -87,7 +87,7 @@ class _LevelDialogState extends State<LevelDialog> {
               Assets.images.gems.image(width: 12),
               Text(
                 "+ $gems",
-                style: GoogleFonts.openSans(
+                style: AppTextStyle.openSans(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,

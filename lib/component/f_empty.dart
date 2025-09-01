@@ -4,7 +4,6 @@ import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// A customizable empty state widget that can display loading, empty data,
 /// or network error states with appropriate visuals and actions.
@@ -117,7 +116,7 @@ class FEmpty extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Text(
             hintText ?? hint,
-            style: GoogleFonts.openSans(
+            style: TextStyle(
               fontSize: 14,
               color: AppColors.hintText,
               fontWeight: FontWeight.w500,

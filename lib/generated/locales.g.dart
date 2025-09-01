@@ -196,6 +196,7 @@ class LocaleKeys {
   static const save_num = 'save_num';
   static const best_choice = 'best_choice';
   static const expiration_time = 'expiration_time';
+  static const back_updated_succ = 'back_updated_succ';
 }
 
 class Locales {
@@ -413,5 +414,6 @@ class Locales {
     'save_num': 'Save @num%',
     'best_choice': 'Best choice',
     'expiration_time': 'Expiration time: ',
+    'back_updated_succ': 'Background updated successfully!',
   };
 }

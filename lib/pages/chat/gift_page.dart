@@ -10,9 +10,9 @@ import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class GiftPage extends StatefulWidget {
   const GiftPage({super.key});
@@ -185,11 +185,7 @@ class _GiftPageState extends State<GiftPage> {
       children: [
         Text(
           LocaleKeys.toys.tr,
-          style: GoogleFonts.montserrat(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ],
     );
@@ -230,7 +226,7 @@ class _GiftPageState extends State<GiftPage> {
         child: Text(
           title,
           overflow: TextOverflow.ellipsis,
-          style: GoogleFonts.montserrat(
+          style: TextStyle(
             color: Colors.white,
             fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
             fontSize: 14,
@@ -259,7 +255,7 @@ class _GiftPageState extends State<GiftPage> {
               children: [
                 Text(
                   LocaleKeys.send_a_gift_and_get_a_picture.tr,
-                  style: GoogleFonts.openSans(
+                  style: AppTextStyle.openSans(
                     color: _GiftPageConstants.redText,
                     fontSize: 10,
                     fontWeight: FontWeight.w400,
@@ -425,7 +421,7 @@ class _GiftPageState extends State<GiftPage> {
                               const SizedBox(width: 2),
                               Text(
                                 '${price ?? 0}',
-                                style: GoogleFonts.montserrat(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
@@ -446,7 +442,7 @@ class _GiftPageState extends State<GiftPage> {
           const SizedBox(height: 2),
           Text(
             name ?? '',
-            style: GoogleFonts.openSans(
+            style: AppTextStyle.openSans(
               color: Colors.white,
               fontSize: 12,
               fontWeight: FontWeight.w700,

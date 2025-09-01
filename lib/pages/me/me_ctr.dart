@@ -97,12 +97,16 @@ class MeCtr extends GetxController {
       final iamge = result.first;
       final pickedFile = await iamge.file;
       if (pickedFile != null) {
+        FLoading.showLoading();
         final directory = await getApplicationDocumentsDirectory();
         final fileName = path.basename(pickedFile.path);
         final cachedImagePath = path.join(directory.path, fileName);
         final File cachedImage = await File(pickedFile.path).copy(cachedImagePath);
         AppCache().chatBgImagePath = cachedImage.path;
         chatbgImagePath.value = cachedImage.path;
+        await Future.delayed(Duration(seconds: 2));
+        FLoading.dismiss();
+        FToast.toast(LocaleKeys.back_updated_succ.tr);
       }
     }
   }

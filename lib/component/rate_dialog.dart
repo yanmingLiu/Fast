@@ -3,9 +3,9 @@ import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RateDialog extends StatelessWidget {
   const RateDialog({super.key, required this.msg});
@@ -38,7 +38,7 @@ class RateDialog extends StatelessWidget {
                 children: [
                   Text(
                     LocaleKeys.rate_us.tr,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
@@ -47,7 +47,7 @@ class RateDialog extends StatelessWidget {
                   Text(
                     msg,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Colors.white,
@@ -62,7 +62,7 @@ class RateDialog extends StatelessWidget {
                     child: Center(
                       child: Text(
                         LocaleKeys.help_app.tr,
-                        style: GoogleFonts.openSans(
+                        style: AppTextStyle.openSans(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF531903),
@@ -71,14 +71,12 @@ class RateDialog extends StatelessWidget {
                     ),
                   ),
                   FButton(
-                    onTap: () {
-                      AppRouter.openAppStoreReview();
-                    },
+                    onTap: close,
                     color: Color(0x1AFFFFFF),
                     child: Center(
                       child: Text(
                         LocaleKeys.nope.tr,
-                        style: GoogleFonts.openSans(
+                        style: AppTextStyle.openSans(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,

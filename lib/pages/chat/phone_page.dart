@@ -7,11 +7,11 @@ import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/phone_ctr.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class PhonePage extends StatefulWidget {
@@ -262,7 +262,7 @@ class PhoneTitle extends StatelessWidget {
                               maxLines: 1,
                               textAlign: TextAlign.left, // 修改为左对齐
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.openSans(
+                              style: AppTextStyle.openSans(
                                 fontSize: 16,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
@@ -271,7 +271,7 @@ class PhoneTitle extends StatelessWidget {
                             if (role.age != null)
                               Text(
                                 LocaleKeys.age_years_olds.trParams({'age': role.age.toString()}),
-                                style: GoogleFonts.openSans(
+                                style: AppTextStyle.openSans(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   color: Color(0xFFDEDEDE),

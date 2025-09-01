@@ -16,11 +16,11 @@ import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/tools/ext.dart';
 import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ChatInput extends StatefulWidget {
   const ChatInput({super.key});
@@ -221,7 +221,7 @@ class _ChatInputState extends State<ChatInput> {
       onEditingComplete: onSend,
       minLines: 1,
       maxLines: null,
-      style: GoogleFonts.openSans(
+      style: AppTextStyle.openSans(
         height: 1.2,
         color: Colors.white,
         fontSize: 14,
@@ -233,7 +233,7 @@ class _ChatInputState extends State<ChatInput> {
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: LocaleKeys.type_here.tr,
-        hintStyle: GoogleFonts.openSans(color: Color(0xFF727374)),
+        hintStyle: AppTextStyle.openSans(color: Color(0xFF727374)),
         fillColor: Colors.transparent,
         border: InputBorder.none,
         filled: true,
@@ -335,7 +335,7 @@ class MsgInputButtons extends StatelessWidget {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
-                                  style: GoogleFonts.openSans(
+                                  style: AppTextStyle.openSans(
                                     fontSize: 11,
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.w600,

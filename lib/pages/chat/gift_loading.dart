@@ -1,7 +1,7 @@
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 class GiftLoading extends StatelessWidget {
@@ -25,7 +25,7 @@ class GiftLoading extends StatelessWidget {
             Text(
               LocaleKeys.sara_received_your_gift.tr,
               textAlign: TextAlign.center,
-              style: GoogleFonts.openSans(
+              style: AppTextStyle.openSans(
                 color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -34,7 +34,7 @@ class GiftLoading extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               LocaleKeys.give_her_a_moment.tr,
-              style: GoogleFonts.openSans(
+              style: AppTextStyle.openSans(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
@@ -46,7 +46,7 @@ class GiftLoading extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               LocaleKeys.wait_30_seconds.tr,
-              style: GoogleFonts.openSans(
+              style: AppTextStyle.openSans(
                 color: Colors.white,
                 fontSize: 12,
                 fontWeight: FontWeight.w400,

@@ -1,5 +1,5 @@
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MeItem extends StatefulWidget {
   const MeItem({
@@ -36,19 +36,19 @@ class _MeItemState extends State<MeItem> {
   DateTime? _lastTapTime;
 
   // 性能优化：缓存样式对象
-  static final TextStyle _sectionTitleStyle = GoogleFonts.openSans(
+  static final TextStyle _sectionTitleStyle = AppTextStyle.openSans(
     color: const Color(0xFF858585),
     fontSize: 12,
     fontWeight: FontWeight.w400,
   );
 
-  static final TextStyle _titleStyle = GoogleFonts.openSans(
+  static final TextStyle _titleStyle = AppTextStyle.openSans(
     color: Colors.white,
     fontSize: 16,
     fontWeight: FontWeight.w700,
   );
 
-  static final TextStyle _subtitleStyle = GoogleFonts.openSans(
+  static final TextStyle _subtitleStyle = AppTextStyle.openSans(
     color: const Color(0xFF858585),
     fontSize: 12,
     fontWeight: FontWeight.w500,

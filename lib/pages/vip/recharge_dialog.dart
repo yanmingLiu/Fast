@@ -1,6 +1,6 @@
 import 'package:fast_ai/gen/assets.gen.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RechargeDialog extends StatelessWidget {
   const RechargeDialog({super.key, required this.number});
@@ -25,7 +25,7 @@ class RechargeDialog extends StatelessWidget {
             children: [
               Text(
                 '+$number',
-                style: GoogleFonts.openSans(
+                style: AppTextStyle.openSans(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -35,7 +35,7 @@ class RechargeDialog extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
                   'Gems',
-                  style: GoogleFonts.openSans(
+                  style: AppTextStyle.openSans(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
                     color: Colors.white,

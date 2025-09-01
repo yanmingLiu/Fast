@@ -1,10 +1,10 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/app_service.dart';
 
@@ -38,7 +38,7 @@ class RoleLockView extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKeys.unlock_role.tr,
-                      style: GoogleFonts.openSans(
+                      style: AppTextStyle.openSans(
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -48,7 +48,7 @@ class RoleLockView extends StatelessWidget {
                     Text(
                       LocaleKeys.unlock_role_description.tr,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.openSans(
+                      style: AppTextStyle.openSans(
                         color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -63,7 +63,7 @@ class RoleLockView extends StatelessWidget {
                         children: [
                           Text(
                             LocaleKeys.unlock_now.tr,
-                            style: GoogleFonts.openSans(
+                            style: AppTextStyle.openSans(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.w700,

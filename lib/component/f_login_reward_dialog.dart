@@ -2,15 +2,16 @@ import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/gradient_text.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
+import 'package:fast_ai/gen/fonts.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_colors.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class FLoginRewardDialog extends StatelessWidget {
   const FLoginRewardDialog({super.key});
@@ -46,7 +47,7 @@ class FLoginRewardDialog extends StatelessWidget {
             children: [
               Text(
                 'Daily reward',
-                style: GoogleFonts.openSans(
+                style: AppTextStyle.openSans(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
@@ -61,7 +62,7 @@ class FLoginRewardDialog extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   stops: [0.0, 1.0],
                 ),
-                style: GoogleFonts.openSans(fontSize: 16, fontWeight: FontWeight.w700),
+                style: AppTextStyle.openSans(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -76,7 +77,7 @@ class FLoginRewardDialog extends StatelessWidget {
                       child: Center(
                         child: Text(
                           LocaleKeys.collect.tr,
-                          style: GoogleFonts.openSans(
+                          style: AppTextStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -94,7 +95,7 @@ class FLoginRewardDialog extends StatelessWidget {
                       children: [
                         Text(
                           'Pro',
-                          style: GoogleFonts.openSans(
+                          style: AppTextStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
@@ -109,12 +110,12 @@ class FLoginRewardDialog extends StatelessWidget {
                             end: Alignment.bottomCenter,
                             stops: [0.0, 1.0],
                           ),
-                          style: GoogleFonts.openSans(fontSize: 16, fontWeight: FontWeight.w700),
+                          style: AppTextStyle.openSans(fontSize: 16, fontWeight: FontWeight.w700),
                         ),
                         Assets.images.gems.image(width: 24),
                         Text(
                           LocaleKeys.every_day.tr,
-                          style: GoogleFonts.openSans(
+                          style: AppTextStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
@@ -129,7 +130,7 @@ class FLoginRewardDialog extends StatelessWidget {
                       child: Center(
                         child: Text(
                           LocaleKeys.got_to_pro.tr,
-                          style: GoogleFonts.openSans(
+                          style: AppTextStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -144,7 +145,7 @@ class FLoginRewardDialog extends StatelessWidget {
                       child: Center(
                         child: Text(
                           LocaleKeys.collect.tr,
-                          style: GoogleFonts.openSans(
+                          style: AppTextStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,

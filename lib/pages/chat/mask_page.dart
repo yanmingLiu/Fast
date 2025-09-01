@@ -10,10 +10,10 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/router/routers.dart';
 import 'package:fast_ai/services/api.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MaskPage extends StatefulWidget {
   const MaskPage({super.key});
@@ -199,7 +199,7 @@ class _MaskPageState extends State<MaskPage> {
                 child: Center(
                   child: Text(
                     LocaleKeys.pick_it.tr,
-                    style: GoogleFonts.openSans(
+                    style: AppTextStyle.openSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
@@ -335,7 +335,7 @@ class _MaskPageState extends State<MaskPage> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                         maxLines: 2,
-                        style: GoogleFonts.openSans(
+                        style: AppTextStyle.openSans(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,

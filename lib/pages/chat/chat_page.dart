@@ -6,10 +6,10 @@ import 'package:fast_ai/pages/chat/chat_ctr.dart';
 import 'package:fast_ai/pages/chat/chat_list_view.dart';
 import 'package:fast_ai/pages/chat/liked_ctr.dart';
 import 'package:fast_ai/pages/chat/liked_list_view.dart';
+import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../component/f_keep_alive.dart';
 
@@ -31,7 +31,17 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
 
-    _linkedController = LinkedTabPageController(items: titles);
+    _linkedController = LinkedTabPageController(
+      items: titles,
+      onIndexChanged: (value) {
+        log.d("value: $value");
+        if (value == 0) {
+          chatCtr.onRefresh();
+        } else {
+          likedCtr.onRefresh();
+        }
+      },
+    );
   }
 
   @override
@@ -132,7 +142,7 @@ class _ChatPageState extends State<ChatPage> {
         child: Text(
           title,
           overflow: TextOverflow.ellipsis,
-          style: GoogleFonts.montserrat(
+          style: TextStyle(
             color: Colors.white,
             fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
             fontSize: 14,

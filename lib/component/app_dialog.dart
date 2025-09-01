@@ -11,10 +11,10 @@ import 'package:fast_ai/pages/chat/gift_loading.dart';
 import 'package:fast_ai/pages/chat/level_dialog.dart';
 import 'package:fast_ai/pages/vip/recharge_dialog.dart';
 import 'package:fast_ai/values/app_colors.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 const String loginRewardTag = '325dfa161253f036fg';
 const String giftLoadingTag = '549816514tfhgerq';
@@ -106,7 +106,7 @@ class AppDialog {
               child: Center(
                 child: Text(
                   confirmText ?? LocaleKeys.confirm.tr,
-                  style: GoogleFonts.openSans(
+                  style: AppTextStyle.openSans(
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -248,7 +248,7 @@ class AppDialog {
                                       child: Center(
                                         child: Text(
                                           LocaleKeys.confirm.tr,
-                                          style: GoogleFonts.openSans(
+                                          style: AppTextStyle.openSans(
                                             color: Colors.white,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w700,
@@ -295,7 +295,7 @@ class AppDialog {
     return Text(
       text!,
       textAlign: TextAlign.center,
-      style: GoogleFonts.openSans(color: Colors.white, fontSize: fontSize, fontWeight: fontWeight),
+      style: AppTextStyle.openSans(color: Colors.white, fontSize: fontSize, fontWeight: fontWeight),
     );
   }
 

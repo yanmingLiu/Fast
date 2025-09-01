@@ -2,7 +2,6 @@ import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../generated/locales.g.dart';
 
@@ -85,7 +84,7 @@ class PrivacyView extends StatelessWidget {
       child: Text(
         title,
         textAlign: TextAlign.center,
-        style: GoogleFonts.montserrat(
+        style: TextStyle(
           fontSize: 10,
           color: color ?? AppColors.hintText,
           fontWeight: FontWeight.w500,

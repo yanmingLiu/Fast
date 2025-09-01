@@ -1,6 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:fast_ai/values/app_text_style.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TypingRichText extends StatelessWidget {
   const TypingRichText({
@@ -18,14 +18,14 @@ class TypingRichText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nomarlStyel = GoogleFonts.openSans(
+    final nomarlStyel = AppTextStyle.openSans(
       color: Colors.white,
       fontSize: 14,
       fontWeight: FontWeight.w400,
       height: 1.3,
     );
 
-    final highlightSetyle = GoogleFonts.openSans(
+    final highlightSetyle = AppTextStyle.openSans(
       color: Colors.white,
       fontSize: 14,
       fontWeight: FontWeight.bold,
