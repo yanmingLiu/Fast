@@ -63,6 +63,8 @@ class HomeCallCtr extends GetxController {
         return;
       }
 
+      await Future.delayed(Duration(seconds: 4));
+
       if (!canCall() || _calling) {
         return;
       }

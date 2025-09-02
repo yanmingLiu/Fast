@@ -138,7 +138,9 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
           child: AnimatedTextKit(
             key: ValueKey(ctr.callState.value),
             totalRepeatCount: 1,
-            animatedTexts: [TypewriterAnimatedText(text, speed: const Duration(milliseconds: 50))],
+            animatedTexts: [
+              TypewriterAnimatedText(text, speed: const Duration(milliseconds: 50), cursor: ''),
+            ],
           ),
         ),
       ),

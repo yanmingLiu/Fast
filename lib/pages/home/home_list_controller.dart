@@ -10,6 +10,7 @@ import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_values.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeListController {
@@ -21,6 +22,9 @@ class HomeListController {
     controlFinishRefresh: true,
     controlFinishLoad: true,
   );
+
+  // 添加ScrollController来控制滚动位置
+  final ScrollController scrollController = ScrollController();
 
   String? rendStyl;
   bool? videoChat;
@@ -72,6 +76,15 @@ class HomeListController {
       page = 1;
       isNoMoreData = false;
       await _fetchData();
+
+      // 刷新后滚动到顶部
+      if (scrollController.hasClients) {
+        await scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
 
       await Future.delayed(Duration(milliseconds: 50));
       refreshCtr.finishRefresh();
@@ -177,5 +190,10 @@ class HomeListController {
     } finally {
       FLoading.dismiss();
     }
+  }
+
+  // 添加dispose方法来释放ScrollController
+  void dispose() {
+    scrollController.dispose();
   }
 }

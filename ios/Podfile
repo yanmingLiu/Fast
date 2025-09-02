@@ -52,6 +52,13 @@ post_install do |installer|
         'PERMISSION_PHOTOS=1', # 相册权限，这里等于1是启用该权限，等于0是禁用该权限！
         # 'PERMISSION_CAMERA=1', # 相机权限
         # ...其他权限参考官方文档里的IOS配置
+        # https://pub.dev/packages/permission_handler
+
+        ## dart: PermissionGroup.microphone
+        'PERMISSION_MICROPHONE=1',
+
+        ## dart: PermissionGroup.speech
+        'PERMISSION_SPEECH_RECOGNIZER=1',
     ]
     end
 

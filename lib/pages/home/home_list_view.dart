@@ -37,6 +37,7 @@ class _HomeListViewState extends State<HomeListView> {
   @override
   void dispose() {
     _controller.refreshCtr.dispose();
+    _controller.dispose(); // 释放ScrollController
     super.dispose();
   }
 
@@ -64,6 +65,7 @@ class _HomeListViewState extends State<HomeListView> {
       crossAxisSpacing: 8,
       itemCount: list.length,
       physics: physics,
+      controller: _controller.scrollController, // 添加ScrollController
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemBuilder: (context, index) {
         final role = list[index];

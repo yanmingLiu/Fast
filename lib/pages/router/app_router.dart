@@ -15,7 +15,6 @@ import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppRouter {
@@ -150,19 +149,9 @@ class AppRouter {
 
   /// 检查麦克风和语音识别权限，返回是否已授予所有权限
   static Future<bool> checkPermissions() async {
-    // 初始化 SpeechToText 以检查语音识别权限
-    SpeechToText speechToText = SpeechToText();
-    bool available = await speechToText.initialize();
-
-    log.d('语音识别是否可用: $available');
-
-    // 如果语音识别未初始化成功，返回 false
-    if (!available) {
-      return false;
-    }
-
-    // 如果麦克风和语音识别权限均已授予，返回 true
-    return true;
+    PermissionStatus status = await Permission.microphone.request();
+    PermissionStatus status2 = await Permission.speech.request();
+    return status.isGranted && status2.isGranted;
   }
 
   // 没有权限提示

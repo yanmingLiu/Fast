@@ -63,12 +63,7 @@ class _MsgListViewState extends State<MsgListView> {
                 controller: autoController,
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top: top, bottom: bottom),
-                shrinkWrap: true,
                 reverse: true,
-                addAutomaticKeepAlives: true,
-                addRepaintBoundaries: true,
-                addSemanticIndexes: false,
-                cacheExtent: 1000,
                 itemBuilder: (context, index) {
                   var item = list[index];
                   return AutoScrollTag(

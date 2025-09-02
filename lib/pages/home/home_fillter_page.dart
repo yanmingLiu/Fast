@@ -22,6 +22,8 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
 
   RoleTagRes? selectedType;
 
+  final _selectTags = <RoleTag>{}.obs;
+
   @override
   void initState() {
     super.initState();
@@ -37,17 +39,11 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
     }
 
     selectedType = ctr.roleTags.firstOrNull;
+    _selectTags.assignAll(ctr.selectTags);
   }
 
   @override
   Widget build(BuildContext context) {
-    final tags = selectedType?.tags;
-
-    bool containsAll = false;
-    if (tags != null && tags.isNotEmpty) {
-      containsAll = ctr.selectTags.containsAll(tags);
-    }
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -69,24 +65,32 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () {
-              if (containsAll) {
-                ctr.selectTags.removeAll(tags ?? []);
-              } else {
-                ctr.selectTags.addAll(tags ?? []);
-              }
-              setState(() {});
-            },
-            child: Text(
-              containsAll ? LocaleKeys.unselect_all.tr : LocaleKeys.select_all.tr,
-              style: AppTextStyle.openSans(
-                color: Color(0xFF3F8DFD),
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+          Obx(() {
+            final tags = selectedType?.tags;
+
+            bool containsAll = false;
+            if (tags != null && tags.isNotEmpty) {
+              containsAll = _selectTags.containsAll(tags);
+            }
+            return TextButton(
+              onPressed: () {
+                if (containsAll) {
+                  _selectTags.removeAll(tags ?? []);
+                } else {
+                  _selectTags.addAll(tags ?? []);
+                }
+                setState(() {});
+              },
+              child: Text(
+                containsAll ? LocaleKeys.unselect_all.tr : LocaleKeys.select_all.tr,
+                style: AppTextStyle.openSans(
+                  color: Color(0xFF3F8DFD),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
       body: Padding(
@@ -110,6 +114,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
               borderRadius: BorderRadius.circular(24),
               hasShadow: true,
               onTap: () {
+                ctr.selectTags.assignAll(_selectTags);
                 Get.back();
                 ctr.filterEvent.value = (
                   Set<RoleTag>.from(ctr.selectTags),
@@ -150,20 +155,15 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
           direction: Axis.horizontal, // 显示为水平布局
           alignment: WrapAlignment.start,
           children: tags.map((e) {
-            var isSelected = ctr.selectTags.contains(e);
-
-            return InkWell(
-              splashColor: Colors.transparent, // 去除水波纹
-              highlightColor: Colors.transparent, // 去除点击高亮
+            return GestureDetector(
               onTap: () {
-                if (ctr.selectTags.contains(e)) {
-                  ctr.selectTags.remove(e);
+                if (_selectTags.contains(e)) {
+                  _selectTags.remove(e);
                 } else {
-                  ctr.selectTags.add(e);
+                  _selectTags.add(e);
                 }
-                setState(() {});
               },
-              child: Row(mainAxisSize: MainAxisSize.min, children: [_buildItem(isSelected, e)]),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [_buildItem(e)]),
             );
           }).toList(),
         ),
@@ -171,25 +171,28 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
     );
   }
 
-  Widget _buildItem(bool isSelected, RoleTag e) {
-    return Container(
-      height: 32,
-      padding: EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-        border: Border.all(color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8), width: 1.0),
-      ),
-      child: Center(
-        child: Text(
-          e.name ?? '',
-          style: AppTextStyle.openSans(
-            color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8),
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
+  Widget _buildItem(RoleTag e) {
+    return Obx(() {
+      var isSelected = _selectTags.contains(e);
+      return Container(
+        height: 32,
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          border: Border.all(color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8), width: 1.0),
+        ),
+        child: Center(
+          child: Text(
+            e.name ?? '',
+            style: AppTextStyle.openSans(
+              color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildType() {

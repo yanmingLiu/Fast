@@ -1,15 +1,8 @@
-import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
-import 'package:fast_ai/component/f_loading.dart';
-import 'package:fast_ai/component/f_toast.dart';
-import 'package:fast_ai/data/mask_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/pages/chat/mask_edit_ctr.dart';
 import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
@@ -18,216 +11,58 @@ import 'package:get/get.dart';
 
 /// 聊天角色编辑页面
 /// 用于创建或编辑聊天角色的个人信息
-class MaskEditPage extends StatefulWidget {
+class MaskEditPage extends GetView<MaskEditCtr> {
   /// 页面常量定义
-  static const int maxNameLength = 20;
-  static const int maxDescriptionLength = 500;
-  static const int maxOtherInfoLength = 500;
-  static const int maxAge = 99;
   static const double bottomButtonHeight = 100.0;
   static const double horizontalPadding = 16.0;
   static const double borderRadius = 16.0;
   static const double titleSpace = 8.0;
   static const double iconSize = 24.0;
   static const double genderIconSize = 16.0;
+
+  /// 静态常量缓存，提升性能
+  static const EdgeInsets _genderPadding = EdgeInsets.symmetric(horizontal: 8, vertical: 6);
+  static const EdgeInsets _textFieldPadding = EdgeInsets.symmetric(horizontal: 16);
+  static const EdgeInsets _multilineTextFieldPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 12,
+  );
+  static const EdgeInsets _buttonMargin = EdgeInsets.symmetric(horizontal: 50);
+  static const SizedBox _spacing8 = SizedBox(height: 8);
+  static const SizedBox _spacing20 = SizedBox(height: 20);
+  static const BoxConstraints _multilineConstraints = BoxConstraints(minHeight: 88);
+  static const Color _backgroundColor = Color(0xFF333333);
+  static const Color _selectedColor = Color(0xFF3F8DFD);
+  static const Color _unselectedColor = Color(0x33FFFFFF);
+  static const Color _unselectedTextColor = Color(0xFFA8A8A8);
+  static const Color _hintColor = Color(0xFF999999);
+  static const Color _containerColor = Color(0xFF111111);
+  static const Color _borderColor = Color(0x1AFFFFFF);
+  static const Color _requiredColor = Color(0xFFFF6C2E);
+
   const MaskEditPage({super.key});
 
   @override
-  State<MaskEditPage> createState() => _MaskEditPageState();
-}
-
-/// MaskEditPage的状态管理类
-class _MaskEditPageState extends State<MaskEditPage> {
-  // 文本控制器
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _otherInfoController = TextEditingController();
-
-  // 字符计数
-  int _nameLength = 0;
-  int _descriptionLength = 0;
-  int _otherInfoLength = 0;
-
-  // 选中的性别
-  Gender? _gender;
-
-  // 编辑的聊天角色（新建时为null）
-  late MaskData? _chatMask;
-
-  final ctr = Get.find<MsgCtr>();
-
-  bool _isChanged = false;
-
-  /// 验证表单数据
-  /// 返回验证失败的错误信息，如果验证通过返回null
-  String? _validateForm() {
-    if (_nameController.text.trim().isEmpty) {
-      return LocaleKeys.fill_required_info.tr;
-    }
-
-    if (_descriptionController.text.trim().isEmpty) {
-      return LocaleKeys.fill_required_info.tr;
-    }
-
-    if (_gender == null) {
-      return LocaleKeys.fill_required_info.tr;
-    }
-
-    return null;
-  }
-
-  /// 显示错误提示
-  void _showError(String message) {
-    FToast.toast(message);
-  }
-
-  /// 保存角色信息
-  void _saveMask() async {
-    // 验证表单
-    final errorMessage = _validateForm();
-    if (errorMessage != null) {
-      _showError(errorMessage);
-      return;
-    }
-
-    // 关闭键盘
-    FocusScope.of(context).unfocus();
-
-    if (_chatMask == null) {
-      final balance = AppUser().balance.value;
-      final profileChange = AppUser().priceConfig?.profileChange ?? 5;
-      if (balance < profileChange) {
-        AppRouter.pushGem(ConsumeFrom.mask);
-        return;
-      }
-    }
-
-    final isEditChoosed = _chatMask != null && _chatMask?.id == ctr.session.profileId;
-
-    if (isEditChoosed && _isChanged) {
-      AppDialog.alert(
-        message: LocaleKeys.edit_choose_mask.tr,
-        cancelText: LocaleKeys.cancel.tr,
-        confirmText: LocaleKeys.restart.tr,
-        onConfirm: () async {
-          AppDialog.dismiss();
-          _saveRequest();
-        },
-      );
-    } else {
-      _saveRequest();
-    }
-  }
-
-  Future<void> _saveRequest() async {
-    if (!_isChanged) {
-      Get.back();
-      return;
-    }
-    // 显示加载状态
-    FLoading.showLoading();
-    try {
-      final success = await Api.createOrUpdateMask(
-        name: _nameController.text.trim(),
-        age: _ageController.text.trim(),
-        gender: _gender?.code ?? Gender.unknown.code,
-        description: _descriptionController.text.trim(),
-        otherInfo: _otherInfoController.text.trim(),
-        id: _chatMask?.id,
-      );
-
-      await AppUser().getUserInfo();
-
-      FLoading.dismiss();
-
-      if (success) {
-        Get.back();
-      } else {
-        FToast.toast(LocaleKeys.some_error_try_again.tr);
-      }
-    } catch (e) {
-      FLoading.dismiss();
-      FToast.toast(LocaleKeys.some_error_try_again.tr);
-    }
-  }
-
-  /// 初始化编辑数据
-  void _initializeEditData() {
-    _chatMask = Get.arguments;
-
-    if (_chatMask != null) {
-      _nameController.text = _chatMask?.profileName ?? '';
-      _descriptionController.text = _chatMask?.description ?? '';
-      _ageController.text = _chatMask?.age == null ? '' : _chatMask?.age.toString() ?? '';
-      _otherInfoController.text = _chatMask?.otherInfo ?? '';
-      _gender = Gender.values.firstWhereOrNull((gender) => gender.code == _chatMask?.gender);
-      _nameLength = _nameController.text.length;
-      _descriptionLength = _descriptionController.text.length;
-      _otherInfoLength = _otherInfoController.text.length;
-    }
-    setState(() {});
-  }
-
-  /// 设置文本监听器
-  void _setupTextListeners() {
-    _nameController.addListener(() {
-      setState(() {
-        _nameLength = _nameController.text.length;
-        _isChanged = _nameLength > 0;
-      });
-    });
-
-    _descriptionController.addListener(() {
-      setState(() {
-        _descriptionLength = _descriptionController.text.length;
-        _isChanged = _descriptionLength > 0;
-      });
-    });
-
-    _otherInfoController.addListener(() {
-      setState(() {
-        _otherInfoLength = _otherInfoController.text.length;
-        _isChanged = _otherInfoLength > 0;
-      });
-    });
-
-    _ageController.addListener(() {
-      _isChanged = true;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeEditData();
-    _setupTextListeners();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _ageController.dispose();
-    _descriptionController.dispose();
-    _otherInfoController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // 初始化控制器
+    Get.put(MaskEditCtr());
+
     return GestureDetector(
       onTap: () {
         // 点击空白处关闭键盘
-        FocusScope.of(context).unfocus();
+        Get.focusScope?.unfocus();
       },
       child: Scaffold(
         appBar: _buildAppBar(),
-        resizeToAvoidBottomInset: true,
-        body: Column(
-          children: [
-            Expanded(child: _buildFormContent()),
-            _buildBottomButton(),
-          ],
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Expanded(child: _buildFormContent()),
+              _buildBottomButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -257,21 +92,20 @@ class _MaskEditPageState extends State<MaskEditPage> {
   /// 构建表单内容
   Widget _buildFormContent() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: MaskEditPage.horizontalPadding,
-      ).copyWith(bottom: MaskEditPage.bottomButtonHeight),
       child: Column(
         spacing: 8,
         children: [
           _buildNameField(),
-          const SizedBox(height: 8),
+          _spacing8,
           _buildGenderField(),
-          const SizedBox(height: 8),
+          _spacing8,
           _buildAgeField(),
-          const SizedBox(height: 8),
+          _spacing8,
           _buildDescriptionField(),
-          const SizedBox(height: 8),
+          _spacing8,
           _buildOtherInfoField(),
+          // 额外的底部空间，确保内容不被按钮遮挡
+          _spacing20,
         ],
       ),
     );
@@ -282,14 +116,16 @@ class _MaskEditPageState extends State<MaskEditPage> {
     return Column(
       spacing: MaskEditPage.titleSpace,
       children: [
-        _buildTitle(
-          LocaleKeys.your_name.tr,
-          subtitle: '($_nameLength/${MaskEditPage.maxNameLength})',
+        Obx(
+          () => _buildTitle(
+            LocaleKeys.your_name.tr,
+            subtitle: '(${controller.nameLength.value}/${MaskEditCtr.maxNameLength})',
+          ),
         ),
         _buildTextFieldContainer(
           child: TextField(
-            controller: _nameController,
-            maxLength: MaskEditPage.maxNameLength,
+            controller: controller.nameController,
+            maxLength: MaskEditCtr.maxNameLength,
             inputFormatters: [_NoLeadingSpaceFormatter()],
             decoration: _buildInputDecoration(LocaleKeys.name_hint.tr),
             style: _buildTextStyle(),
@@ -320,38 +156,36 @@ class _MaskEditPageState extends State<MaskEditPage> {
 
   /// 构建性别选项
   Widget _buildGenderOption(Gender gender, String label, AssetGenImage selectedIcon) {
-    final isSelected = _gender == gender;
-    return GestureDetector(
-      onTap: () {
-        setState(() => _gender = gender);
-        _isChanged = true;
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          border: BoxBorder.all(
-            color: isSelected ? const Color(0xFF3F8DFD) : const Color(0x33FFFFFF),
-            width: 1,
+    return Obx(() {
+      final isSelected = controller.selectedGender.value == gender;
+      return GestureDetector(
+        onTap: () {
+          controller.selectGender(gender);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: BoxBorder.all(color: isSelected ? _selectedColor : _unselectedColor, width: 1),
+            borderRadius: BorderRadius.circular(20),
           ),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          spacing: 4,
-          children: [
-            selectedIcon.image(width: MaskEditPage.genderIconSize),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? const Color(0xFF3F8DFD) : const Color(0xFFA8A8A8),
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
+          padding: _genderPadding,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            spacing: 4,
+            children: [
+              selectedIcon.image(width: genderIconSize),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? _selectedColor : _unselectedTextColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   /// 构建年龄输入字段
@@ -362,7 +196,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
         _buildTitle(LocaleKeys.your_age.tr, query: false),
         _buildTextFieldContainer(
           child: TextField(
-            controller: _ageController,
+            controller: controller.ageController,
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -382,15 +216,17 @@ class _MaskEditPageState extends State<MaskEditPage> {
     return Column(
       spacing: MaskEditPage.titleSpace,
       children: [
-        _buildTitle(
-          LocaleKeys.description.tr,
-          subtitle: '($_descriptionLength/${MaskEditPage.maxDescriptionLength})',
-          query: true,
+        Obx(
+          () => _buildTitle(
+            LocaleKeys.description.tr,
+            subtitle: '(${controller.descriptionLength.value}/${MaskEditCtr.maxDescriptionLength})',
+            query: true,
+          ),
         ),
         _buildMultilineTextFieldContainer(
           child: TextField(
-            controller: _descriptionController,
-            maxLength: MaskEditPage.maxDescriptionLength,
+            controller: controller.descriptionController,
+            maxLength: MaskEditCtr.maxDescriptionLength,
             maxLines: null,
             inputFormatters: [_NoLeadingSpaceFormatter()],
             decoration: _buildInputDecoration(LocaleKeys.description_hint.tr),
@@ -406,15 +242,17 @@ class _MaskEditPageState extends State<MaskEditPage> {
     return Column(
       spacing: MaskEditPage.titleSpace,
       children: [
-        _buildTitle(
-          LocaleKeys.other_info.tr,
-          subtitle: '($_otherInfoLength/${MaskEditPage.maxOtherInfoLength})',
-          query: false,
+        Obx(
+          () => _buildTitle(
+            LocaleKeys.other_info.tr,
+            subtitle: '(${controller.otherInfoLength.value}/${MaskEditCtr.maxOtherInfoLength})',
+            query: false,
+          ),
         ),
         _buildMultilineTextFieldContainer(
           child: TextField(
-            controller: _otherInfoController,
-            maxLength: MaskEditPage.maxOtherInfoLength,
+            controller: controller.otherInfoController,
+            maxLength: MaskEditCtr.maxOtherInfoLength,
             maxLines: null,
             inputFormatters: [_NoLeadingSpaceFormatter()],
             decoration: _buildInputDecoration(LocaleKeys.other_info_hint.tr),
@@ -429,10 +267,10 @@ class _MaskEditPageState extends State<MaskEditPage> {
   Widget _buildTextFieldContainer({required Widget child}) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFF333333),
-        borderRadius: BorderRadius.circular(MaskEditPage.borderRadius),
+        color: _backgroundColor,
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: _textFieldPadding,
       child: child,
     );
   }
@@ -440,12 +278,12 @@ class _MaskEditPageState extends State<MaskEditPage> {
   /// 构建多行文本输入框容器
   Widget _buildMultilineTextFieldContainer({required Widget child}) {
     return Container(
-      constraints: const BoxConstraints(minHeight: 88),
+      constraints: _multilineConstraints,
       decoration: BoxDecoration(
-        color: Color(0xFF333333),
-        borderRadius: BorderRadius.circular(MaskEditPage.borderRadius),
+        color: _backgroundColor,
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: _multilineTextFieldPadding,
       child: child,
     );
   }
@@ -456,7 +294,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
       counterText: '',
       hintText: hintText,
       border: InputBorder.none,
-      hintStyle: const TextStyle(color: Color(0xFF999999), fontSize: 14),
+      hintStyle: const TextStyle(color: _hintColor, fontSize: 14),
     );
   }
 
@@ -467,28 +305,33 @@ class _MaskEditPageState extends State<MaskEditPage> {
 
   /// 构建底部按钮
   Widget _buildBottomButton() {
-    final idEdit = _chatMask != null;
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: MaskEditPage.horizontalPadding)
-          .copyWith(
-            bottom: MediaQuery.of(context).padding.bottom > 0
-                ? MediaQuery.of(context).padding.bottom
-                : 16,
-          ),
+      padding: EdgeInsets.only(
+        left: horizontalPadding,
+        right: horizontalPadding,
+        top: 16,
+        bottom: MediaQuery.of(Get.context!).padding.bottom > 0
+            ? MediaQuery.of(Get.context!).padding.bottom
+            : 16,
+      ),
+      decoration: const BoxDecoration(
+        color: _containerColor,
+        border: Border(top: BorderSide(color: _borderColor, width: 0.5)),
+      ),
       child: FButton(
-        onTap: _saveMask,
-        color: Color(0xFF3F8DFD),
-        margin: EdgeInsets.symmetric(horizontal: 50),
+        onTap: controller.saveMask,
+        color: _selectedColor,
+        margin: _buttonMargin,
         hasShadow: true,
-        child: _chatMask == null
+        child: !controller.isEditMode
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 4,
                 children: [
                   Assets.images.gems.image(width: 24),
                   Text(
-                    '${AppUser().priceConfig?.profileChange ?? 5}',
-                    style: TextStyle(
+                    '${controller.createCost}',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -496,7 +339,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
                   ),
                   Text(
                     LocaleKeys.to_create.tr,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -506,7 +349,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
               )
             : Center(
                 child: Text(
-                  idEdit ? LocaleKeys.save.tr : LocaleKeys.create.tr,
+                  LocaleKeys.save.tr,
                   style: AppTextStyle.openSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -535,7 +378,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
             '*',
             style: AppTextStyle.openSans(
               fontSize: 14,
-              color: Color(0xFFFF6C2E),
+              color: _requiredColor,
               fontWeight: FontWeight.w700,
             ),
           ),

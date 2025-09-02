@@ -381,11 +381,12 @@ class PhoneCtr extends GetxController {
       return;
     }
     await Future.delayed(const Duration(seconds: 1));
-    answerText = messageReplyRsp?.answer?.content ?? '';
-    callState.value = CallState.answered;
 
     // 开始播放音频
     await AudioManager.instance.startPlay(id, url);
+
+    callState.value = CallState.answered;
+    answerText = messageReplyRsp?.answer?.content ?? '';
 
     // 监听音频播放状态
     _listenToAudioState(id);

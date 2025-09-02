@@ -108,6 +108,7 @@ class MsgCtr extends GetxController {
   void _addDefaaultTips() {
     final tips = MsgData();
     tips.source = MsgSource.tips;
+    tips.answer = LocaleKeys.msg_tips.tr;
     list.add(tips);
 
     var scenario = session.scene ?? role.scenario;
@@ -360,7 +361,12 @@ class MsgCtr extends GetxController {
     tmpSendMsg = msg;
   }
 
-  Future<void> sendMsgRequest({required String path, String? text, bool? isLoading}) async {
+  Future<void> sendMsgRequest({
+    required String path,
+    String? text,
+    bool? isLoading,
+    String? msgId,
+  }) async {
     try {
       final charId = role.id;
       final conversationId = sessionId ?? 0;
@@ -373,6 +379,9 @@ class MsgCtr extends GetxController {
       var body = {'character_id': charId, 'conversation_id': conversationId, 'user_id': uid};
       if (text != null) {
         body['message'] = text;
+      }
+      if (msgId != null) {
+        body['msg_id'] = msgId;
       }
 
       isRecieving = true;
@@ -775,7 +784,7 @@ class MsgCtr extends GetxController {
       return;
     }
 
-    await sendMsgRequest(path: ApiPath.resendMsg, isLoading: true);
+    await sendMsgRequest(path: ApiPath.resendMsg, isLoading: true, msgId: id);
   }
 
   /// 编辑消息

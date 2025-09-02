@@ -26,7 +26,7 @@ class VideoPreview extends StatefulWidget {
 }
 
 class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver {
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
 
   bool _progressShow = true;
   Timer? _timer;
@@ -35,7 +35,7 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
   bool _isPlaying = true;
   StreamSubscription? _phoneStateSub;
 
-  late String url;
+  String? url;
 
   // 添加下滑关闭所需的状态变量
   double _dragDistance = 0.0;
@@ -82,64 +82,82 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
   }
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
     url = Get.arguments;
-
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      FLoading.showLoading();
-      final path = await Downloader.downloadFile(url, fileType: FileType.video);
-      FLoading.dismiss();
-      if (path != null) {
-        _controller = VideoPlayerController.file(File(url));
-      } else {
-        _controller = VideoPlayerController.networkUrl(Uri.parse(url));
-      }
+    if (url != null) {
+      _initializeVideo();
     } else {
-      _controller = VideoPlayerController.file(File(url));
+      setState(() {
+        _isError = true;
+      });
     }
+  }
 
-    _controller.addListener(() {
-      var isPlaying = _controller.value.isPlaying;
-      var position = _controller.value.position;
-      var duration = _controller.value.duration;
-      if (!isPlaying && position == duration) {
-        _controller.seekTo(const Duration());
-        _isPlaying = false;
+  Future<void> _initializeVideo() async {
+    try {
+      if (url!.startsWith('http://') || url!.startsWith('https://')) {
+        FLoading.showLoading();
+        final path = await Downloader.downloadFile(
+          url!,
+          fileType: FileType.video,
+        ).timeout(const Duration(seconds: 10), onTimeout: () => null);
+        FLoading.dismiss();
+        if (path != null) {
+          _controller = VideoPlayerController.file(File(path));
+        } else {
+          _controller = VideoPlayerController.networkUrl(Uri.parse(url!));
+        }
       } else {
-        // _handlePhoneCall();
+        _controller = VideoPlayerController.file(File(url!));
       }
 
-      setState(() {});
-    });
-    _controller.setLooping(false);
-    _controller
-        .initialize()
-        .then((_) {
-          _isInit = true;
+      _controller!.addListener(() {
+        if (_controller != null) {
+          var isPlaying = _controller!.value.isPlaying;
+          var position = _controller!.value.position;
+          var duration = _controller!.value.duration;
+          if (!isPlaying && position == duration) {
+            _controller!.seekTo(const Duration());
+            _isPlaying = false;
+          }
           if (mounted) {
-            _isPlaying = true;
-            _controller.play();
             setState(() {});
           }
-        })
-        .catchError((e) {
+        }
+      });
+      _controller!.setLooping(false);
+      await _controller!.initialize().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () => throw Exception('Video initialization timeout'),
+      );
+
+      if (mounted) {
+        _isInit = true;
+        _isPlaying = true;
+        _controller!.play();
+        setState(() {});
+      }
+      _playProgressAutoHide();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
           _isError = true;
-          if (mounted) {
-            setState(() {});
-          }
         });
-    _playProgressAutoHide();
+      }
+    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // 添加 inactive 状态判断避免来电等状态
-    if ((AppLifecycleState.paused == state || AppLifecycleState.inactive == state) && _isPlaying) {
+    if ((AppLifecycleState.paused == state || AppLifecycleState.inactive == state) &&
+        _isPlaying &&
+        _controller != null) {
       _isPlaying = false;
-      _controller.pause();
+      _controller!.pause();
       setState(() {});
     }
   }
@@ -147,7 +165,7 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _controller.dispose();
+    _controller?.dispose();
     _timer?.cancel();
     _phoneStateSub?.cancel();
     _phoneStateSub = null;
@@ -180,7 +198,7 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                 Center(
                   child: _isError
                       ? const Icon(Icons.error, color: Colors.white)
-                      : _isInit
+                      : _isInit && _controller != null
                       ? GestureDetector(
                           onTap: () {
                             setState(() {
@@ -189,18 +207,18 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                             });
                           },
                           child: AspectRatio(
-                            aspectRatio: _controller.value.aspectRatio,
-                            child: VideoPlayer(_controller),
+                            aspectRatio: _controller!.value.aspectRatio,
+                            child: VideoPlayer(_controller!),
                           ),
                         )
                       : const CupertinoActivityIndicator(radius: 16.0, color: Colors.white),
                 ),
                 Visibility(
-                  visible: _isInit && !_isPlaying,
+                  visible: _isInit && !_isPlaying && _controller != null,
                   child: GestureDetector(
                     onTap: () {
                       _isPlaying = true;
-                      _controller.play();
+                      _controller?.play();
                     },
                     child: Center(child: Icon(Icons.play_circle, color: Colors.white, size: 80)),
                   ),
@@ -215,12 +233,14 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                       children: [
                         GestureDetector(
                           onTap: () {
-                            if (_isPlaying) {
-                              _isPlaying = false;
-                              _controller.pause();
-                            } else {
-                              _isPlaying = true;
-                              _controller.play();
+                            if (_controller != null) {
+                              if (_isPlaying) {
+                                _isPlaying = false;
+                                _controller!.pause();
+                              } else {
+                                _isPlaying = true;
+                                _controller!.play();
+                              }
                             }
                           },
                           child: Icon(
@@ -231,27 +251,29 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                         ),
                         const SizedBox(width: 20),
                         Text(
-                          _controller.value.position.inSeconds.formatTimeMMSS(),
+                          _controller?.value.position.inSeconds.formatTimeMMSS() ?? '00:00',
                           style: const TextStyle(color: Colors.white, fontSize: 12),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: SizedBox(
                             height: 2,
-                            child: VideoProgressIndicator(
-                              _controller,
-                              colors: const VideoProgressColors(
-                                playedColor: Colors.white,
-                                backgroundColor: Color(0x4d000000),
-                              ),
-                              padding: EdgeInsets.zero,
-                              allowScrubbing: false,
-                            ),
+                            child: _controller != null
+                                ? VideoProgressIndicator(
+                                    _controller!,
+                                    colors: const VideoProgressColors(
+                                      playedColor: Colors.white,
+                                      backgroundColor: Color(0x4d000000),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    allowScrubbing: false,
+                                  )
+                                : Container(height: 2, color: const Color(0x4d000000)),
                           ),
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          _controller.value.duration.inSeconds.formatTimeMMSS(),
+                          _controller?.value.duration.inSeconds.formatTimeMMSS() ?? '00:00',
                           style: const TextStyle(color: Colors.white, fontSize: 12),
                         ),
                       ],

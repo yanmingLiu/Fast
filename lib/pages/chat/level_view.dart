@@ -75,8 +75,7 @@ class LevelView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  AnimationProgress(progress: progress, height: 4, borderRadius: 2),
-
+                  AnimationProgress(progress: progress, height: 4, borderRadius: 2, width: 128),
                   Row(
                     spacing: 4,
                     children: [

@@ -114,6 +114,7 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
   @override
   void dispose() {
     debugPrint('🎧 AudioContainer: 组件销毁开始, msgId: $_msgId');
+    _audioManager.stopAll();
     _cleanupResources();
     super.dispose();
   }
@@ -121,7 +122,6 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
   /// 清理资源
   void _cleanupResources() {
     try {
-      // 注意：不在这里停止音频，让全局管理器管理
       _controller?.dispose();
       debugPrint('🎧 AudioContainer: 资源清理完成, msgId: $_msgId');
     } catch (e) {

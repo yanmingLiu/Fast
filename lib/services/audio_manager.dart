@@ -392,22 +392,6 @@ class AudioManager extends GetxController {
         return false;
       }
 
-      // 特别针对用户反馈的问题：如果时长在5-15秒范围内，很可能是不完整的缓存
-      // 因为用户报告实际应该是1分51秒（111秒），但获取到的是8秒
-      if (duration >= 5000 && duration <= 15000) {
-        debugPrint('⚠️ AudioManager: 检测到可疑的短时长: ${duration}ms，可能是不完整的缓存文件');
-
-        // 进一步检查：文件大小应该与时长成正比
-        // 一般音频文件，每秒大约需要8-32KB（取决于比特率）
-        final expectedMinSize = (duration / 1000) * 8 * 1024; // 最低8KB/秒
-        if (fileSize < expectedMinSize) {
-          debugPrint(
-            '⚠️ AudioManager: 文件大小与时长不匹配，文件大小: ${fileSize}B, 预期最小: ${expectedMinSize.toInt()}B',
-          );
-          return false;
-        }
-      }
-
       debugPrint('🎧 AudioManager: 音频文件验证通过, 文件大小: ${fileSize}B, 时长: ${duration}ms');
       return true;
     } catch (e) {
