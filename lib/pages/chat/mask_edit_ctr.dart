@@ -216,7 +216,10 @@ class MaskEditCtr extends GetxController {
       if (success) {
         final isEditChoosed = chatMask != null && chatMask?.id == msgCtr.session.profileId;
         if (isEditChoosed) {
-          msgCtr.cleanFormMask();
+          final id = chatMask?.id;
+          if (id != null) {
+            await msgCtr.changeMask(id);
+          }
         }
         Get.back();
       } else {
