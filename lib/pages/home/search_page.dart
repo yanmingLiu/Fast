@@ -50,121 +50,128 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        titleSpacing: 0.0,
-        leadingWidth: 48,
-        leading: FButton(
-          width: 44,
-          height: 44,
-          color: Colors.transparent,
-          onTap: () => Get.back(),
-          child: Center(child: FIcon(assetName: Assets.svg.back)),
+    return GestureDetector(
+      onTap: () {
+        focusNode.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          titleSpacing: 0.0,
+          leadingWidth: 48,
+          leading: FButton(
+            width: 44,
+            height: 44,
+            color: Colors.transparent,
+            onTap: () => Get.back(),
+            child: Center(child: FIcon(assetName: Assets.svg.back)),
+          ),
+          title: Container(
+            height: 48,
+            width: double.infinity,
+            margin: const EdgeInsetsDirectional.only(end: 16),
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: Color(0x1AFFFFFF),
+              borderRadius: BorderRadius.circular(24.0),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: TextField(
+                      onChanged: (query) {
+                        // 更新 searchQuery
+                        ctr.searchQuery.value = query;
+                      },
+                      autofocus: false,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () {},
+                      minLines: 1,
+                      maxLength: 20,
+                      style: AppTextStyle.openSans(
+                        height: 1,
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      controller: textController,
+                      enableInteractiveSelection: true, // 确保文本选择功能启用
+                      dragStartBehavior: DragStartBehavior.down, // 优化拖拽行为
+                      decoration: InputDecoration(
+                        hintText: LocaleKeys.search_sirens.tr,
+                        counterText: '', // 去掉字数显示
+                        hintStyle: AppTextStyle.openSans(color: Color(0x33FFFFFF)),
+                        fillColor: Colors.transparent,
+                        border: InputBorder.none,
+                        filled: true,
+                        isDense: true,
+                      ),
+                      focusNode: focusNode,
+                    ),
+                  ),
+                ),
+                FButton(
+                  width: 44,
+                  height: 44,
+                  color: Colors.transparent,
+                  onTap: () {
+                    ctr.searchQuery.value = textController.text;
+                  },
+                  child: Center(
+                    child: Obx(
+                      () => FIcon(
+                        assetName: Assets.svg.search,
+                        width: 24,
+                        color: ctr.searchQuery.value.isEmpty
+                            ? Colors.white
+                            : const Color(0xFF3F8DFD),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        title: Container(
-          height: 48,
-          width: double.infinity,
-          margin: const EdgeInsetsDirectional.only(end: 16),
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-            color: Color(0x1AFFFFFF),
-            borderRadius: BorderRadius.circular(24.0),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Center(
-                  child: TextField(
-                    onChanged: (query) {
-                      // 更新 searchQuery
-                      ctr.searchQuery.value = query;
-                    },
-                    autofocus: false,
-                    textInputAction: TextInputAction.done,
-                    onEditingComplete: () {},
-                    minLines: 1,
-                    maxLength: 20,
-                    style: AppTextStyle.openSans(
-                      height: 1,
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    controller: textController,
-                    enableInteractiveSelection: true, // 确保文本选择功能启用
-                    dragStartBehavior: DragStartBehavior.down, // 优化拖拽行为
-                    decoration: InputDecoration(
-                      hintText: LocaleKeys.search_sirens.tr,
-                      counterText: '', // 去掉字数显示
-                      hintStyle: AppTextStyle.openSans(color: Color(0x33FFFFFF)),
-                      fillColor: Colors.transparent,
-                      border: InputBorder.none,
-                      filled: true,
-                      isDense: true,
-                    ),
-                    focusNode: focusNode,
-                  ),
-                ),
-              ),
-              FButton(
-                width: 44,
-                height: 44,
-                color: Colors.transparent,
+        body: SafeArea(
+          child: Obx(() {
+            final list = ctr.list;
+            final type = ctr.type.value;
+
+            if (type != null) {
+              return GestureDetector(
+                child: FEmpty(type: type),
                 onTap: () {
-                  ctr.searchQuery.value = textController.text;
+                  FocusManager.instance.primaryFocus?.unfocus();
                 },
-                child: Center(
-                  child: Obx(
-                    () => FIcon(
-                      assetName: Assets.svg.search,
-                      width: 24,
-                      color: ctr.searchQuery.value.isEmpty ? Colors.white : const Color(0xFF3F8DFD),
-                    ),
+              );
+            }
+            return MasonryGridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              itemCount: list.length,
+              controller: scrollController,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              itemBuilder: (context, index) {
+                final role = list[index];
+                return SizedBox(
+                  height: index.isOdd ? 300 : 250,
+                  child: HomeItem(
+                    role: role,
+                    onCollect: (Role role) {
+                      focusNode.unfocus();
+                      ctr.onCollect(index, role);
+                    },
+                    cate: HomeListCategroy.all,
                   ),
-                ),
-              ),
-            ],
-          ),
+                );
+              },
+            );
+          }),
         ),
       ),
-      body: Obx(() {
-        final list = ctr.list;
-        final type = ctr.type.value;
-
-        if (type != null) {
-          return GestureDetector(
-            child: FEmpty(type: type),
-            onTap: () {
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-          );
-        }
-        return Padding(
-          padding: const EdgeInsets.only(top: 16),
-          child: MasonryGridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            itemCount: list.length,
-            controller: scrollController,
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            itemBuilder: (context, index) {
-              final role = list[index];
-              return SizedBox(
-                height: index.isOdd ? 300 : 250,
-                child: HomeItem(
-                  role: role,
-                  onCollect: (Role role) {
-                    ctr.onCollect(index, role);
-                  },
-                  cate: HomeListCategroy.all,
-                ),
-              );
-            },
-          ),
-        );
-      }),
     );
   }
 }

@@ -1,7 +1,7 @@
+import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -101,9 +101,7 @@ class FEmpty extends StatelessWidget {
 
     if (type == EmptyType.loading) {
       // Loading state - show activity indicator
-      widgets.add(
-        CupertinoActivityIndicator(radius: 16.0, color: loadingIconColor ?? AppColors.primary),
-      );
+      widgets.add(FLoading.loadingWidget());
     } else {
       // Empty or No Network state
       // Use custom image if provided, otherwise use default for the type

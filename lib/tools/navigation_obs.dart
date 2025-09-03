@@ -55,12 +55,26 @@ class NavigationObs {
     curRoute = routeQueue.isNotEmpty ? routeQueue.last : null;
 
     if (route.settings.name == Routers.msg) {
-      if (Get.isRegistered<ChatCtr>()) {
-        Get.find<ChatCtr>().onRefresh();
-      }
-      if (Get.isRegistered<LikedCtr>()) {
-        Get.find<LikedCtr>().onRefresh();
-      }
+      // 使用 WidgetsBinding.instance.addPostFrameCallback 确保在导航完成后执行刷新
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        try {
+          if (Get.isRegistered<ChatCtr>()) {
+            final chatCtr = Get.find<ChatCtr>();
+            if (!chatCtr.isClosed) {
+              chatCtr.onRefresh();
+            }
+          }
+          if (Get.isRegistered<LikedCtr>()) {
+            final likedCtr = Get.find<LikedCtr>();
+            if (!likedCtr.isClosed) {
+              likedCtr.onRefresh();
+            }
+          }
+        } catch (e) {
+          // 如果控制器已被销毁，忽略错误
+          debugPrint('[NavObs] Error refreshing controllers: $e');
+        }
+      });
     }
   }
 

@@ -889,4 +889,10 @@ class MsgCtr extends GetxController {
     msg.answer = LocaleKeys.mask_applied.tr;
     list.add(msg);
   }
+
+  void cleanFormMask() {
+    list.clear();
+    _addDefaaultTips();
+    _addMaskTips();
+  }
 }

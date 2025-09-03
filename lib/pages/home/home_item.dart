@@ -205,16 +205,15 @@ class HomeItem extends StatelessWidget {
     final tags = role.tags;
     List<String> result = (tags != null && tags.length > 3) ? tags.take(3).toList() : tags ?? [];
 
-    // 优化NSFW和BDSM标签插入逻辑
-    // final tagType = role.tagType;
-    // if (tagType != null) {
-    //   if (tagType.contains(kNSFW) && !result.contains(kNSFW)) {
-    //     result.insert(0, kNSFW);
-    //   }
-    //   if (tagType.contains(kBDSM) && !result.contains(kBDSM)) {
-    //     result.insert(0, kBDSM);
-    //   }
-    // }
+    final tagType = role.tagType;
+    if (tagType != null) {
+      if (tagType.contains(kNSFW) && !result.contains(kNSFW)) {
+        result.insert(0, kNSFW);
+      }
+      if (tagType.contains(kBDSM) && !result.contains(kBDSM)) {
+        result.insert(0, kBDSM);
+      }
+    }
 
     return result.take(3).toList(); // 确保最多3个标签
   }

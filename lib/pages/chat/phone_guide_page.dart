@@ -30,16 +30,15 @@ class PhoneGuidePage extends StatefulWidget {
   State<PhoneGuidePage> createState() => _PhoneGuidePageState();
 }
 
+enum PlayState { init, playing, finish }
+
 class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, WidgetsBindingObserver {
   late Role role;
 
   VideoPlayerController? _controller;
   Future<void>? _initializeVideoPlayerFuture;
 
-  bool isLoading = true;
-  bool isPlaying = false;
-  bool isCompleted = false;
-  bool hasError = false;
+  var playState = PlayState.init.obs;
 
   @override
   void initState() {
@@ -59,11 +58,6 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
 
   Future<void> _downloadAndInitVideo() async {
     try {
-      setState(() {
-        isLoading = true;
-        hasError = false;
-      });
-
       final guide = role.characterVideoChat?.firstWhereOrNull((e) => e.tag == 'guide');
       var url = guide?.url;
       if (url == null) {
@@ -76,33 +70,26 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
       }
 
       _controller = VideoPlayerController.file(File(path));
-      _controller?.addListener(_videoListener);
 
-      await _controller!.initialize();
-
-      // 延迟5秒后开始播放
-      await Future.delayed(const Duration(seconds: 5));
-
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-          isPlaying = true;
-        });
-        _controller?.play();
-
-        if (AppUser().isVip.value) {
-          _phoneAccept();
-        }
-      }
+      await _controller!.initialize().then((_) {
+        _controller?.addListener(_videoListener);
+        _delayedPlay();
+      });
     } catch (e) {
       if (mounted) {
-        setState(() {
-          isLoading = false;
-          hasError = true;
-        });
         FToast.toast(LocaleKeys.some_error_try_again.tr);
         Get.back();
       }
+    }
+  }
+
+  Future _delayedPlay() async {
+    // 延迟5秒后开始播放
+    await Future.delayed(const Duration(seconds: 5));
+
+    if (mounted) {
+      _controller?.play();
+      playState.value = PlayState.playing;
     }
   }
 
@@ -118,7 +105,6 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
   void dispose() {
     /// 取消路由订阅
     NavigationObs().observer.unsubscribe(this);
-
     WidgetsBinding.instance.removeObserver(this);
 
     _controller?.removeListener(_videoListener);
@@ -129,15 +115,14 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
   @override
   void didPushNext() {
     // 页面被其他页面覆盖时调用
-    debugPrint('ChatPage pushed to the background');
+    debugPrint('didPushNext');
     _controller?.pause();
   }
 
   @override
   void didPopNext() {
     // 页面从其他页面回到前台时调用
-    debugPrint('ChatPage resumed from the background');
-    _controller?.play();
+    debugPrint('didPopNext');
   }
 
   @override
@@ -146,27 +131,26 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
       _controller?.pause();
       setState(() {});
     }
-    if (state == AppLifecycleState.resumed) {
-      _controller?.play();
-      setState(() {});
-    }
+    // if (state == AppLifecycleState.resumed) {
+    //   _controller?.play();
+    //   setState(() {});
+    // }
   }
 
   void _videoListener() {
     if (_controller == null) return;
-    if (_controller!.value.isPlaying) {
-      setState(() {});
-    }
 
     final position = _controller!.value.position;
     final duration = _controller!.value.duration;
     final timeRemaining = duration - position;
 
     if (timeRemaining <= const Duration(milliseconds: 500)) {
-      isPlaying = false;
-      isCompleted = true;
       _controller?.pause();
-      setState(() {});
+      playState.value = PlayState.finish;
+
+      if (AppUser().isVip.value) {
+        _phoneAccept();
+      }
     }
   }
 
@@ -218,7 +202,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
           child: Container(
             width: width,
             height: height,
-            color: Colors.white,
+            color: Colors.black,
             child: Stack(
               children: [
                 Positioned.fill(
@@ -244,10 +228,35 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
                     }
                   },
                 ),
-                if (!isPlaying || isCompleted)
-                  Positioned(top: 0, right: 0, left: 0, child: _buldName()),
-                if (!isCompleted) Positioned(bottom: 32, right: 0, left: 0, child: _playingView()),
-                if (isCompleted) Positioned(bottom: 0, right: 0, left: 0, child: _playedView()),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  child: Obx(() {
+                    if (playState.value == PlayState.playing) {
+                      return SizedBox.shrink();
+                    }
+                    return _buldName();
+                  }),
+                ),
+
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: Obx(() {
+                    final vip = AppUser().isVip.value;
+
+                    switch (playState.value) {
+                      case PlayState.init:
+                      case PlayState.playing:
+                        return _playingView();
+
+                      case PlayState.finish:
+                        return vip ? _playingView() : _playedView();
+                    }
+                  }),
+                ),
               ],
             ),
           ),
@@ -329,19 +338,15 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
         ),
-        Obx(() {
-          final vip = AppUser().isVip.value;
-          return vip
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 40,
-                  children: [
-                    PhoneBtn(icon: Assets.images.hangup.image(), onTap: () => Get.back()),
-                    PhoneBtn(icon: Assets.images.accept.image(), onTap: _phoneAccept),
-                  ],
-                )
-              : PhoneBtn(icon: Assets.images.hangup.image(), onTap: () => Get.back());
-        }),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            PhoneBtn(icon: Assets.images.hangup.image(), onTap: () => Get.back()),
+            if (playState.value == PlayState.finish)
+              PhoneBtn(icon: Assets.images.accept.image(), onTap: _phoneAccept),
+          ],
+        ),
+        SizedBox(height: 32),
       ],
     );
   }

@@ -1,6 +1,5 @@
 import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/data/role_data.dart';
-import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/mian/main_page.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/pages/router/routers.dart';
@@ -115,11 +114,6 @@ class HomeCallCtr extends GetxController {
 
     if (NavigationObs().curRoute?.settings.name != Routers.main) {
       log.d('-------->canCall: false curRoute is not root');
-      return false;
-    }
-
-    if (Get.find<HomeCtr>().categroy.value != HomeListCategroy.all) {
-      log.d('-------->canCall: false categroy is not all');
       return false;
     }
 

@@ -25,13 +25,24 @@ abstract class BaseListController<T> extends GetxController {
 
   Future<void> onRefresh() async {
     if (_isRefreshing) return;
+    // 检查控制器是否已被销毁
+    try {
+      if (isClosed) return;
+    } catch (e) {
+      // 如果访问isClosed抛出异常，说明控制器可能已被销毁
+      return;
+    }
+    
     _isRefreshing = true;
     try {
       page = 1;
       isNoMoreData = false;
       await fetchData();
-      refreshController.finishRefresh();
-      refreshController.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+      // 再次检查控制器状态
+      if (!isClosed) {
+        refreshController.finishRefresh();
+        refreshController.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+      }
     } finally {
       _isRefreshing = false;
     }

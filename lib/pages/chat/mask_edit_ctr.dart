@@ -214,6 +214,10 @@ class MaskEditCtr extends GetxController {
       await AppUser().getUserInfo();
 
       if (success) {
+        final isEditChoosed = chatMask != null && chatMask?.id == msgCtr.session.profileId;
+        if (isEditChoosed) {
+          msgCtr.cleanFormMask();
+        }
         Get.back();
       } else {
         FToast.toast(LocaleKeys.some_error_try_again.tr);

@@ -37,9 +37,9 @@ class AppService {
       'isDebugMode': true,
       'bundleId': 'com.dev.fast',
     },
-    // TODO: !
+
     Environment.prod: {
-      'baseUrl': 'https://www.openchatbotapi.com',
+      'baseUrl': 'https://fastaiapptop.com',
       'isDebugMode': false,
       'bundleId': 'com.dev.fast',
     },
@@ -49,10 +49,9 @@ class AppService {
   String get platform => Platform.isIOS ? 'fast' : 'fast-android';
   String bundleId = '';
 
-  // TODO: url
-  static const String privacy = 'https://boomai.cc/privacy/';
-  static const terms = 'https://boomai.cc/terms/';
-  static const email = 'mailto:boomai@proton.me';
+  static const String privacy = 'https://fastaiapptop.com/fastaiapptop.com/privacy/';
+  static const terms = 'https://fastaiapptop.com/terms/';
+  static const email = 'fastaiup@proton.me';
 
   late String baseUrl;
   late String apiKey;
@@ -81,7 +80,7 @@ class AppService {
     Get.put(AudioManager.instance, permanent: true);
     log.d('[AudioManager]: 全局音频管理器初始化完成 ✅');
 
-    // await initAdjust();
+    await initAdjust();
     await initFirebase();
   }
 
@@ -89,8 +88,7 @@ class AppService {
   Future<void> initAdjust() async {
     try {
       String deviceId = await AppCache().phoneId(isOrigin: true);
-      // TODO: ---
-      String appToken = '';
+      String appToken = 'z44jxzaw8934';
       AdjustEnvironment env = AdjustEnvironment.production;
 
       AdjustConfig config = AdjustConfig(appToken, env)

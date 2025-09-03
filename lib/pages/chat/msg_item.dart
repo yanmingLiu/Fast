@@ -28,13 +28,13 @@ class MessageContainerFactory {
   /// 相比switch语句，Map查找性能更好，O(1)时间复杂度
   static final Map<MsgSource, Widget Function(MsgData)> _containerBuilders = {
     MsgSource.tips: (msg) => TipsContent(msg: msg),
+    MsgSource.maskTips: (msg) => TipsContent(msg: msg),
+    MsgSource.error: (msg) => TipsContent(msg: msg),
     MsgSource.welcome: (msg) => TextContainer(msg: msg),
     MsgSource.scenario: (msg) => TextContainer(msg: msg, title: "${LocaleKeys.scenario.tr}:"),
     MsgSource.intro: (msg) => TextContainer(msg: msg, title: "${LocaleKeys.intro.tr}:"),
     MsgSource.sendText: (msg) => TextContainer(msg: msg),
     MsgSource.text: (msg) => TextContainer(msg: msg),
-    MsgSource.maskTips: (msg) => TipsContent(msg: msg),
-    MsgSource.error: (msg) => TextContainer(msg: msg),
     MsgSource.photo: (msg) => PhotoContainer(msg: msg),
     MsgSource.clothe: (msg) => PhotoContainer(msg: msg),
     MsgSource.video: (msg) => VideoContainer(msg: msg),

@@ -49,7 +49,9 @@ class _HomeListViewState extends State<HomeListView> {
       onLoad: _controller.onLoad,
       childBuilder: (context, physics) {
         return Obx(() {
-          if (_controller.type.value != null) {
+          final type = _controller.type.value;
+          final list = _controller.list;
+          if (type != null && list.isEmpty) {
             return FEmpty(type: _controller.type.value!, physics: physics);
           }
           return _buildList(physics, _controller.list);
@@ -65,7 +67,7 @@ class _HomeListViewState extends State<HomeListView> {
       crossAxisSpacing: 8,
       itemCount: list.length,
       physics: physics,
-      controller: _controller.scrollController, // 添加ScrollController
+      controller: _controller.scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemBuilder: (context, index) {
         final role = list[index];

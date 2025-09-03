@@ -164,23 +164,20 @@ class HomeListController {
         tags: tagIds,
         dress: changeClothing,
       );
-      if (res == null || (res.records?.isEmpty ?? true)) {
-        type.value = list.isEmpty ? EmptyType.noData : null;
-        return null;
-      }
-      isNoMoreData = (res.records?.length ?? 0) < size;
+
+      final records = res?.records ?? [];
+      isNoMoreData = (records.length) < size;
 
       if (page == 1) {
         list.clear();
 
         if (AppUser().isVip.value == false) {
-          Get.find<HomeCallCtr>().onCall(res.records);
+          Get.find<HomeCallCtr>().onCall(records);
         }
       }
 
-      type.value = null;
-      list.addAll(res.records!);
-
+      type.value = list.isEmpty ? EmptyType.noData : null;
+      list.addAll(records);
       return res;
     } catch (e) {
       log.e('Error fetching home data: $e');

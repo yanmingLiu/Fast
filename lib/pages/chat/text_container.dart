@@ -4,6 +4,7 @@ import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/msg_edit_page.dart';
+import 'package:fast_ai/pages/chat/send_container.dart';
 import 'package:fast_ai/pages/chat/text_lock.dart';
 import 'package:fast_ai/pages/chat/typing_rich_text.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
@@ -14,7 +15,6 @@ import 'package:fast_ai/values/app_text_style.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 // 性能优化：预定义常量，避免重复创建对象
 const double _maxWidthRatio = 0.8;
@@ -89,7 +89,10 @@ class _TextContainerState extends State<TextContainer> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (shouldShowSend)
-          Padding(padding: const EdgeInsets.only(bottom: 16.0), child: _buildSendText(context)),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: SendContainer(msg: widget.msg),
+          ),
         if (receivText != null) _buildReceiveText(context),
       ],
     );
@@ -164,66 +167,6 @@ class _TextContainerState extends State<TextContainer> {
       debugPrint('[TextContainer] 检查消息锁定状态失败,使用默认值false: $e');
       return false;
     }
-  }
-
-  Widget _buildSendText(BuildContext context) {
-    final msg = widget.msg;
-    final sendText = msg.question ?? '';
-
-    // 性能优化：预计算屏幕宽度约束
-    final maxWidth = MediaQuery.of(context).size.width * _maxWidthRatio;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              padding: _Constants.sendTextPadding,
-              decoration: BoxDecoration(color: AppColors.primary, borderRadius: _borderRadius),
-              constraints: BoxConstraints(maxWidth: maxWidth),
-              child: RepaintBoundary(
-                child: TypingRichText(text: sendText, isSend: false, isTypingAnimation: false),
-              ),
-            ),
-          ],
-        ),
-        if (_shouldShowLoadingIndicator(msg)) _buildLoadingIndicator(),
-      ],
-    );
-  }
-
-  /// 判断是否显示加载指示器
-  bool _shouldShowLoadingIndicator(MsgData msg) {
-    try {
-      return msg.onAnswer == true;
-    } catch (e) {
-      debugPrint('[TextContainer] 检查加载状态失败: $e');
-      return false;
-    }
-  }
-
-  /// 构建加载指示器
-  Widget _buildLoadingIndicator() {
-    return Row(
-      children: [
-        Container(
-          width: _loadingContainerWidth,
-          height: _loadingContainerHeight,
-          margin: _Constants.loadingMargin,
-          decoration: BoxDecoration(color: _bgColor, borderRadius: _Constants.loadingBorderRadius),
-          child: Center(
-            child: RepaintBoundary(
-              child: LoadingAnimationWidget.progressiveDots(
-                color: AppColors.primary,
-                size: _loadingSize,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   /// 翻译显示逻辑配置
