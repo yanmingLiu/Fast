@@ -54,7 +54,7 @@ class MaskEditPage extends GetView<MaskEditCtr> {
       },
       child: Scaffold(
         appBar: _buildAppBar(),
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           bottom: false,
           child: Column(
@@ -92,6 +92,9 @@ class MaskEditPage extends GetView<MaskEditCtr> {
   /// 构建表单内容
   Widget _buildFormContent() {
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(
+        horizontal: MaskEditPage.horizontalPadding,
+      ).copyWith(bottom: MaskEditPage.bottomButtonHeight),
       child: Column(
         spacing: 8,
         children: [
@@ -104,8 +107,6 @@ class MaskEditPage extends GetView<MaskEditCtr> {
           _buildDescriptionField(),
           _spacing8,
           _buildOtherInfoField(),
-          // 额外的底部空间，确保内容不被按钮遮挡
-          _spacing20,
         ],
       ),
     );

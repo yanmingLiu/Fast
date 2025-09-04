@@ -152,12 +152,18 @@ class MaskEditCtr extends GetxController {
     return null;
   }
 
+  /// 显示错误提示
+  void _showError(String message) {
+    // ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(content: Text(message)));
+    FToast.toast(message);
+  }
+
   /// 保存角色信息
   Future<void> saveMask() async {
     // 验证表单
     final errorMessage = _validateForm();
     if (errorMessage != null) {
-      FToast.toast(errorMessage);
+      _showError(errorMessage);
       return;
     }
 

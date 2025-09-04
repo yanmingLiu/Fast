@@ -7,6 +7,7 @@ class FToast {
       '',
       displayType: SmartToastType.onlyRefresh,
       debounce: true,
+      alignment: Alignment.center,
       builder: (_) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
