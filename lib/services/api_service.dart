@@ -25,7 +25,7 @@ class ApiService {
         'platform': AppService().platform,
         'version': version,
         // 添加语言
-        'lang': Get.locale?.languageCode ?? 'en',
+        'lang': Get.deviceLocale?.languageCode ?? 'en',
       };
       request.headers.addAll(headers);
       return request;

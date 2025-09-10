@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fast_ai/data/event_data.dart';
 import 'package:fast_ai/services/app_cache.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,7 @@ import 'app_service.dart';
 void logEvent(String name, {Map<String, Object>? parameters}) {
   try {
     log.d('[logEvent]: $name, $parameters');
-    // FirebaseAnalytics.instance.logEvent(name: name, parameters: parameters);
+    FirebaseAnalytics.instance.logEvent(name: name, parameters: parameters);
     AppLogEvent().logCustomEvent(name: name, params: parameters ?? {});
   } catch (e) {
     log.e('FirebaseAnalytics: $e');
