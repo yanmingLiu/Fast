@@ -96,7 +96,7 @@ class AppLogEvent {
   factory AppLogEvent() => _instance;
 
   AppLogEvent._internal() {
-    // _startTimersAsync();
+    _startTimersAsync();
   }
 
   final _adLogService = LogEventDBService();
@@ -110,7 +110,7 @@ class AppLogEvent {
     // 使用微任务延迟执行，避免阻塞当前调用栈
     scheduleMicrotask(() {
       _startUploadTimer();
-      _startRetryTimer();
+      // _startRetryTimer();
     });
   }
 
@@ -164,17 +164,16 @@ class AppLogEvent {
     });
   }
 
-  String get androidBurl => AppService().isDebugMode
-      ? "https://test-cabin.kiraassociates.com/blimp/blare"
-      : "https://cabin.kiraassociates.com/cohere/werent/conduct";
+  // TODO:-
+  String get androidURL => AppService().isDebugMode ? "" : "";
+
+  String get iosURL => AppService().isDebugMode
+      ? 'https://test-aint.fastaiapptop.com/iverson/typic/choose'
+      : 'https://aint.fastaiapptop.com/applause/arisen/intuit';
 
   late final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: Platform.isAndroid
-          ? androidBurl
-          : AppService().isDebugMode
-          ? 'https://test-dominion.kiraassociates.com/bravery/obdurate'
-          : 'https://dominion.kiraassociates.com/marmoset/indulge/final',
+      baseUrl: Platform.isAndroid ? androidURL : iosURL,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
@@ -192,57 +191,33 @@ class AppLogEvent {
       final deviceId = await AppCache().phoneId(isOrigin: true);
       final deviceModel = await AppService().getDeviceModel();
       final manufacturer = await AppService().getDeviceManufacturer();
-      final idfv = await AppService().getIdfv(); // 使用AppService的安全方法
+      final idfv = await AppService().getIdfv();
       final version = await AppService().version();
-      final os = Platform.isIOS ? 'ibis' : 'behead';
       final osVersion = await AppService().getOsVersion();
-
-      // 使用AppService的安全方法获取Google AdId
-      final gaid = Platform.isAndroid
-          ? await AppService().getGoogleAdId().timeout(
-              const Duration(seconds: 5),
-              onTimeout: () {
-                log.w('_getCommonParams: Google AdId获取超时，使用空值');
-                return '';
-              },
-            )
-          : null;
+      final idfa = await AppService().getIdfa();
 
       if (Platform.isAndroid) {
-        return {
-          "cowhand": {"highball": manufacturer, "erosible": Get.locale.toString()},
-          "shire": {
-            "beijing": deviceModel,
-            "dahl": deviceId,
-            "tantric": "mcc",
-            "ligament": DateTime.now().millisecondsSinceEpoch,
-          },
-          "kumquat": {
-            "clannish": uuid(),
-            "stood": deviceId,
-            "nauseum": "agate",
-            "wehr": "com.dream.kirasay",
-            "staccato": osVersion,
-          },
-          "rest": {"oncoming": version},
-        };
+        final gaid = await AppService().getGoogleAdId();
+        final androidId = await AppService().getAndroidId();
+        return {"galloway": androidId, "beijing": gaid, "dahl": deviceId};
       }
 
       return {
-        "godson": {
-          "regina": deviceId,
-          "day": uuid(),
-          "folktale": deviceModel,
-          "erode": Get.locale.toString(),
-          "flaunt": manufacturer,
-          "chasm": idfv,
+        "chicory": {
+          "prostate": version,
+          "helpful": Get.locale.toString(),
+          "splice": deviceId,
+          "farina": "mediate",
+          "delphi": "mcc",
+          "walden": uuid(),
         },
-        "avis": {"stirling": version, "grille": os, "kovacs": "mcc"},
-        "ladle": {"mystify": "com.rolekria.chat", "totem": DateTime.now().millisecondsSinceEpoch},
-        "franca": {
-          "innovate": Platform.isAndroid ? deviceId : null,
-          "razor": gaid,
-          "czarina": osVersion,
+        "blockade": {"dusty": manufacturer, "fain": idfa},
+        "halogen": {
+          "scoop": DateTime.now().millisecondsSinceEpoch,
+          "pyrite": idfv,
+          "deportee": osVersion,
+          "carabao": deviceModel,
+          "cheryl": "com.fastgpt.aiup",
         },
       };
     } catch (e) {
@@ -261,37 +236,19 @@ class AppLogEvent {
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36";
 
       if (Platform.isAndroid) {
-        final pour = isLimitAdTrackingEnabled ? 'gsa' : 'barb';
-
-        data["abc"] = {
-          "jogging": "build.$build",
-          "act": agent,
-          "hopkins": pour,
-          "pan": DateTime.now().millisecondsSinceEpoch,
-          "paycheck": DateTime.now().millisecondsSinceEpoch,
-          "sterno": DateTime.now().millisecondsSinceEpoch,
-          "hilt": DateTime.now().millisecondsSinceEpoch,
-          "nob": DateTime.now().millisecondsSinceEpoch,
-          "cockpit": DateTime.now().millisecondsSinceEpoch,
-        };
+        // TODO:-
       } else {
-        final pour = isLimitAdTrackingEnabled ? 'adjust' : 'gherkin';
-
-        var params = {
-          "priam": {
-            "hilarity": "build.$build",
-            "incest":
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
-            "pour": pour,
-            "incant": DateTime.now().millisecondsSinceEpoch,
-            "rangy": DateTime.now().millisecondsSinceEpoch,
-            "ink": DateTime.now().millisecondsSinceEpoch,
-            "weasel": DateTime.now().millisecondsSinceEpoch,
-            "dirt": DateTime.now().millisecondsSinceEpoch,
-            "sticky": DateTime.now().millisecondsSinceEpoch,
-          },
-        };
-        data.addAll(params);
+        data["geode"] = "gulf";
+        data["rubbish"] = "build/$build";
+        data["nne"] = agent;
+        final quaff = isLimitAdTrackingEnabled ? 'brendan' : 'hughes';
+        data["quaff"] = quaff;
+        data["chao"] = DateTime.now().millisecondsSinceEpoch;
+        data["nairobi"] = DateTime.now().millisecondsSinceEpoch;
+        data["canaan"] = DateTime.now().millisecondsSinceEpoch;
+        data["meiosis"] = DateTime.now().millisecondsSinceEpoch;
+        data["cellular"] = DateTime.now().millisecondsSinceEpoch;
+        data["pleasure"] = DateTime.now().millisecondsSinceEpoch;
       }
 
       final logModel = EventData(
@@ -316,9 +273,10 @@ class AppLogEvent {
       }
 
       if (Platform.isAndroid) {
+        // TODO:-
         data['mayhem'] = {};
       } else {
-        data['wow'] = "poet";
+        data['ravenous'] = {};
       }
 
       final logModel = EventData(
@@ -341,14 +299,18 @@ class AppLogEvent {
         return;
       }
       if (Platform.isAndroid) {
-        data['swarthy'] = name;
+        // TODO:-
+        // data['swarthy'] = name;
+        // // 处理自定义参数
+        // params.forEach((key, value) {
+        //   data['$key@tung'] = value;
+        // });
+      } else if (Platform.isIOS) {
+        data['geode'] = name;
         // 处理自定义参数
         params.forEach((key, value) {
-          data['$key@tung'] = value;
+          data['trivium^$key'] = value;
         });
-      } else if (Platform.isIOS) {
-        data['wow'] = name;
-        data['solve'] = params;
       }
 
       final logModel = EventData(
@@ -466,7 +428,13 @@ class AppLogEvent {
 }
 
 extension Clannish on Map<String, dynamic> {
-  dynamic get logId => Platform.isAndroid ? this['kumquat']['clannish'] : this["godson"]["day"];
+  dynamic get logId {
+    if (Platform.isAndroid) {
+      return ''; //TODO:
+    } else {
+      return this["chicory"]["walden"];
+    }
+  }
 }
 
 class LogPage extends StatefulWidget {
@@ -521,7 +489,7 @@ class _LogPageState extends State<LogPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ad Logs'),
+        title: const Text('Event Logs'),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
@@ -555,17 +523,19 @@ class _LogPageState extends State<LogPage> {
                   var name = '';
                   try {
                     var dic = jsonDecode(log.data);
-                    name = dic["wow"];
+                    name = Platform.isIOS ? dic["geode"] : '';
                   } catch (e) {}
 
                   return ListTile(
-                    title: Text('Event: ${log.eventType}'),
+                    title: Text(
+                      'eventType: ${log.eventType}',
+                      style: TextStyle(color: Colors.deepOrange),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('id: ${log.id}', style: const TextStyle(color: Colors.blue)),
-                        if (name.isNotEmpty)
-                          Text('name: $name', style: const TextStyle(color: Colors.blue)),
+                        Text('name: $name', style: const TextStyle(color: Colors.blue)),
                         Text('Created: ${DateTime.fromMillisecondsSinceEpoch(log.createTime)}'),
                         if (log.uploadTime != null)
                           Text('Uploaded: ${DateTime.fromMillisecondsSinceEpoch(log.uploadTime!)}'),

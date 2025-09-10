@@ -138,8 +138,6 @@ class HomeCtr extends GetxController {
       // 记录为重启
       AppCache().isRestart = true;
 
-      AppLogEvent().logInstallEvent();
-
       // 首次启动 获取指定人物聊天
       final startRole = await getSplashRole();
       if (startRole != null) {

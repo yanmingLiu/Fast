@@ -14,9 +14,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeListController {
-  HomeListController() {
+  HomeListController(this.cate) {
     _initState();
   }
+
+  final HomeListCategroy cate;
 
   final EasyRefreshController refreshCtr = EasyRefreshController(
     controlFinishRefresh: true,
@@ -144,13 +146,13 @@ class HomeListController {
   }
 
   Future<RolePage?> _fetchData() async {
-    if (ctr.categroy.value == HomeListCategroy.realistic) {
+    if (cate == HomeListCategroy.realistic) {
       rendStyl = HomeListCategroy.realistic.name.toUpperCase();
-    } else if (ctr.categroy.value == HomeListCategroy.anime) {
+    } else if (cate == HomeListCategroy.anime) {
       rendStyl = HomeListCategroy.anime.name.toUpperCase();
-    } else if (ctr.categroy.value == HomeListCategroy.video) {
+    } else if (cate == HomeListCategroy.video) {
       videoChat = true;
-    } else if (ctr.categroy.value == HomeListCategroy.dressUp) {
+    } else if (cate == HomeListCategroy.dressUp) {
       changeClothing = true;
     }
     try {

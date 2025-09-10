@@ -69,7 +69,7 @@ class Routers {
         canPop: false, // 禁止返回键
         child: const VipPage(),
       ),
-      // popGesture: false, // 禁用 iOS 侧滑返回
+      popGesture: false, // 禁用 iOS 侧滑返回
     ),
 
     // 已注释路由（暂未启用）

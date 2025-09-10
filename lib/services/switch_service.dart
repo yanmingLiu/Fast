@@ -34,25 +34,27 @@ class SwitchService {
       final deviceId = await AppCache().phoneId(isOrigin: true);
       final version = await AppService().version();
       final idfa = await AppService().getIdfa();
+      final idfv = await AppService().getIdfv();
 
       final Map<String, dynamic> body = {
-        'homeobox': 'com.bushyai.chat',
-        'niobium': 'bound',
-        'krill': version,
-        'glisten': deviceId,
-        'stokes': DateTime.now().millisecondsSinceEpoch,
-        'gauntlet': idfa,
+        'cheryl': 'com.fastgpt.aiup',
+        'farina': 'mediate',
+        'prostate': version,
+        'splice': deviceId,
+        'scoop': DateTime.now().millisecondsSinceEpoch,
+        'fain': idfa,
+        'pyrite': idfv,
       };
 
       final client = GetConnect(timeout: const Duration(seconds: 60));
 
-      final response = await client.post('https://slough.bushyai.com/ceramic/tide/bulletin', body);
+      final response = await client.post('https://n.fastaiapptop.com/morass/augur/dogmatic', body);
       log.i('Response: $body\n ${response.body}');
 
-      if (response.isOk && response.body == 'write') {
+      if (response.isOk && response.body == 'moiseyev') {
         AppCache().isBig = true;
       } else {
-        AppCache().isBig = true;
+        AppCache().isBig = false;
       }
     } catch (e) {
       log.e('Error in _requestIosClk: $e');

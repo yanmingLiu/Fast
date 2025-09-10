@@ -185,7 +185,7 @@ class IAPTool {
       switch (purchaseDetails.status) {
         case PurchaseStatus.purchased:
           if (first.purchaseID == purchaseDetails.purchaseID ||
-              _currentSkuData?.sku == purchaseDetails.purchaseID) {
+              _currentSkuData?.sku == purchaseDetails.productID) {
             await _handleSuccessfulPurchase(purchaseDetails);
           }
           break;
@@ -268,10 +268,27 @@ class IAPTool {
       final productID = purchaseDetails.productID;
       log.d('[iap] purchaseID: $purchaseID, transactionDate:$transactionDate');
 
-      final receipt = purchaseDetails.verificationData.serverVerificationData;
+      // 获取服务器验证数据 v2
+      var receipt = purchaseDetails.verificationData.serverVerificationData;
       final localVerificationData = purchaseDetails.verificationData.localVerificationData;
       log.d('[iap] receipt: $receipt');
       log.d('[iap] localVerificationData: $localVerificationData');
+
+      // 如果没有 v2 票据，就刷新并获取 v1 票据
+      if (receipt.isEmpty) {
+        // 刷新并获取 v1 票据 ：
+        final iosPlatformAddition = InAppPurchase.instance
+            .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+        PurchaseVerificationData? verificationData = await iosPlatformAddition
+            .refreshPurchaseVerificationData();
+
+        String? vdl = verificationData?.localVerificationData; // 这就是 v1 的 Base64 字符串
+        String? vds = verificationData?.serverVerificationData;
+        log.d('[iap] vdl: $vdl');
+        log.d('[iap] vds: $vds');
+
+        receipt = vds ?? '';
+      }
 
       var createImg = (_consFrom == ConsumeFrom.aiphoto || _consFrom == ConsumeFrom.undr)
           ? true

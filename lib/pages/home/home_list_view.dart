@@ -25,7 +25,7 @@ class _HomeListViewState extends State<HomeListView> {
   @override
   void initState() {
     super.initState();
-    _controller = HomeListController();
+    _controller = HomeListController(widget.cate);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!NetworkService.to.isConnected.value) {
         return;

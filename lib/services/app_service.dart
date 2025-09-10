@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:adjust_sdk/adjust.dart';
 import 'package:adjust_sdk/adjust_config.dart';
+import 'package:android_id/android_id.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fast_ai/services/api_service.dart';
@@ -197,6 +198,17 @@ class AppService {
     }
   }
 
+  /// android_id
+  Future<String> getAndroidId() async {
+    try {
+      final String? androidId = await AndroidId().getId();
+      return androidId ?? '';
+    } catch (e) {
+      log.e('getAndroidId error: $e');
+      return '';
+    }
+  }
+
   // 获取Adjust ID，带超时和错误处理
   Future<String> getAdid() async {
     try {
@@ -216,6 +228,9 @@ class AppService {
 
   // 获取Google AdId，带超时和错误处理
   Future<String> getGoogleAdId() async {
+    if (!Platform.isIOS) {
+      return '';
+    }
     try {
       final gpsAdid = await Adjust.getGoogleAdId().timeout(
         const Duration(seconds: 2),

@@ -49,9 +49,6 @@ class MePage extends StatelessWidget {
                       title: LocaleKeys.auto_trans.tr,
                       subWidget: FSwitch(value: isAuto, onChanged: ctr.autoTranslation),
                       top: 20,
-                      onTapSection: () {
-                        Get.to(LogPage());
-                      },
                     );
                   }),
                   MeItem(title: LocaleKeys.feedback.tr, onTap: () => AppRouter.toEmail()),
@@ -72,6 +69,9 @@ class MePage extends StatelessWidget {
                     sectionTitle: LocaleKeys.legal.tr,
                     title: LocaleKeys.privacy_policy.tr,
                     onTap: () => AppRouter.toPrivacy(),
+                    onTapSection: () {
+                      Get.to(LogPage());
+                    },
                     top: 20,
                   ),
                   MeItem(title: LocaleKeys.terms_of_use.tr, onTap: () => AppRouter.toTerms()),
