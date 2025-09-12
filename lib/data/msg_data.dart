@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fast_ai/data/chat_anser_level.dart';
 import 'package:fast_ai/values/app_values.dart';
 
 class MsgRes {
@@ -137,12 +138,12 @@ class MsgData {
   String toRawJson() => json.encode(toJson());
 
   factory MsgData.fromJson(Map<String, dynamic> json) => MsgData(
-    answer: json["answer"],
+    answer: json["ophbla"],
     atokens: json["atokens"],
     audioDuration: json["audio_duration"],
     audioUrl: json["audio_url"],
     characterId: json["char_id"],
-    conversationId: json["conversation_id"],
+    conversationId: json["ybvhjk"],
     createTime: json["creat_time"],
     deleted: json["deleted"],
     id: json["id"],
@@ -155,33 +156,31 @@ class MsgData {
     params: json["params"],
     platform: json["platfrm"],
     qtokens: json["qtokens"],
-    question: json["question"],
+    question: json["vnvqou"],
     templateId: json["tmpl_id"],
     textLock: json["text_lock"],
     userId: json["usr_id"],
     videoDuration: json["video_duration"],
     videoUrl: json["video_url"],
-    thumbLink: json["thumb_link"] ?? json["thumbnail_url"],
+    thumbLink: json["thumb_link"] ?? json["gejhdy"],
     voiceUrl: json["voice_link"],
     voiceDur: json["voice_dur"],
-    appUserChatLevel: json["app_user_chat_level"] == null
-        ? null
-        : ChatAnserLevel.fromJson(json["app_user_chat_level"]),
-    upgrade: json["upgrade"],
-    rewards: json["rewards"],
-    translateAnswer: json["translate_answer"],
+    appUserChatLevel: json["yiasvv"] == null ? null : ChatAnserLevel.fromJson(json["yiasvv"]),
+    upgrade: json["dclesw"],
+    rewards: json["wouomy"],
+    translateAnswer: json["vmmqud"],
     giftId: json["gift_id"],
     giftImg: json["gift_img"],
-    src: json["source"],
+    src: json["mvusjp"],
   );
 
   Map<String, dynamic> toJson() => {
-    "answer": answer,
+    "ophbla": answer,
     "atokens": atokens,
     "audio_duration": audioDuration,
     "audio_url": audioUrl,
     "char_id": characterId,
-    "conversation_id": conversationId,
+    "ybvhjk": conversationId,
     "creat_time": createTime,
     "deleted": deleted,
     "id": id,
@@ -194,7 +193,7 @@ class MsgData {
     "params": params,
     "platfrm": platform,
     "qtokens": qtokens,
-    "question": question,
+    "vnvqou": question,
     "tmpl_id": templateId,
     "text_lock": textLock,
     "usr_id": userId,
@@ -202,14 +201,14 @@ class MsgData {
     "video_url": videoUrl,
     "voice_link": voiceUrl,
     "voice_dur": voiceDur,
-    "app_user_chat_level": appUserChatLevel?.toJson(),
-    "upgrade": upgrade,
-    "rewards": rewards,
-    "translate_answer": translateAnswer,
+    "yiasvv": appUserChatLevel?.toJson(),
+    "dclesw": upgrade,
+    "wouomy": rewards,
+    "vmmqud": translateAnswer,
     "thumb_link": thumbLink,
     "gift_id": giftId,
     "gift_img": giftImg,
-    "source": src,
+    "mvusjp": src,
   };
 
   @override
@@ -221,78 +220,4 @@ class MsgData {
 
   @override
   int get hashCode => id.hashCode;
-}
-
-class ChatAnserLevel {
-  final int? id;
-  final String? userId;
-  final int? conversationId;
-  final String? charId;
-  final int? level;
-  final int? num;
-  final double? progress;
-  final double? upgradeRequirements;
-  final int? rewards;
-
-  ChatAnserLevel({
-    this.id,
-    this.userId,
-    this.conversationId,
-    this.charId,
-    this.level,
-    this.num,
-    this.progress,
-    this.upgradeRequirements,
-    this.rewards,
-  });
-
-  ChatAnserLevel copyWith({
-    int? id,
-    String? userId,
-    int? conversationId,
-    String? charId,
-    int? level,
-    int? num,
-    double? progress,
-    double? upgradeRequirements,
-    int? rewards,
-  }) => ChatAnserLevel(
-    id: id ?? this.id,
-    userId: userId ?? this.userId,
-    conversationId: conversationId ?? this.conversationId,
-    charId: charId ?? this.charId,
-    level: level ?? this.level,
-    num: num ?? this.num,
-    progress: progress ?? this.progress,
-    upgradeRequirements: upgradeRequirements ?? this.upgradeRequirements,
-    rewards: rewards ?? this.rewards,
-  );
-
-  factory ChatAnserLevel.fromRawJson(String str) => ChatAnserLevel.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory ChatAnserLevel.fromJson(Map<String, dynamic> json) => ChatAnserLevel(
-    id: json['id'],
-    userId: json['user_id'],
-    conversationId: json['conversation_id'],
-    charId: json['char_id'],
-    level: json['level'],
-    num: json['num'],
-    progress: json['progress'],
-    upgradeRequirements: json['upgrade_requirements'],
-    rewards: json['rewards'],
-  );
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'user_id': userId,
-    'conversation_id': conversationId,
-    'char_id': charId,
-    'level': level,
-    'num': num,
-    'progress': progress,
-    'upgrade_requirements': upgradeRequirements,
-    'rewards': rewards,
-  };
 }

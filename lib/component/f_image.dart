@@ -1,4 +1,4 @@
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
@@ -28,26 +28,38 @@ class FImage extends StatelessWidget {
       return _buildPlaceholder();
     }
 
-    return ExtendedImage.network(
-      url!,
+    int w = width?.toInt() ?? 1920;
+    int h = height?.toInt() ?? 1080;
+
+    Widget imageWidget = CachedNetworkImage(
+      imageUrl: url!,
       width: width,
       height: height,
       fit: BoxFit.cover,
-      borderRadius: borderRadius,
-      shape: shape ?? BoxShape.rectangle,
-      border: border,
-      color: color,
-      cache: true, // 启用缓存
-      loadStateChanged: (state) {
-        switch (state.extendedImageLoadState) {
-          case LoadState.loading:
-          case LoadState.failed:
-            return _buildPlaceholder();
-          case LoadState.completed:
-            return null;
-        }
-      },
+      fadeInDuration: Duration.zero,
+      maxWidthDiskCache: 250,
+      maxHeightDiskCache: 400,
+      placeholder: (context, url) => _buildPlaceholder(),
+      errorWidget: (context, url, error) => _buildPlaceholder(),
     );
+
+    // 应用装饰效果
+    if (borderRadius != null || border != null || color != null) {
+      return Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          border: border,
+          color: color,
+          shape: shape ?? BoxShape.rectangle,
+        ),
+        clipBehavior: borderRadius != null ? Clip.hardEdge : Clip.none,
+        child: imageWidget,
+      );
+    }
+
+    return imageWidget;
   }
 
   Container _buildPlaceholder() {

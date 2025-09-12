@@ -49,20 +49,20 @@ class MaskData {
 
   factory MaskData.fromJson(Map<String, dynamic> json) => MaskData(
     id: json["id"],
-    userId: json["user_id"],
+    userId: json["pttgjv"],
     profileName: json["profile_name"],
-    gender: json["gender"],
-    age: json["age"],
+    gender: json["kbwvep"],
+    age: json["dvfbov"],
     description: json["description"],
     otherInfo: json["other_info"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "user_id": userId,
+    "pttgjv": userId,
     "profile_name": profileName,
-    "gender": gender,
-    "age": age,
+    "kbwvep": gender,
+    "dvfbov": age,
     "description": description,
     "other_info": otherInfo,
   };

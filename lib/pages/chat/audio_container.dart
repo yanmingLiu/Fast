@@ -155,6 +155,8 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
   /// 开始音频播放 - 使用全局管理器
   Future<void> _startAudioPlay() async {
     try {
+      logEvent('c_news_voice');
+
       debugPrint('🎧 AudioContainer: 开始播放音频, msgId: $_msgId');
       await _audioManager.startPlay(_msgId, widget.msg.audioUrl);
     } catch (e) {

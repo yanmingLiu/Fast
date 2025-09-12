@@ -179,6 +179,7 @@ class _ChatInputState extends State<ChatInput> {
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(
                         color: Colors.black.withValues(alpha: 0.8),
+                        constraints: BoxConstraints(maxHeight: 80),
                         child: Row(
                           children: [
                             SizedBox(width: 12),

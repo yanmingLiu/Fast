@@ -48,13 +48,8 @@ class HomeListController {
 
   void _initState() {
     ever(ctr.filterEvent, (event) {
-      final tags = event.$1;
-      if (ctr.categroy.value == ctr.categroy.value) {
-        final ids = tags.map((e) => e.id!).toList();
-        tagIds = ids;
-        FLoading.showLoading();
-        onRefresh();
-      }
+      FLoading.showLoading();
+      onRefresh();
     });
 
     ever(ctr.followEvent, (even) {
@@ -155,6 +150,11 @@ class HomeListController {
     } else if (cate == HomeListCategroy.dressUp) {
       changeClothing = true;
     }
+
+    final tags = ctr.selectTags;
+    final ids = tags.map((e) => e.id!).toList();
+    tagIds = ids;
+
     try {
       final res = await Api.homeList(
         page: page,
@@ -189,10 +189,5 @@ class HomeListController {
     } finally {
       FLoading.dismiss();
     }
-  }
-
-  // 添加dispose方法来释放ScrollController
-  void dispose() {
-    scrollController.dispose();
   }
 }

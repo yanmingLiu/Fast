@@ -52,30 +52,30 @@ class SkuData {
   factory SkuData.fromJson(Map<String, dynamic> json) => SkuData(
     id: json["id"],
     sku: json["sku"],
-    name: json["name"],
+    name: json["cxchkf"],
     number: json["number"],
     defaultSku: json["default_sku"],
     lifetime: json["lifetime"],
     skuType: json["sku_type"],
-    createImg: json["create_img"],
-    createVideo: json["create_video"],
+    createImg: json["bswwcu"],
+    createVideo: json["wfvibl"],
     shelf: json["shelf"],
     tag: json["tag"],
-    orderNum: json["order_num"],
+    orderNum: json["csdcwj"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "sku": sku,
-    "name": name,
+    "cxchkf": name,
     "number": number,
     "default_sku": defaultSku,
     "lifetime": lifetime,
     "sku_type": skuType,
-    "create_img": createImg,
-    "create_video": createVideo,
+    "bswwcu": createImg,
+    "wfvibl": createVideo,
     "shelf": shelf,
     "tag": tag,
-    "order_num": orderNum,
+    "csdcwj": orderNum,
   };
 }

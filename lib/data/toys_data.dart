@@ -16,19 +16,19 @@ class ToysData {
 
   factory ToysData.fromJson(Map<String, dynamic> json) => ToysData(
     id: json["id"],
-    tipName: json["gname"],
-    tipType: json["gtype"],
+    tipName: json["digxuw"],
+    tipType: json["dvonxk"],
     img: json["img"],
     gdesc: json["gdesc"],
-    itemPrice: json["price"],
+    itemPrice: json["koybww"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "gname": tipName,
-    "gtype": tipType,
+    "digxuw": tipName,
+    "dvonxk": tipType,
     "img": img,
     "gdesc": gdesc,
-    "price": itemPrice,
+    "koybww": itemPrice,
   };
 }

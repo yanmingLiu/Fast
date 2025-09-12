@@ -10,7 +10,7 @@ class _SendContainerConstants {
   static const double loadingContainerWidth = 64.0;
   static const double loadingContainerHeight = 44.0;
   static const double borderRadius = 16.0;
-  static const double loadingAnimationSize = 50.0;
+  static const double loadingAnimationSize = 60.0;
 
   // 颜色常量
   static const Color loadingBgColor = Color(0x801C1C1C);

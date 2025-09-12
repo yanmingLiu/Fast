@@ -219,6 +219,9 @@ PODS:
     - CwlCatchException
     - Flutter
     - FlutterMacOS
+  - sqflite_darwin (0.0.4):
+    - Flutter
+    - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
   - vibration (3.0.0):
@@ -247,6 +250,7 @@ DEPENDENCIES:
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
   - speech_to_text (from `.symlinks/plugins/speech_to_text/darwin`)
+  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - vibration (from `.symlinks/plugins/vibration/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
@@ -321,6 +325,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/photo_manager/ios"
   speech_to_text:
     :path: ".symlinks/plugins/speech_to_text/darwin"
+  sqflite_darwin:
+    :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   vibration:
@@ -377,6 +383,7 @@ SPEC CHECKSUMS:
   SDWebImage: f29024626962457f3470184232766516dee8dfea
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
   speech_to_text: 3b313d98516d3d0406cea424782ec25470c59d19
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   vibration: 69774ad57825b11c951ee4c46155f455d7a592ce
   video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b

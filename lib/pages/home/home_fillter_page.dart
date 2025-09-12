@@ -197,6 +197,9 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
 
   Widget _buildType() {
     var tags = ctr.roleTags;
+    if (tags.isEmpty) {
+      return SizedBox.shrink();
+    }
     List<RoleTagRes> result = (tags.length > 2) ? tags.take(2).toList() : tags;
 
     RoleTagRes type1 = result[0];

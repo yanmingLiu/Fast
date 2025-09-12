@@ -186,7 +186,7 @@ class MaskPage extends GetView<MaskCtr> {
         itemBuilder: (_, index) {
           return _buildItem(controller.maskList[index]);
         },
-        separatorBuilder: (_, _) => const SizedBox(height: 16),
+        separatorBuilder: (_, idx) => const SizedBox(height: 16),
         itemCount: controller.maskList.length,
       ),
     );

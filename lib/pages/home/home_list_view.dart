@@ -37,7 +37,6 @@ class _HomeListViewState extends State<HomeListView> {
   @override
   void dispose() {
     _controller.refreshCtr.dispose();
-    _controller.dispose(); // 释放ScrollController
     super.dispose();
   }
 
@@ -61,25 +60,26 @@ class _HomeListViewState extends State<HomeListView> {
   }
 
   Widget _buildList(ScrollPhysics physics, List<Role> list) {
-    return MasonryGridView.count(
-      crossAxisCount: 2,
+    final width = MediaQuery.sizeOf(context).width / 2 - 16;
+
+    return MasonryGridView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
       itemCount: list.length,
       physics: physics,
-      controller: _controller.scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
       itemBuilder: (context, index) {
+        final height = index.isOdd ? 300.0 : 250.0;
         final role = list[index];
-        return SizedBox(
-          height: index.isOdd ? 300 : 250,
-          child: HomeItem(
-            role: role,
-            onCollect: (Role role) {
-              _controller.onCollect(index, role);
-            },
-            cate: widget.cate,
-          ),
+        return HomeItem(
+          width: width,
+          height: height,
+          role: role,
+          onCollect: (Role role) {
+            _controller.onCollect(index, role);
+          },
+          cate: widget.cate,
         );
       },
     );

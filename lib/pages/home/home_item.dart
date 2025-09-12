@@ -16,72 +16,21 @@ const kNSFW = 'NSFW';
 const kBDSM = 'BDSM';
 
 class HomeItem extends StatelessWidget {
-  // 静态常量缓存 - 避免重复创建对象
-  static const EdgeInsets _itemPadding = EdgeInsets.symmetric(horizontal: 8);
-  static const EdgeInsets _buttonPadding = EdgeInsets.symmetric(horizontal: 10);
-  static const EdgeInsets _separatorMargin = EdgeInsets.symmetric(horizontal: 2);
-  static const BoxConstraints _buttonConstraints = BoxConstraints(minWidth: 90);
-  static const BorderRadius _itemBorderRadius = BorderRadius.all(Radius.circular(16));
-  static const BorderRadius _buttonBorderRadius = BorderRadius.all(Radius.circular(16));
-  static const BorderRadius _collectBorderRadius = BorderRadius.all(Radius.circular(10));
-
-  // 缓存常用的SizedBox
-  static const SizedBox _spacing4 = SizedBox(height: 4);
-  static const SizedBox _spacing8 = SizedBox(height: 8);
-
-  // 缓存常用的分隔符Container
-  static const Widget _separator = SizedBox(
-    width: 1,
-    height: 4,
-    child: ColoredBox(color: AppColors.separator),
-  );
-
-  // 缓存GoogleFonts样式对象
-  static final TextStyle _nameTextStyle = AppTextStyle.openSans(
-    color: Colors.white,
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-  );
-
-  static final TextStyle _ageTextStyle = AppTextStyle.openSans(
-    color: Colors.white,
-    fontSize: 10,
-    fontWeight: FontWeight.w500,
-  );
-
-  static final TextStyle _buttonTextStyle = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-    color: Colors.white,
-  );
-
-  static final TextStyle _tagTextStyle = AppTextStyle.openSans(
-    fontSize: 10,
-    fontWeight: FontWeight.w500,
-  );
-
-  static final TextStyle _likesTextStyle = AppTextStyle.openSans(
-    fontSize: 10,
-    fontWeight: FontWeight.w500,
-  );
-
-  // 缓存渐变配置
-  static const LinearGradient _backgroundGradient = LinearGradient(
-    colors: AppColors.homeItemGradient,
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    stops: [0.0, 0.15, 0.6, 1.0],
-  );
-
-  // 缓存VIP边框
-  static const Border _vipBorder = Border.fromBorderSide(
-    BorderSide(color: AppColors.primary, width: 4),
-  );
-  const HomeItem({super.key, required this.role, required this.onCollect, required this.cate});
+  const HomeItem({
+    super.key,
+    required this.role,
+    required this.onCollect,
+    required this.cate,
+    required this.width,
+    required this.height,
+  });
 
   final Role role;
   final void Function(Role role) onCollect;
   final HomeListCategroy cate;
+
+  final double width;
+  final double height;
 
   void _onTap() {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -93,10 +42,9 @@ class HomeItem extends StatelessWidget {
 
     if (cate == HomeListCategroy.video) {
       AppRouter.pushPhoneGuide(role: role);
-      return;
+    } else {
+      AppRouter.pushChat(id);
     }
-
-    AppRouter.pushChat(id);
   }
 
   @override
@@ -111,87 +59,140 @@ class HomeItem extends StatelessWidget {
     final shouldShowTags = displayTags.isNotEmpty && isBigScreen;
 
     return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
-      child: ClipRRect(
-        borderRadius: _itemBorderRadius,
-        child: Stack(
-          children: [
-            Positioned.fill(child: FImage(url: role.avatar)),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: _itemBorderRadius,
-                border: isVip ? _vipBorder : null,
-                gradient: _backgroundGradient,
-              ),
-            ),
-            Padding(
-              padding: _itemPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Row(
-                    spacing: 4,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          role.name ?? '',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: _nameTextStyle,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                        child: Text('${role.age ?? 0}', style: _ageTextStyle),
-                      ),
-                    ],
+      onTap: _onTap,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          clipBehavior: Clip.hardEdge,
+          child: Stack(
+            children: [
+              // 背景图片
+              FImage(url: role.avatar, width: width, height: height),
+
+              // 渐变遮罩
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                  border: isVip
+                      ? const Border.fromBorderSide(BorderSide(color: AppColors.primary, width: 4))
+                      : null,
+                  gradient: const LinearGradient(
+                    colors: AppColors.homeItemGradient,
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.0, 0.15, 0.6, 1.0],
                   ),
-                  _spacing4,
-                  if (shouldShowTags) _buildTags(displayTags),
-                  _spacing8,
-                  FButton(
-                    onTap: _onTap,
-                    color: AppColors.primary,
-                    height: 32,
-                    margin: EdgeInsetsDirectional.only(end: 40),
-                    constraints: _buttonConstraints,
-                    borderRadius: _buttonBorderRadius,
-                    child: Center(child: Text(LocaleKeys.chat.tr, style: _buttonTextStyle)),
-                  ),
-                  _spacing8,
-                ],
-              ),
-            ),
-            PositionedDirectional(
-              top: 8,
-              end: 8,
-              child: FButton(
-                onTap: () => onCollect(role),
-                color: AppColors.white10,
-                height: 20,
-                borderRadius: _collectBorderRadius,
-                padding: _buttonPadding,
-                child: Row(
-                  spacing: 2,
-                  children: [
-                    FIcon(
-                      assetName: Assets.svg.like,
-                      width: 20,
-                      color: isCollect ? AppColors.secondary : Colors.white,
-                    ),
-                    Text(
-                      '${role.likes ?? 0}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: _likesTextStyle.copyWith(
-                        color: isCollect ? AppColors.secondary : Colors.white,
-                      ),
-                    ),
-                  ],
                 ),
+              ),
+
+              // 内容区域
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 8),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     mainAxisAlignment: MainAxisAlignment.end,
+              //     children: [
+              //       // 名字和年龄
+              //       _buildNameAndAge(),
+              //       const SizedBox(height: 4),
+
+              //       // 标签
+              //       if (shouldShowTags) _buildTags(displayTags),
+              //       const SizedBox(height: 8),
+
+              //       // 聊天按钮
+              //       _buildChatButton(),
+              //       const SizedBox(height: 8),
+              //     ],
+              //   ),
+              // ),
+
+              // // 收藏按钮
+              // _buildCollectButton(isCollect),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 拆分组件，减少 build 方法复杂度
+  Widget _buildNameAndAge() {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            role.name ?? '',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyle.openSans(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+          child: Text(
+            '${role.age ?? 0}',
+            style: AppTextStyle.openSans(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChatButton() {
+    return FButton(
+      onTap: _onTap,
+      color: AppColors.primary,
+      height: 32,
+      margin: const EdgeInsetsDirectional.only(end: 40),
+      constraints: const BoxConstraints(minWidth: 90),
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      child: Center(
+        child: Text(
+          LocaleKeys.chat.tr,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCollectButton(bool isCollected) {
+    return PositionedDirectional(
+      top: 8,
+      end: 8,
+      child: FButton(
+        onTap: () => onCollect(role),
+        color: AppColors.white10,
+        height: 20,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FIcon(
+              assetName: Assets.svg.like,
+              width: 20,
+              color: isCollected ? AppColors.secondary : Colors.white,
+            ),
+            const SizedBox(width: 2),
+            Text(
+              '${role.likes ?? 0}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyle.openSans(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                color: isCollected ? AppColors.secondary : Colors.white,
               ),
             ),
           ],
@@ -224,8 +225,19 @@ class HomeItem extends StatelessWidget {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         for (int i = 0; i < displayTags.length; i++) ...[
-          Text(displayTags[i], style: _tagTextStyle.copyWith(color: _getTagColor(displayTags[i]))),
-          if (i < displayTags.length - 1) Padding(padding: _separatorMargin, child: _separator),
+          Text(
+            displayTags[i],
+            style: AppTextStyle.openSans(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: _getTagColor(displayTags[i]),
+            ),
+          ),
+          if (i < displayTags.length - 1)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2),
+              child: SizedBox(width: 1, height: 4, child: ColoredBox(color: AppColors.separator)),
+            ),
         ],
       ],
     );

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fast_ai/data/event_data.dart';
+import 'package:fast_ai/services/event_data.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';

@@ -8,6 +8,7 @@ import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/services/network_service.dart';
 import 'package:fast_ai/services/switch_service.dart';
+import 'package:fast_ai/tools/iap_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -63,10 +64,9 @@ class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateM
       _startProgressAnimation();
 
       await Future.wait([
-        // AppService().fetchConfig(),
-        AppUser().getUserInfo(),
         SwitchService.request(isFisrt: true),
-        Future<void>.delayed(const Duration(seconds: 5)),
+        AppUser().register(),
+        IAPTool().query(),
       ]).timeout(Duration(seconds: 7));
 
       _completeSetup();

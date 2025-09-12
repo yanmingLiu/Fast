@@ -1,8 +1,11 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_keep_alive.dart';
+import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/data/role_data.dart';
 import 'package:fast_ai/data/role_tags.dart';
 import 'package:fast_ai/generated/locales.g.dart';
+import 'package:fast_ai/pages/home/home_list_view.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/pages/router/routers.dart';
 import 'package:fast_ai/services/api.dart';
@@ -12,8 +15,8 @@ import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/services/network_service.dart';
 import 'package:fast_ai/services/switch_service.dart';
-import 'package:fast_ai/tools/iap_tool.dart';
 import 'package:fast_ai/values/app_values.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 enum HomeListCategroy { all, realistic, anime, dressUp, video }
@@ -42,6 +45,8 @@ class HomeCtr extends GetxController {
   var categroyList = <HomeListCategroy>[].obs;
   var categroy = HomeListCategroy.all.obs;
 
+  var pages = <Widget>[].obs;
+
   // 标签
   List<RoleTagRes> roleTags = [];
   var selectTags = <RoleTag>{}.obs;
@@ -61,6 +66,10 @@ class HomeCtr extends GetxController {
       HomeListCategroy.video,
       HomeListCategroy.dressUp,
     ]);
+
+    pages.value = categroyList.map((element) {
+      return KeepAliveWrapper(child: HomeListView(cate: element));
+    }).toList();
 
     if (NetworkService.to.isConnected.value) {
       setupAndJump();
@@ -82,17 +91,15 @@ class HomeCtr extends GetxController {
   }
 
   Future<void> setupAndJump() async {
+    FLoading.showLoading();
     await setup();
+    FLoading.dismiss();
     jump();
   }
 
   Future<void> setup() async {
     try {
-      await Future.wait([
-        SwitchService.request(),
-        AppUser().getUserInfo(),
-        IAPTool().query(),
-      ]).timeout(
+      await Future.wait([SwitchService.request(), AppUser().getUserInfo()]).timeout(
         const Duration(seconds: 10),
         onTimeout: () {
           return [];
@@ -139,7 +146,9 @@ class HomeCtr extends GetxController {
       AppCache().isRestart = true;
 
       // 首次启动 获取指定人物聊天
+      FLoading.showLoading();
       final startRole = await getSplashRole();
+      FLoading.dismiss();
       if (startRole != null) {
         final roleId = startRole.id;
         AppRouter.pushChat(roleId, showLoading: false);

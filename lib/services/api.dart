@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:encrypt/encrypt.dart';
 import 'package:fast_ai/data/base_data.dart';
+import 'package:fast_ai/data/chat_anser_level.dart';
 import 'package:fast_ai/data/clothing_data.dart';
 import 'package:fast_ai/data/level_config.dart';
 import 'package:fast_ai/data/mask_data.dart';
@@ -722,7 +723,35 @@ class Api {
         body: {'image_id': imageId, 'model_id': modelId},
       );
 
-      return result.body;
+      // 检查返回值类型
+      if (result.body is bool) {
+        // 如果直接返回布尔值，直接返回
+        return result.body;
+      }
+
+      // 如果是字符串，尝试解析
+      if (result.body is String) {
+        final bodyStr = result.body as String;
+        // 检查是否是 "true" 或 "false" 字符串
+        if (bodyStr.toLowerCase() == 'true') {
+          return true;
+        } else if (bodyStr.toLowerCase() == 'false') {
+          return false;
+        }
+
+        // 尝试解析为 JSON
+        try {
+          final res = BaseData.fromJson(result.body, null);
+          if (res.code == 0 || res.code == 200) {
+            return true;
+          }
+          return false; // 返回 false 而不是原始错误信息
+        } catch (e) {
+          // JSON 解析失败，返回 false
+          return false;
+        }
+      }
+      return false;
     } catch (e) {
       return false;
     }

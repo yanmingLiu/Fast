@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fast_ai/data/chat_anser_level.dart';
 import 'package:fast_ai/data/msg_data.dart';
 
 class MsgAnswerData {
@@ -14,12 +15,12 @@ class MsgAnswerData {
   String toRawJson() => json.encode(toJson());
 
   factory MsgAnswerData.fromJson(Map<String, dynamic> json) => MsgAnswerData(
-    convId: json['conv_id'],
-    msgId: json['msg_id'],
-    answer: json['answer'] == null ? null : Answer.fromJson(json['answer']),
+    convId: json['fnivfn'],
+    msgId: json['yzujoc'],
+    answer: json['ophbla'] == null ? null : Answer.fromJson(json['ophbla']),
   );
 
-  Map<String, dynamic> toJson() => {'conv_id': convId, 'msg_id': msgId, 'answer': answer?.toJson()};
+  Map<String, dynamic> toJson() => {'fnivfn': convId, 'yzujoc': msgId, 'ophbla': answer?.toJson()};
 }
 
 class Answer {
@@ -59,35 +60,35 @@ class Answer {
 
   factory Answer.fromJson(Map<String, dynamic> json) => Answer(
     content: json['content'],
-    src: json['source'],
-    lockLvl: json['lock_level'],
-    lockMed: json['lock_level_media'],
-    voiceUrl: json['voice_url'],
-    voiceDur: json['voice_duration'],
+    src: json['mvusjp'],
+    lockLvl: json['ytwtbr'],
+    lockMed: json['sayucj'],
+    voiceUrl: json['wtaibz'],
+    voiceDur: json['foaqje'],
     resUrl: json['res_url'],
-    duration: json['duration'],
-    thumbUrl: json['thumbnail_url'],
+    duration: json['xyyrws'],
+    thumbUrl: json['gejhdy'],
     translateContent: json['translate_content'],
-    upgrade: json['upgrade'],
-    rewards: json['rewards'],
-    appUserChatLevel: json['app_user_chat_level'] == null
+    upgrade: json['dclesw'],
+    rewards: json['wouomy'],
+    appUserChatLevel: json['yiasvv'] == null
         ? null
-        : ChatAnserLevel.fromJson(json['app_user_chat_level']),
+        : ChatAnserLevel.fromJson(json['yiasvv']),
   );
 
   Map<String, dynamic> toJson() => {
     'content': content,
-    'source': src,
-    'lock_level': lockLvl,
-    'lock_level_media': lockMed,
-    'voice_url': voiceUrl,
-    'voice_duration': voiceDur,
+    'mvusjp': src,
+    'ytwtbr': lockLvl,
+    'sayucj': lockMed,
+    'wtaibz': voiceUrl,
+    'foaqje': voiceDur,
     'res_url': resUrl,
-    'duration': duration,
-    'thumbnail_url': thumbUrl,
+    'xyyrws': duration,
+    'gejhdy': thumbUrl,
     'translate_content': translateContent,
-    'upgrade': upgrade,
-    'rewards': rewards,
-    'app_user_chat_level': appUserChatLevel,
+    'dclesw': upgrade,
+    'wouomy': rewards,
+    'yiasvv': appUserChatLevel,
   };
 }

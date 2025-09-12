@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
+import '../services/app_service.dart';
+
 extension IntExt on int {
   String formatTimeMMSS() {
     int minutes = this ~/ 60;
@@ -87,6 +89,7 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
     WidgetsBinding.instance.addObserver(this);
 
     url = Get.arguments;
+    log.i('/video-preview: $url');
     if (url != null) {
       _initializeVideo();
     } else {

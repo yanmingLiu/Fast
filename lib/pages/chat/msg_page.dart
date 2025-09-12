@@ -48,10 +48,16 @@ class MsgPage extends StatelessWidget {
             extendBodyBehindAppBar: true,
             extendBody: true,
             backgroundColor: Colors.transparent,
-            body: Stack(
+            // body: Stack(
+            //   children: [
+            //     Positioned.fill(bottom: msgBottom, child: MsgListView()),
+            //     Positioned(bottom: 0, left: 0, right: 0, child: ChatInput()),
+            //   ],
+            // ),
+            body: Column(
               children: [
-                Positioned.fill(bottom: msgBottom, child: MsgListView()),
-                Positioned(bottom: 0, left: 0, right: 0, child: ChatInput()),
+                Expanded(child: MsgListView()),
+                ChatInput(),
               ],
             ),
           ),

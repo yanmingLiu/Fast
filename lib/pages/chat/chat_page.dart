@@ -102,11 +102,11 @@ class _ChatPageState extends State<ChatPage> {
     return GestureDetector(
       child: AnimatedBuilder(
         animation: _linkedController,
-        builder: (_, _) {
+        builder: (_, v) {
           return GestureDetector(
             child: AnimatedBuilder(
               animation: _linkedController,
-              builder: (_, _) {
+              builder: (_, v) {
                 final isActive = _linkedController.index == index;
                 return buildTabItem(
                   key: _linkedController.getTabKey(index),

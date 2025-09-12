@@ -103,7 +103,8 @@ class AppRouter {
     CallState callState = CallState.calling,
   }) async {
     // 检查 Mic 权限 和 语音权限
-    if (!await checkPermissions()) {
+    final res = await checkPermissions();
+    if (!res) {
       showNoPermissionDialog();
       return null;
     }
@@ -129,6 +130,7 @@ class AppRouter {
       showNoPermissionDialog();
       return null;
     }
+
     var seesion = await Api.addSession(role.id ?? ''); // 查会话
     final sessionId = seesion?.id;
     if (sessionId == null) {
@@ -149,9 +151,41 @@ class AppRouter {
 
   /// 检查麦克风和语音识别权限，返回是否已授予所有权限
   static Future<bool> checkPermissions() async {
-    PermissionStatus status = await Permission.microphone.request();
-    PermissionStatus status2 = await Permission.speech.request();
-    return status.isGranted && status2.isGranted;
+    try {
+      // 先检查当前权限状态
+      PermissionStatus micStatus = await Permission.microphone.status;
+      PermissionStatus speechStatus = await Permission.speech.status;
+
+      log.d(
+        'AppRouter checkPermissions - Current status - Microphone: $micStatus, Speech: $speechStatus',
+      );
+
+      // 如果权限已经授予，直接返回 true
+      if (micStatus.isGranted && speechStatus.isGranted) {
+        return true;
+      }
+
+      // 如果权限被永久拒绝，直接返回 false
+      if (micStatus.isPermanentlyDenied || speechStatus.isPermanentlyDenied) {
+        log.d('Permissions permanently denied');
+        return false;
+      }
+
+      // 请求权限
+      log.d('Requesting permissions...');
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.microphone,
+        Permission.speech,
+      ].request();
+
+      bool allGranted = statuses.values.every((status) => status.isGranted);
+      log.d('Permission request result: $statuses, allGranted: $allGranted');
+
+      return allGranted;
+    } catch (e) {
+      log.e('Error checking/requesting permissions in AppRouter: $e');
+      return false;
+    }
   }
 
   // 没有权限提示

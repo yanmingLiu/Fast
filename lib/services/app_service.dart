@@ -32,23 +32,26 @@ class AppService {
 
   AppService._internal();
 
-  static const Map<Environment, Map<String, dynamic>> _envConfig = {
+  final Map<Environment, Map<String, dynamic>> _envConfig = {
     Environment.dev: {
-      'baseUrl': 'https://liuhaipeng3.powerfulclean.net',
+      'baseUrl': 'https://liuhaipeng3.powerfulclean.net/release',
       'isDebugMode': true,
       'bundleId': 'com.dev.fast',
     },
 
-    Environment.prod: {
-      'baseUrl': 'https://fastaiapptop.com',
-      'isDebugMode': false,
-      'bundleId': 'com.dev.fast',
-    },
+    Environment.prod: Platform.isIOS
+        ? {
+            'baseUrl': 'https://fastaiapptop.com/release',
+            'isDebugMode': false,
+            'bundleId': 'com.fastgpt.aiup',
+          }
+        : {'baseUrl': '', 'isDebugMode': false, 'bundleId': ''},
   };
 
   // 平台
   String get platform => Platform.isIOS ? 'fast' : 'fast-android';
   String bundleId = '';
+  static const prefix = 'release';
 
   static const String privacy = 'https://fastaiapptop.com/fastaiapptop.com/privacy/';
   static const terms = 'https://fastaiapptop.com/terms/';

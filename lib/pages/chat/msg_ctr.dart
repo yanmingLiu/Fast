@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
+import 'package:fast_ai/data/chat_anser_level.dart';
 import 'package:fast_ai/data/clothing_data.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/data/role_data.dart';
@@ -539,6 +540,8 @@ class MsgCtr extends GetxController {
       AppUser().getUserInfo();
 
       onTapImage(image);
+    } else {
+      FToast.toast(LocaleKeys.some_error_try_again.tr);
     }
   }
 

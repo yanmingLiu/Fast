@@ -40,6 +40,7 @@ class PhoneCtr extends GetxController {
   Timer? _callTimer;
   bool _isVibrating = false;
   Timer? _durationTimer;
+  StreamSubscription? _audioStateSubscription;
 
   final SpeechToText _speech = SpeechToText();
   bool _hasSpeech = false;
@@ -129,18 +130,47 @@ class PhoneCtr extends GetxController {
   }
 
   Future<bool> _checkMicrophonePermission() async {
-    if (await _speech.hasPermission) return true;
+    try {
+      // 由于权限已经在 AppRouter 中请求过了，这里主要做最终确认
+      var micStatus = await Permission.microphone.status;
+      var speechStatus = await Permission.speech.status;
 
+      log.d('PhoneCtr permissions check - Microphone: $micStatus, Speech: $speechStatus');
+
+      // 如果权限已经授予，直接返回
+      if (micStatus.isGranted && speechStatus.isGranted) {
+        return true;
+      }
+
+      // 如果权限仍然没有授予，显示提示并引导用户到设置
+      _showPermissionDialog();
+      return false;
+    } catch (e) {
+      log.e('Error checking permissions in PhoneCtr: $e');
+      // 降级方案：使用 speech_to_text 的内置权限检查
+      try {
+        bool hasPermission = await _speech.hasPermission;
+        if (!hasPermission) {
+          _showPermissionDialog();
+        }
+        return hasPermission;
+      } catch (e2) {
+        log.e('Error with speech permission check: $e2');
+        _showPermissionDialog();
+        return false;
+      }
+    }
+  }
+
+  void _showPermissionDialog() {
     AppDialog.alert(
       message: LocaleKeys.microphone_permission_required.tr,
       onConfirm: () async {
         await openAppSettings();
-        onTapCall();
       },
       cancelText: LocaleKeys.cancel.tr,
       confirmText: LocaleKeys.open_settings.tr,
     );
-    return false;
   }
 
   void _startCall() {
@@ -171,6 +201,8 @@ class PhoneCtr extends GetxController {
 
   void _releaseResources() {
     log.d('_releaseResources');
+
+    // 停止语音识别
     _speech
         .stop()
         .then((_) {
@@ -178,13 +210,6 @@ class PhoneCtr extends GetxController {
               .cancel()
               .then((_) {
                 log.d('Speech recognition stopped and cancelled');
-                _callTimer?.cancel();
-                _callTimer = null;
-                _durationTimer?.cancel();
-                _durationTimer = null;
-                AudioManager.instance.stopAll();
-                Vibration.cancel();
-                log.d('All resources released');
               })
               .catchError((error) {
                 log.d('Error cancelling speech: $error');
@@ -194,6 +219,24 @@ class PhoneCtr extends GetxController {
           log.d('Error stopping speech: $error');
           FToast.toast(error.toString());
         });
+
+    // 清理Timer（通过ResourceManager自动管理）
+    _callTimer?.cancel();
+    _callTimer = null;
+    _durationTimer?.cancel();
+    _durationTimer = null;
+
+    // 取消音频状态监听
+    _audioStateSubscription?.cancel();
+    _audioStateSubscription = null;
+
+    // 停止所有音频播放
+    AudioManager.instance.stopAll();
+
+    // 停止震动
+    Vibration.cancel();
+
+    log.d('All resources released');
   }
 
   void _startCallTimer() {
@@ -261,11 +304,26 @@ class PhoneCtr extends GetxController {
 
   Future<void> _initSpeech() async {
     try {
+      final res = await _checkMicrophonePermission();
+      if (!res) {
+        log.d('Permission denied');
+        return;
+      }
+
       _hasSpeech = await _speech.initialize(
         onStatus: (status) => log.d('onStatus: $status'),
         onError: (error) {
           log.e('onError: $error');
-          FToast.toast(error.toString());
+          AppDialog.alert(
+            title: LocaleKeys.tips.tr,
+            message: LocaleKeys.speech_recognition_not_supported.tr,
+            onConfirm: () {
+              Get.back();
+            },
+            onCancel: () {
+              Get.back();
+            },
+          );
         },
       );
     } catch (e) {
@@ -293,6 +351,7 @@ class PhoneCtr extends GetxController {
     callState.value = CallState.listening;
     answerText = '';
     lastWords.value = '';
+
     _listen();
   }
 

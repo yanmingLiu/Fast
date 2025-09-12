@@ -1,12 +1,10 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
-import 'package:fast_ai/component/f_keep_alive.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/linked_tab_page_controller.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
-import 'package:fast_ai/pages/home/home_list_view.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
@@ -56,7 +54,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           appBar: buildAppBar(),
           body: AnimatedBuilder(
             animation: _linkedController,
-            builder: (_, _) {
+            builder: (_, v) {
               if (_linkedController.items.isEmpty) {
                 return FLoading.loadingWidget();
               }
@@ -64,22 +62,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 children: [
                   buildCategory(),
                   Expanded(
-                    child: Obx(() {
-                      final list = ctr.categroyList;
-                      List<Widget> children = list.map((element) {
-                        return KeepAliveWrapper(child: HomeListView(cate: element));
-                      }).toList();
-                      return PageView(
-                        controller: _linkedController.pageController,
-                        pageSnapping: true,
-                        onPageChanged: (index) {
-                          _linkedController.handlePageChanged(index);
-                          ctr.categroy.value = ctr.categroyList[index];
-                        },
-                        physics: BouncingScrollPhysics(),
-                        children: children,
-                      );
-                    }),
+                    child: PageView(
+                      controller: _linkedController.pageController,
+                      pageSnapping: true,
+                      onPageChanged: (index) {
+                        _linkedController.handlePageChanged(index);
+                        ctr.categroy.value = ctr.categroyList[index];
+                      },
+                      physics: BouncingScrollPhysics(),
+                      children: ctr.pages,
+                    ),
                   ),
                 ],
               );
@@ -132,7 +124,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     return GestureDetector(
                       child: AnimatedBuilder(
                         animation: _linkedController,
-                        builder: (_, _) {
+                        builder: (_, v) {
                           final isActive = _linkedController.index == index;
                           return buildTabItem(
                             key: _linkedController.getTabKey(index),

@@ -19,13 +19,10 @@ import 'package:get/get.dart';
 // 性能优化：预定义常量，避免重复创建对象
 const double _maxWidthRatio = 0.8;
 const double _containerPadding = 12.0;
-const double _loadingContainerWidth = 64.0;
-const double _loadingContainerHeight = 44.0;
 const double _buttonSize = 24.0;
 const double _continueButtonWidth = 48.0;
 const double _continueButtonHeight = 24.0;
 const double _borderRadius = 16.0;
-const double _loadingSize = 30.0;
 
 // 性能优化：缓存样式对象，避免每次build重新创建
 final TextStyle _titleStyle = AppTextStyle.openSans(
@@ -38,8 +35,6 @@ final TextStyle _titleStyle = AppTextStyle.openSans(
 class _Constants {
   // 预定义的边距和约束
   static const EdgeInsets sendTextPadding = EdgeInsets.all(_containerPadding);
-  static const EdgeInsets loadingMargin = EdgeInsets.only(top: 16);
-  static const BorderRadius loadingBorderRadius = BorderRadius.all(Radius.circular(_borderRadius));
   static const BorderRadius containerBorderRadius = BorderRadius.all(
     Radius.circular(_borderRadius),
   );

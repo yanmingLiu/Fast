@@ -61,6 +61,7 @@ class AudioStateInfo {
 /// - 完善的错误处理和重试机制
 /// - 文件完整性验证
 /// - 音频时长动态获取
+/// - 解决异步竞态条件问题
 class AudioManager extends GetxController {
   static AudioManager? _instance;
 
@@ -122,6 +123,7 @@ class AudioManager extends GetxController {
 
   @override
   void onClose() {
+    debugPrint('🎧 AudioManager: 开始清理资源');
     _cleanupResources();
     super.onClose();
   }
@@ -196,6 +198,13 @@ class AudioManager extends GetxController {
         return;
       }
 
+      // 检查音频是否在下载过程中被停止
+      final currentState = _audioStates[msgId];
+      if (currentState?.state == AudioPlayState.stopped) {
+        debugPrint('🎧 AudioManager: 音频在下载过程中被停止，取消播放, msgId: $msgId');
+        return;
+      }
+
       debugPrint('🎧 AudioManager: 音频下载成功, 路径: $downloadedFilePath');
 
       // 获取实际音频时长
@@ -215,6 +224,13 @@ class AudioManager extends GetxController {
         // 等待片刻后重新下载
         await Future.delayed(Duration(milliseconds: 500));
 
+        // 再次检查是否被停止
+        final recheckState = _audioStates[msgId];
+        if (recheckState?.state == AudioPlayState.stopped) {
+          debugPrint('🎧 AudioManager: 音频在重新下载前被停止，取消播放, msgId: $msgId');
+          return;
+        }
+
         // 重新下载
         downloadedFilePath = await _downloadAudioWithRetry(msgId, audioUrl, forceRedownload: true);
         if (downloadedFilePath == null) {
@@ -231,6 +247,13 @@ class AudioManager extends GetxController {
           _updateAudioState(msgId, AudioPlayState.error, errorMessage: '文件仍然不完整');
           return;
         }
+      }
+
+      // 最终检查是否被停止（在播放前的最后检查）
+      final finalState = _audioStates[msgId];
+      if (finalState?.state == AudioPlayState.stopped) {
+        debugPrint('🎧 AudioManager: 音频在播放前被停止，取消播放, msgId: $msgId');
+        return;
       }
 
       // 开始播放
@@ -265,11 +288,13 @@ class AudioManager extends GetxController {
       await _audioPlayer?.stop();
       currentPlayingAudio.value = null;
 
-      // 更新所有状态为停止
+      // 更新所有状态为停止，包括正在下载的音频
       for (final msgId in _audioStates.keys) {
         final audioState = _audioStates[msgId];
-        if (audioState?.state == AudioPlayState.playing) {
+        if (audioState?.state == AudioPlayState.playing ||
+            audioState?.state == AudioPlayState.downloading) {
           _updateAudioState(msgId, AudioPlayState.stopped);
+          debugPrint('🎧 AudioManager: 停止音频 $msgId, 原状态: ${audioState?.state}');
         }
       }
     } catch (e) {
@@ -409,6 +434,13 @@ class AudioManager extends GetxController {
         throw Exception('音频播放器未初始化');
       }
 
+      // 播放前最后一次检查状态
+      final currentState = _audioStates[msgId];
+      if (currentState?.state == AudioPlayState.stopped) {
+        debugPrint('🎧 AudioManager: 音频在播放前被停止，取消播放, msgId: $msgId');
+        return;
+      }
+
       // 更新状态为正在播放
       final audioState = AudioStateInfo(
         msgId: msgId,
@@ -422,6 +454,8 @@ class AudioManager extends GetxController {
 
       // 触发状态更新
       _audioStates.refresh();
+
+      debugPrint('🎧 AudioManager: 开始播放音频文件');
 
       // 开始播放
       await _audioPlayer!
@@ -462,11 +496,24 @@ class AudioManager extends GetxController {
   /// 清理资源
   void _cleanupResources() {
     try {
+      debugPrint('🎧 AudioManager: 开始清理资源...');
+
+      // 停止所有音频播放
+      _audioPlayer?.stop();
+
+      // 取消状态监听
       _playerStateSubscription?.cancel();
+      _playerStateSubscription = null;
+
+      // 释放音频播放器
       _audioPlayer?.dispose();
+      _audioPlayer = null;
+
+      // 清理状态数据
       _audioStates.clear();
       currentPlayingAudio.value = null;
       _retryCount.clear();
+
       debugPrint('🎧 AudioManager: 资源清理完成');
     } catch (e) {
       debugPrint('⚠️ AudioManager: 资源清理异常: $e');

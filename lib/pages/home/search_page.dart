@@ -147,6 +147,8 @@ class _SearchPageState extends State<SearchPage> {
                 },
               );
             }
+            final width = MediaQuery.sizeOf(context).width / 2 - 16;
+
             return MasonryGridView.count(
               crossAxisCount: 2,
               mainAxisSpacing: 8,
@@ -156,16 +158,16 @@ class _SearchPageState extends State<SearchPage> {
               padding: EdgeInsets.symmetric(horizontal: 16),
               itemBuilder: (context, index) {
                 final role = list[index];
-                return SizedBox(
-                  height: index.isOdd ? 300 : 250,
-                  child: HomeItem(
-                    role: role,
-                    onCollect: (Role role) {
-                      focusNode.unfocus();
-                      ctr.onCollect(index, role);
-                    },
-                    cate: HomeListCategroy.all,
-                  ),
+                final height = index.isOdd ? 300.0 : 250.0;
+                return HomeItem(
+                  width: width,
+                  height: height,
+                  role: role,
+                  onCollect: (Role role) {
+                    focusNode.unfocus();
+                    ctr.onCollect(index, role);
+                  },
+                  cate: HomeListCategroy.all,
                 );
               },
             );
