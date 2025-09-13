@@ -40,7 +40,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
+    // 确保控制器被正确销毁
     _linkedController.dispose();
+    // 清理 GetX 控制器
+    Get.delete<HomeCtr>();
+    Get.delete<HomeCallCtr>();
     super.dispose();
   }
 

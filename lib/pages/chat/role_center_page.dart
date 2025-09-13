@@ -134,16 +134,16 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
               Positioned.fill(child: FImage(url: ctr.role.avatar)),
               Positioned.fill(
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        Colors.black.withValues(alpha: 0.5),
-                        Colors.black.withValues(alpha: 0.7),
+                        Color(0x80000000),
+                        Color(0xB3000000),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      stops: const [0.5, 0.8, 1.0],
+                      stops: [0.5, 0.8, 1.0],
                     ),
                   ),
                 ),
@@ -177,7 +177,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                         final isCollect = ctr.collect.value;
                         return FButton(
                           onTap: ctr.onCollect,
-                          color: Colors.white.withValues(alpha: 0.1),
+                          color: Color(0x1AFFFFFF),
                           height: 26,
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           child: Row(
@@ -203,7 +203,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                         );
                       }),
                       FButton(
-                        color: Colors.white.withValues(alpha: 0.1),
+                        color: Color(0x1AFFFFFF),
                         height: 26,
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         child: Row(
@@ -338,7 +338,6 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
               crossAxisSpacing: 4,
               childAspectRatio: 1.0,
             ),
-
             itemBuilder: (_, idx) {
               final image = images[idx];
               final unlocked = image.unlocked ?? false;
@@ -405,7 +404,6 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
               height: 44,
               borderRadius: BorderRadius.circular(0),
               color: Colors.transparent,
-
               child: Row(
                 spacing: 4,
                 children: [

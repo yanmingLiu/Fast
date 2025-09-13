@@ -281,7 +281,7 @@ class SkuItemWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       height: 24,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadiusDirectional.only(
           topStart: Radius.circular(12),
           topEnd: Radius.circular(12),
@@ -294,7 +294,7 @@ class SkuItemWidget extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
+            color: Color(0x40000000),
             offset: Offset(0, 4),
             blurRadius: 4.0,
             spreadRadius: 4.0,

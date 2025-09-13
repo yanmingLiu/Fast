@@ -43,7 +43,7 @@ class AppDialog {
       maskWidget: ClipPath(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Container(color: Colors.black.withValues(alpha: 0.8)),
+          child: Container(color: Color(0xCC000000)),
         ),
       ),
       builder: (context) {
@@ -160,7 +160,7 @@ class AppDialog {
       maskWidget: ClipPath(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Container(color: Colors.black.withValues(alpha: 0.8)),
+          child: Container(color: Color(0xCC000000)),
         ),
       ),
       builder: (context) {
@@ -334,7 +334,7 @@ class AppDialog {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.8),
+                  color: Color(0xCC000000),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

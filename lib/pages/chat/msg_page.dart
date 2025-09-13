@@ -30,9 +30,6 @@ class MsgPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final role = ctr.role;
 
-    double bottomPadding = MediaQuery.of(context).viewPadding.bottom;
-    var msgBottom = 4 + bottomPadding + 48 + 12 + 26 + 4;
-
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -42,18 +39,11 @@ class MsgPage extends StatelessWidget {
           Positioned.fill(child: FImage(url: ctr.session.background ?? role.avatar)),
           if (AppCache().chatBgImagePath.isNotEmpty)
             Positioned.fill(child: Image.file(File(AppCache().chatBgImagePath), fit: BoxFit.cover)),
-
           Scaffold(
             appBar: _buildAppBar(),
             extendBodyBehindAppBar: true,
             extendBody: true,
             backgroundColor: Colors.transparent,
-            // body: Stack(
-            //   children: [
-            //     Positioned.fill(bottom: msgBottom, child: MsgListView()),
-            //     Positioned(bottom: 0, left: 0, right: 0, child: ChatInput()),
-            //   ],
-            // ),
             body: Column(
               children: [
                 Expanded(child: MsgListView()),
@@ -114,7 +104,7 @@ class MsgPage extends StatelessWidget {
           },
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: Color(0x4D000000),
               shape: BoxShape.circle,
             ),
             padding: EdgeInsets.all(4),

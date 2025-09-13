@@ -13,8 +13,7 @@ class VipTimer extends StatefulWidget {
 }
 
 class _VipTimerState extends State<VipTimer> {
-  int minutes = 30;
-  int seconds = 0;
+  final ValueNotifier<Duration> _timeNotifier = ValueNotifier(const Duration(minutes: 30));
   Timer? _timer;
 
   @override
@@ -26,14 +25,12 @@ class _VipTimerState extends State<VipTimer> {
   @override
   void dispose() {
     _timer?.cancel();
+    _timeNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    String minutesStr = minutes.toString().padLeft(2, '0');
-    String secondsStr = seconds.toString().padLeft(2, '0');
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -42,18 +39,30 @@ class _VipTimerState extends State<VipTimer> {
           style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
         ),
         SizedBox(width: 4),
-        _buildDigit(minutesStr[0]),
-        SizedBox(width: 4),
-        _buildDigit(minutesStr[1]),
-        SizedBox(width: 8),
-        Text(
-          ':',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary),
+        ValueListenableBuilder<Duration>(
+          valueListenable: _timeNotifier,
+          builder: (context, value, child) {
+            final minutesStr = value.inMinutes.toString().padLeft(2, '0');
+            final secondsStr = (value.inSeconds % 60).toString().padLeft(2, '0');
+            return Row(
+              children: [
+                _buildDigit(minutesStr[0]),
+                const SizedBox(width: 4),
+                _buildDigit(minutesStr[1]),
+                const SizedBox(width: 8),
+                Text(
+                  ':',
+                  style: TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary),
+                ),
+                const SizedBox(width: 8),
+                _buildDigit(secondsStr[0]),
+                const SizedBox(width: 4),
+                _buildDigit(secondsStr[1]),
+              ],
+            );
+          },
         ),
-        SizedBox(width: 8),
-        _buildDigit(secondsStr[0]),
-        SizedBox(width: 4),
-        _buildDigit(secondsStr[1]),
       ],
     );
   }
@@ -77,18 +86,12 @@ class _VipTimerState extends State<VipTimer> {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (seconds == 0) {
-          if (minutes == 0) {
-            timer.cancel();
-          } else {
-            minutes--;
-            seconds = 59;
-          }
-        } else {
-          seconds--;
-        }
-      });
+      final current = _timeNotifier.value;
+      if (current.inSeconds == 0) {
+        timer.cancel();
+      } else {
+        _timeNotifier.value = Duration(seconds: current.inSeconds - 1);
+      }
     });
   }
 }

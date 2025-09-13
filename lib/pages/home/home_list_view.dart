@@ -36,7 +36,8 @@ class _HomeListViewState extends State<HomeListView> {
 
   @override
   void dispose() {
-    _controller.refreshCtr.dispose();
+    // 确保控制器被正确销毁
+    _controller.dispose();
     super.dispose();
   }
 
@@ -69,6 +70,8 @@ class _HomeListViewState extends State<HomeListView> {
       crossAxisSpacing: 8,
       itemCount: list.length,
       physics: physics,
+      addAutomaticKeepAlives: false,
+      addRepaintBoundaries: false,
       itemBuilder: (context, index) {
         final height = index.isOdd ? 300.0 : 250.0;
         final role = list[index];

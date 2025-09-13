@@ -30,7 +30,7 @@ class MainTabBar extends StatelessWidget {
         child: Container(
           height: kBottomNavigationBarHeight,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
+            color: Color(0x1AFFFFFF),
             borderRadius: BorderRadiusGeometry.circular(kBottomNavigationBarHeight / 2),
           ),
           child: ClipRRect(

@@ -60,59 +60,66 @@ class HomeItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: _onTap,
-      child: SizedBox(
+      child: Container(
         width: width,
         height: height,
-        child: ClipRRect(
+        decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(16)),
-          clipBehavior: Clip.hardEdge,
-          child: Stack(
-            children: [
-              // 背景图片
-              FImage(url: role.avatar, width: width, height: height),
+        ),
+        child: Stack(
+          children: [
+            // 背景图片
+            Positioned.fill(
+              child: FImage(
+                url: role.avatar,
+                width: width,
+                height: height,
+                borderRadius: BorderRadius.circular(16),
+                shape: BoxShape.rectangle,
+              ),
+            ),
 
-              // 渐变遮罩
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  border: isVip
-                      ? const Border.fromBorderSide(BorderSide(color: AppColors.primary, width: 4))
-                      : null,
-                  gradient: const LinearGradient(
-                    colors: AppColors.homeItemGradient,
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.0, 0.15, 0.6, 1.0],
-                  ),
+            // 渐变遮罩
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
+                border: isVip
+                    ? const Border.fromBorderSide(BorderSide(color: AppColors.primary, width: 4))
+                    : null,
+                gradient: const LinearGradient(
+                  colors: AppColors.homeItemGradient,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.0, 0.15, 0.6, 1.0],
                 ),
               ),
+            ),
 
-              // 内容区域
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 8),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     mainAxisAlignment: MainAxisAlignment.end,
-              //     children: [
-              //       // 名字和年龄
-              //       _buildNameAndAge(),
-              //       const SizedBox(height: 4),
+            // 内容区域
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // 名字和年龄
+                  _buildNameAndAge(),
+                  const SizedBox(height: 4),
 
-              //       // 标签
-              //       if (shouldShowTags) _buildTags(displayTags),
-              //       const SizedBox(height: 8),
+                  // 标签
+                  if (shouldShowTags) _buildTags(displayTags),
+                  const SizedBox(height: 8),
 
-              //       // 聊天按钮
-              //       _buildChatButton(),
-              //       const SizedBox(height: 8),
-              //     ],
-              //   ),
-              // ),
+                  // 聊天按钮
+                  _buildChatButton(),
+                  const SizedBox(height: 8),
+                ],
+              ),
+            ),
 
-              // // 收藏按钮
-              // _buildCollectButton(isCollect),
-            ],
-          ),
+            // 收藏按钮
+            _buildCollectButton(isCollect),
+          ],
         ),
       ),
     );
@@ -168,34 +175,41 @@ class HomeItem extends StatelessWidget {
 
   Widget _buildCollectButton(bool isCollected) {
     return PositionedDirectional(
-      top: 8,
-      end: 8,
-      child: FButton(
+      top: 0,
+      end: 0,
+      child: GestureDetector(
         onTap: () => onCollect(role),
-        color: AppColors.white10,
-        height: 20,
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FIcon(
-              assetName: Assets.svg.like,
-              width: 20,
-              color: isCollected ? AppColors.secondary : Colors.white,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.white10,
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
-            const SizedBox(width: 2),
-            Text(
-              '${role.likes ?? 0}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.openSans(
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-                color: isCollected ? AppColors.secondary : Colors.white,
-              ),
+            height: 20,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FIcon(
+                  assetName: Assets.svg.like,
+                  width: 20,
+                  color: isCollected ? AppColors.secondary : Colors.white,
+                ),
+                const SizedBox(width: 2),
+                Text(
+                  '${role.likes ?? 0}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyle.openSans(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    color: isCollected ? AppColors.secondary : Colors.white,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

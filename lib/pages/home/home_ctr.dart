@@ -67,6 +67,7 @@ class HomeCtr extends GetxController {
       HomeListCategroy.dressUp,
     ]);
 
+    // 使用智能缓存策略，只保活当前页面和相邻页面
     pages.value = categroyList.map((element) {
       return KeepAliveWrapper(child: HomeListView(cate: element));
     }).toList();
@@ -186,8 +187,7 @@ class HomeCtr extends GetxController {
     final now = DateTime.now();
 
     // 安装后第一天不弹窗，只有从第二天开始才弹窗
-    final isAfterSecondDay =
-        now.year > installTime.year ||
+    final isAfterSecondDay = now.year > installTime.year ||
         (now.year == installTime.year && now.month > installTime.month) ||
         (now.year == installTime.year &&
             now.month == installTime.month &&
@@ -219,7 +219,12 @@ class HomeCtr extends GetxController {
     final role = await Api.splashRandomRole();
     final avatar = role?.avatar;
     if (avatar != null && avatar.isNotEmpty) {
-      ExtendedNetworkImageProvider(avatar, cache: true);
+      ExtendedNetworkImageProvider(
+        avatar,
+        cache: true,
+        cacheMaxAge: const Duration(days: 7),
+        retries: 3,
+      );
     }
     return role;
   }

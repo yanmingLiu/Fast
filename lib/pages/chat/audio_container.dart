@@ -34,39 +34,6 @@ class AudioContainer extends StatefulWidget {
 }
 
 class _AudioContainerState extends State<AudioContainer> with SingleTickerProviderStateMixin {
-  // ==================== 静态常量缓存 ====================
-
-  /// 音频容器装饰样式 - 缓存避免重复创建
-  static final _audioContainerDecoration = BoxDecoration(
-    color: Colors.black.withValues(alpha: 0.5),
-    borderRadius: BorderRadius.circular(16),
-  );
-
-  /// 标签装饰样式 - 缓存避免重复创建
-  static final _tagDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(16),
-    color: const Color(0xFF3F8DFD),
-  );
-
-  /// 标签文本样式 - 缓存避免重复创建
-  static const _tagTextStyle = TextStyle(
-    fontSize: 10,
-    fontWeight: FontWeight.w500,
-    color: Colors.black,
-  );
-
-  /// 颜色滤镜 - 缓存避免重复创建
-  static const _whiteColorFilter = ColorFilter.mode(Colors.white, BlendMode.srcIn);
-
-  /// 组件尺寸常量
-  static const double _audioContainerWidth = 200.0;
-  static const double _audioContainerHeight = 62.0;
-  static const double _containerPadding = 12.0;
-  static const double _iconSize = 20.0;
-  static const double _spacing = 8.0;
-
-  // ==================== 实例变量 ====================
-
   /// 动画控制器
   AnimationController? _controller;
 
@@ -133,7 +100,7 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
   Widget _buildAudioUI() {
     return RepaintBoundary(
       child: ColorFiltered(
-        colorFilter: _whiteColorFilter,
+        colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
         child: Lottie.asset(
           Assets.lottie.audio,
           controller: _controller,
@@ -203,7 +170,7 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: Column(
-        spacing: _spacing,
+        spacing: 8,
         children: [
           TextContainer(msg: widget.msg),
           Row(children: [_buildAudioWidget()]),
@@ -229,15 +196,18 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
   /// 构建音频容器
   Widget _buildAudioContainer(bool isShowTrial, bool isRead) {
     return Padding(
-      padding: const EdgeInsets.only(top: _containerPadding),
+      padding: const EdgeInsets.only(top: 12),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: _audioContainerWidth,
-            height: _audioContainerHeight,
-            padding: const EdgeInsets.all(_containerPadding),
-            decoration: _audioContainerDecoration,
+            width: 200,
+            height: 62,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Color(0x80000000),
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: _buildAudioUI(),
           ),
         ],
@@ -281,15 +251,23 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
   /// 构建状态标签 - 优化版本
   Widget _buildStatusTag() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: _spacing, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       alignment: Alignment.centerLeft,
-      decoration: _tagDecoration,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFF3F8DFD),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildStatusIcon(),
-          const SizedBox(width: _spacing),
-          Text(LocaleKeys.moans_for_you.tr, style: _tagTextStyle),
+          const SizedBox(width: 8),
+          Text(LocaleKeys.moans_for_you.tr,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              )),
         ],
       ),
     );
@@ -337,17 +315,17 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
 
   /// 构建加载图标
   Widget _buildLoadingIcon() {
-    return SizedBox(width: _iconSize, height: _iconSize, child: FLoading.loadingWidget());
+    return SizedBox(width: 20, height: 20, child: FLoading.loadingWidget());
   }
 
   /// 构建播放图标
   Widget _buildPlayingIcon() {
-    return Assets.images.voiceing.image(width: _iconSize);
+    return Assets.images.voiceing.image(width: 20);
   }
 
   /// 构建暂停图标
   Widget _buildPausedIcon() {
-    return Assets.images.audioPause.image(width: _iconSize);
+    return Assets.images.audioPause.image(width: 20);
   }
 
   /// 构建错误图标
@@ -355,7 +333,7 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
     return Icon(
       Icons.error_outline,
       color: Colors.red,
-      size: _iconSize,
+      size: 20,
       semanticLabel: 'try again',
     );
   }

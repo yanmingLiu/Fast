@@ -1,4 +1,5 @@
 import 'package:fast_ai/values/app_text_style.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MeItem extends StatefulWidget {
@@ -35,29 +36,7 @@ class _MeItemState extends State<MeItem> {
   int _tapCount = 0;
   DateTime? _lastTapTime;
 
-  // 性能优化：缓存样式对象
-  static final TextStyle _sectionTitleStyle = AppTextStyle.openSans(
-    color: const Color(0xFF858585),
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-  );
-
-  static final TextStyle _titleStyle = AppTextStyle.openSans(
-    color: Colors.white,
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-  );
-
-  static final TextStyle _subtitleStyle = AppTextStyle.openSans(
-    color: const Color(0xFF858585),
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-  );
-
-  // 性能优化：缓存常用组件
-  static const SizedBox _spacing8 = SizedBox(width: 8);
-  static const SizedBox _spacing4 = SizedBox(width: 4);
-  static const Icon _chevronIcon = Icon(Icons.chevron_right, color: Color(0xFF808080));
+  // 样式全部用局部变量，避免 static final 导致内存无法释放
 
   void _handleSectionTap() {
     if (widget.onTapSection == null) return;
@@ -83,6 +62,30 @@ class _MeItemState extends State<MeItem> {
 
   @override
   Widget build(BuildContext context) {
+    final sectionTitleStyle = AppTextStyle.openSans(
+      color: const Color(0xFF858585),
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+    );
+    final titleStyle = AppTextStyle.openSans(
+      color: Colors.white,
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+    );
+    final subtitleStyle = AppTextStyle.openSans(
+      color: const Color(0xFF858585),
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+    );
+    const spacing8 = SizedBox(width: 8);
+    const spacing4 = SizedBox(width: 4);
+    const chevronIcon = Icon(Icons.chevron_right, color: Color(0xFF808080));
+
+    final borderRadius = BorderRadius.vertical(
+      top: widget.showTopRadius ? const Radius.circular(8) : Radius.zero,
+      bottom: widget.showBottomRadius ? const Radius.circular(8) : Radius.zero,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -92,17 +95,18 @@ class _MeItemState extends State<MeItem> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: GestureDetector(
               onTap: _handleSectionTap,
-              child: Text(widget.sectionTitle!, style: _sectionTitleStyle),
+              child: Text(widget.sectionTitle!, style: sectionTitleStyle),
             ),
           ),
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: widget.onTap,
-            borderRadius: BorderRadius.vertical(
-              top: widget.showTopRadius ? const Radius.circular(8) : Radius.zero,
-              bottom: widget.showBottomRadius ? const Radius.circular(8) : Radius.zero,
-            ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: borderRadius,
+          ),
+          child: CupertinoButton(
+            padding: EdgeInsets.zero,
+            borderRadius: borderRadius,
+            onPressed: widget.onTap,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               height: 52,
@@ -111,14 +115,14 @@ class _MeItemState extends State<MeItem> {
                   Expanded(
                     child: Row(
                       children: [
-                        Text(widget.title, style: _titleStyle),
-                        _spacing8,
+                        Text(widget.title, style: titleStyle),
+                        spacing8,
                         Expanded(
                           child: widget.subtitle != null
                               ? Text(
                                   widget.subtitle!,
                                   textAlign: TextAlign.right,
-                                  style: _subtitleStyle,
+                                  style: subtitleStyle,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 )
@@ -127,8 +131,8 @@ class _MeItemState extends State<MeItem> {
                         if (widget.subWidget != null)
                           widget.subWidget!
                         else ...[
-                          _spacing4,
-                          _chevronIcon,
+                          spacing4,
+                          chevronIcon,
                         ],
                       ],
                     ),

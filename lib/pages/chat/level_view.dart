@@ -56,6 +56,7 @@ class LevelView extends StatelessWidget {
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 spacing: 4,
                 children: [
                   Row(

@@ -133,9 +133,9 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
       });
       _controller!.setLooping(false);
       await _controller!.initialize().timeout(
-        const Duration(seconds: 10),
-        onTimeout: () => throw Exception('Video initialization timeout'),
-      );
+            const Duration(seconds: 10),
+            onTimeout: () => throw Exception('Video initialization timeout'),
+          );
 
       if (mounted) {
         _isInit = true;
@@ -202,19 +202,19 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                   child: _isError
                       ? const Icon(Icons.error, color: Colors.white)
                       : _isInit && _controller != null
-                      ? GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _progressShow = !_progressShow;
-                              _playProgressAutoHide();
-                            });
-                          },
-                          child: AspectRatio(
-                            aspectRatio: _controller!.value.aspectRatio,
-                            child: VideoPlayer(_controller!),
-                          ),
-                        )
-                      : const CupertinoActivityIndicator(radius: 16.0, color: Colors.white),
+                          ? GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _progressShow = !_progressShow;
+                                  _playProgressAutoHide();
+                                });
+                              },
+                              child: AspectRatio(
+                                aspectRatio: _controller!.value.aspectRatio,
+                                child: VideoPlayer(_controller!),
+                              ),
+                            )
+                          : const CupertinoActivityIndicator(radius: 16.0, color: Colors.white),
                 ),
                 Visibility(
                   visible: _isInit && !_isPlaying && _controller != null,
@@ -292,7 +292,7 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                     child: Center(
                       child: Text(
                         'Swipe down to close',
-                        style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14),
+                        style: TextStyle(color: Color(0xCCFFFFFF), fontSize: 14),
                       ),
                     ),
                   ),

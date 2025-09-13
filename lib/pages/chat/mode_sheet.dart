@@ -34,7 +34,7 @@ class ModeSheet extends StatelessWidget {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: Color(0x80FFFFFF),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),

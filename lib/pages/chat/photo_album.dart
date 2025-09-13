@@ -69,6 +69,7 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
               return PhotoAlbumItem(
                 imageHeight: imageHeight,
                 image: image,
+                avatar: ctr.role.avatar,
                 unlocked: unlocked,
                 onTap: () {
                   if (unlocked) {
@@ -121,39 +122,38 @@ class PhotoAlbumItem extends StatelessWidget {
     required this.image,
     required this.unlocked,
     this.onTap,
+    this.avatar,
   });
 
   final double? imageHeight;
   final RoleImage image;
   final bool unlocked;
   final void Function()? onTap;
+  final String? avatar;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: Container(
-        height: imageHeight,
-        width: imageHeight,
-        color: const Color(0x801C1C1C),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: onTap,
-                child: FImage(url: image.imageUrl),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: imageHeight,
+          width: imageHeight,
+          color: const Color(0xff1C1C1C),
+          child: Stack(
+            children: [
+              FImage(
+                url: !unlocked ? avatar : image.imageUrl,
+                width: imageHeight,
+                height: imageHeight,
               ),
-            ),
-            if (!unlocked)
-              GestureDetector(
-                onTap: onTap,
-                child: Stack(
-                  children: [
-                    BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                      child: Container(color: const Color(0x801C1C1C)),
-                    ),
-                    Center(
+              if (!unlocked)
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                  child: Container(
+                    color: const Color(0x901C1C1C),
+                    child: Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -178,10 +178,10 @@ class PhotoAlbumItem extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

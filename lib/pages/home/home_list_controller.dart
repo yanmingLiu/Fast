@@ -34,7 +34,7 @@ class HomeListController {
   bool? genImg;
   bool? changeClothing;
   int page = 1;
-  int size = 50;
+  int size = 10;
   var list = <Role>[].obs;
 
   Rx<EmptyType?> type = Rx<EmptyType?>(null);
@@ -46,13 +46,18 @@ class HomeListController {
   final HomeCtr ctr = Get.find<HomeCtr>();
   List<int> tagIds = [];
 
+  // 添加用于管理订阅的变量
+  late Worker _filterWorker;
+  late Worker _followWorker;
+
   void _initState() {
-    ever(ctr.filterEvent, (event) {
+    // 使用变量保存 Worker 引用，以便后续销毁
+    _filterWorker = ever(ctr.filterEvent, (event) {
       FLoading.showLoading();
       onRefresh();
     });
 
-    ever(ctr.followEvent, (even) {
+    _followWorker = ever(ctr.followEvent, (even) {
       try {
         final e = even.$1;
         final id = even.$2;
@@ -63,6 +68,20 @@ class HomeListController {
         }
       } catch (e) {}
     });
+  }
+
+  // 添加销毁方法
+  void dispose() {
+    // 销毁 Workers
+    _filterWorker.dispose();
+    _followWorker.dispose();
+
+    // 销毁控制器
+    refreshCtr.dispose();
+    scrollController.dispose();
+
+    // 清空列表
+    list.clear();
   }
 
   Future<void> onRefresh() async {

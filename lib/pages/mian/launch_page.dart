@@ -49,10 +49,10 @@ class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateM
   void initUI() {
     EasyRefresh.defaultHeaderBuilder = () => const MaterialHeader(color: Color(0xFF3F8DFD));
     EasyRefresh.defaultFooterBuilder = () => const ClassicFooter(
-      showText: false,
-      showMessage: false,
-      iconTheme: IconThemeData(color: Color(0xFF3F8DFD)),
-    );
+          showText: false,
+          showMessage: false,
+          iconTheme: IconThemeData(color: Color(0xFF3F8DFD)),
+        );
     SmartDialog.config.toast = SmartConfigToast(alignment: Alignment.center);
   }
 
@@ -131,7 +131,7 @@ class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateM
               progress: _progressValue,
               width: 250,
               height: 4,
-              backgroundColor: Colors.white.withValues(alpha: 0.5),
+              backgroundColor: Color(0x80FFFFFF),
               progressColor: Colors.white,
               borderRadius: 4,
             ),

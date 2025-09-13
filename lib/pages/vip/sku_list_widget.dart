@@ -82,7 +82,7 @@ class SkuListWidget extends StatelessWidget {
         () => Text(
           controller.subscriptionDescription,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.85),
+            color: Color(0xD9FFFFFF),
             fontSize: 10,
             fontWeight: FontWeight.w300,
           ),

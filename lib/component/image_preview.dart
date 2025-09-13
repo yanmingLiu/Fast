@@ -98,7 +98,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                   width: 30,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.15),
+                    color: Color(0x26000000),
                     shape: BoxShape.circle,
                   ),
                   child: const Center(child: Icon(Icons.close, color: Colors.white, size: 22)),
@@ -114,7 +114,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                 child: Center(
                   child: Text(
                     'Swipe down to close',
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14),
+                    style: TextStyle(color: Color(0xCCFFFFFF), fontSize: 14),
                   ),
                 ),
               ),
