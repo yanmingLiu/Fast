@@ -1,4 +1,5 @@
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_loading.dart';
@@ -199,6 +200,12 @@ class HomeListController {
 
       type.value = list.isEmpty ? EmptyType.noData : null;
       list.addAll(records);
+
+      // 性能优化
+      if (list.length > 30) {
+        clearMemoryImageCache();
+      }
+
       return res;
     } catch (e) {
       log.e('Error fetching home data: $e');

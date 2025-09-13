@@ -1,4 +1,5 @@
 import 'package:fast_ai/component/f_button.dart';
+import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/linked_tab_page_controller.dart';
@@ -30,12 +31,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     Get.put(HomeCallCtr());
-
-    _linkedController = LinkedTabPageController(
-      items: ctr.categroyList,
-      onIndexChanged: (index) => log.d("当前选中 index: $index"),
-      onItemsChanged: (items) => log.d("数据源更新: $items"),
-    );
   }
 
   @override
@@ -56,28 +51,42 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: buildAppBar(),
-          body: AnimatedBuilder(
-            animation: _linkedController,
-            builder: (_, v) {
-              if (_linkedController.items.isEmpty) {
-                return FLoading.loadingWidget();
+          body: GetBuilder<HomeCtr>(
+            builder: (_) {
+              if (ctr.categroyList.isEmpty || ctr.pages.isEmpty) {
+                return FEmpty(type: EmptyType.loading);
               }
-              return Column(
-                children: [
-                  buildCategory(),
-                  Expanded(
-                    child: PageView(
-                      controller: _linkedController.pageController,
-                      pageSnapping: true,
-                      onPageChanged: (index) {
-                        _linkedController.handlePageChanged(index);
-                        ctr.categroy.value = ctr.categroyList[index];
-                      },
-                      physics: BouncingScrollPhysics(),
-                      children: ctr.pages,
-                    ),
-                  ),
-                ],
+
+              _linkedController = LinkedTabPageController(
+                items: ctr.categroyList,
+                onIndexChanged: (index) => log.d("当前选中 index: $index"),
+                onItemsChanged: (items) => log.d("数据源更新: $items"),
+              );
+
+              return AnimatedBuilder(
+                animation: _linkedController,
+                builder: (_, v) {
+                  if (_linkedController.items.isEmpty) {
+                    return FLoading.loadingWidget();
+                  }
+                  return Column(
+                    children: [
+                      buildCategory(),
+                      Expanded(
+                        child: PageView(
+                          controller: _linkedController.pageController,
+                          pageSnapping: true,
+                          onPageChanged: (index) {
+                            _linkedController.handlePageChanged(index);
+                            ctr.categroy.value = ctr.categroyList[index];
+                          },
+                          physics: BouncingScrollPhysics(),
+                          children: ctr.pages,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               );
             },
           ),
@@ -116,35 +125,32 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 border: BoxBorder.all(color: AppColors.white20, width: 1),
                 borderRadius: BorderRadius.circular(22),
               ),
-              child: Obx(() {
-                final list = ctr.categroyList;
-                return ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: list.length,
-                  controller: _linkedController.scrollController,
-                  separatorBuilder: (context, index) => SizedBox(width: 16),
-                  itemBuilder: (context, index) {
-                    final data = list[index];
-                    return GestureDetector(
-                      child: AnimatedBuilder(
-                        animation: _linkedController,
-                        builder: (_, v) {
-                          final isActive = _linkedController.index == index;
-                          return buildTabItem(
-                            key: _linkedController.getTabKey(index),
-                            title: data.title,
-                            isActive: isActive,
-                            onTap: () {
-                              ctr.onTapCate(data);
-                              _linkedController.select(index);
-                            },
-                          );
-                        },
-                      ),
-                    );
-                  },
-                );
-              }),
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: ctr.categroyList.length,
+                controller: _linkedController.scrollController,
+                separatorBuilder: (context, index) => SizedBox(width: 16),
+                itemBuilder: (context, index) {
+                  final data = ctr.categroyList[index];
+                  return GestureDetector(
+                    child: AnimatedBuilder(
+                      animation: _linkedController,
+                      builder: (_, v) {
+                        final isActive = _linkedController.index == index;
+                        return buildTabItem(
+                          key: _linkedController.getTabKey(index),
+                          title: data.title,
+                          isActive: isActive,
+                          onTap: () {
+                            ctr.onTapCate(data);
+                            _linkedController.select(index);
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],

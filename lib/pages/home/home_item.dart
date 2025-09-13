@@ -69,14 +69,12 @@ class HomeItem extends StatelessWidget {
         child: Stack(
           children: [
             // 背景图片
-            Positioned.fill(
-              child: FImage(
-                url: role.avatar,
-                width: width,
-                height: height,
-                borderRadius: BorderRadius.circular(16),
-                shape: BoxShape.rectangle,
-              ),
+            FImage(
+              url: role.avatar,
+              width: width,
+              height: height,
+              borderRadius: BorderRadius.circular(16),
+              shape: BoxShape.rectangle,
             ),
 
             // 渐变遮罩
@@ -95,7 +93,7 @@ class HomeItem extends StatelessWidget {
               ),
             ),
 
-            // 内容区域
+            // // 内容区域
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(

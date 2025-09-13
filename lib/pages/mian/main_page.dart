@@ -1,4 +1,3 @@
-import 'package:fast_ai/pages/ai/ai_tab_page.dart';
 import 'package:fast_ai/pages/chat/chat_page.dart';
 import 'package:fast_ai/pages/home/home_page.dart';
 import 'package:fast_ai/pages/me/me_page.dart';
@@ -13,9 +12,15 @@ import 'package:fast_ai/services/switch_service.dart';
 import 'package:fast_ai/tools/fb_sdk_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_lazy_indexed_stack/flutter_lazy_indexed_stack.dart';
 import 'package:get/get.dart';
 
-enum MainTabBarIndex { home, chat, ai, me }
+enum MainTabBarIndex {
+  home,
+  chat,
+  // ai,
+  me,
+}
 
 MainTabBarIndex mainTabIndex = MainTabBarIndex.home;
 
@@ -120,9 +125,14 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
             extendBody: true,
             bottomNavigationBar: MainTabBar(onTapItem: (p0) => _onTapItem(p0)),
             backgroundColor: Colors.black,
-            body: IndexedStack(
+            body: LazyIndexedStack(
               index: mainTabIndex.index,
-              children: [HomePage(), ChatPage(), if (AppCache().isBig) AiTabPage(), MePage()],
+              children: [
+                HomePage(),
+                ChatPage(),
+                // if (AppCache().isBig) AiTabPage(),
+                MePage(),
+              ],
             ),
           );
         },

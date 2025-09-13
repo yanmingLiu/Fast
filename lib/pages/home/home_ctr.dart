@@ -42,10 +42,10 @@ extension HomeListCategoryExtension on HomeListCategroy {
 }
 
 class HomeCtr extends GetxController {
-  var categroyList = <HomeListCategroy>[].obs;
+  var categroyList = <HomeListCategroy>[];
   var categroy = HomeListCategroy.all.obs;
 
-  var pages = <Widget>[].obs;
+  var pages = <Widget>[];
 
   // 标签
   List<RoleTagRes> roleTags = [];
@@ -58,19 +58,6 @@ class HomeCtr extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    categroyList.addAll([
-      HomeListCategroy.all,
-      HomeListCategroy.realistic,
-      HomeListCategroy.anime,
-      HomeListCategroy.video,
-      HomeListCategroy.dressUp,
-    ]);
-
-    // 使用智能缓存策略，只保活当前页面和相邻页面
-    pages.value = categroyList.map((element) {
-      return KeepAliveWrapper(child: HomeListView(cate: element));
-    }).toList();
 
     if (NetworkService.to.isConnected.value) {
       setupAndJump();
@@ -107,6 +94,20 @@ class HomeCtr extends GetxController {
         },
       );
       await AppService().getIdfa();
+
+      categroyList.addAll([
+        HomeListCategroy.all,
+        HomeListCategroy.realistic,
+        HomeListCategroy.anime,
+        if (AppCache().isBig) HomeListCategroy.video,
+        if (AppCache().isBig) HomeListCategroy.dressUp,
+      ]);
+
+      // 使用智能缓存策略，只保活当前页面和相邻页面
+      pages = categroyList.map((element) {
+        return KeepAliveWrapper(child: HomeListView(cate: element));
+      }).toList();
+
       Api.updateEventParams();
       loadTags();
     } catch (e) {

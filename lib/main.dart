@@ -29,8 +29,9 @@ void main() async {
   );
 
   try {
-    PaintingBinding.instance.imageCache.maximumSize = 100; // 控制磁盘缓存
-    PaintingBinding.instance.imageCache.maximumSizeBytes = 100 << 20; // 100MB
+    /// 控制图片缓存大小
+    PaintingBinding.instance.imageCache.maximumSize = 100;
+    PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20;
 
     AppService().init(env: kReleaseMode ? Environment.prod : Environment.dev);
 

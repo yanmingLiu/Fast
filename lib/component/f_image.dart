@@ -12,6 +12,7 @@ class FImage extends StatelessWidget {
     this.border,
     this.borderRadius,
     this.color,
+    this.fit,
   });
 
   final String? url;
@@ -21,6 +22,7 @@ class FImage extends StatelessWidget {
   final BoxBorder? border;
   final BorderRadius? borderRadius;
   final Color? color;
+  final BoxFit? fit;
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +37,17 @@ class FImage extends StatelessWidget {
       url!,
       cacheWidth: cacheWidth,
       cacheHeight: cacheHeight,
-      fit: BoxFit.cover,
+      clearMemoryCacheIfFailed: true,
+      clearMemoryCacheWhenDispose: true,
+      fit: fit ?? BoxFit.cover,
       border: border,
       shape: shape ?? BoxShape.rectangle,
       color: color,
       width: width,
       height: height,
-      maxBytes: 1024 * 1024 * 5,
+      maxBytes: 1024 * 1024 * 4,
+      cacheMaxAge: Duration(seconds: 60),
+      retries: 0,
       borderRadius: borderRadius,
       loadStateChanged: (state) {
         switch (state.extendedImageLoadState) {
