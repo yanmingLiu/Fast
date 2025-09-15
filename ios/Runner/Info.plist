@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>FacebookAutoLogAppEventsEnabled</key>
-	<true/>
-	<key>FacebookDisplayName</key>
-	<string>Fast Ai</string>
-	<key>FacebookClientToken</key>
-	<string></string>
-	<key>FacebookAppID</key>
-	<string></string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -32,36 +24,28 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string></string>
+	<key>FacebookAutoLogAppEventsEnabled</key>
+	<true/>
+	<key>FacebookClientToken</key>
+	<string></string>
+	<key>FacebookDisplayName</key>
+	<string>Fast Ai</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UIStatusBarHidden</key>
-	<false/>
-	<key>UIStatusBarStyle</key>
-	<string></string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-    <key>NSLocalNetworkUsageDescription</key>
-    <string>The app requires your consent to access the local network</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Microphone access is used for voice call features, enabling real-time communication with AI.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Allow access to the photo album, enabling users to upload pictures to change the chat background.</string>
-    <key>NSSpeechRecognitionUsageDescription</key>
-    <string>We need access to speech recognition for voice input during calls.</string>
-    <key>NSUserNotificationsUsageDescription</key>
-    <string>Used to display chat message notifications and live broadcast start reminders</string>
-    <key>NSUserTrackingUsageDescription</key>
-    <string>We use this permission to provide you with more relevant match recommendations and personalized content. For example, suggesting potentially compatible chat partners based on your interests.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>The app requires your consent to access the local network</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access is used for voice call features, enabling real-time communication with AI.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow access to the photo album, enabling users to upload pictures to change the chat background.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We need access to speech recognition for voice input during calls.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Used to display chat message notifications and live broadcast start reminders</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>We use this permission to provide you with more relevant match recommendations and personalized content. For example, suggesting potentially compatible chat partners based on your interests.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
@@ -265,5 +249,21 @@
 			<string>3qcr597p9d.skadnetwork</string>
 		</dict>
 	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string></string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>
