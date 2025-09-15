@@ -1,3 +1,4 @@
+import 'package:fast_ai/component/f_keep_alive.dart';
 import 'package:fast_ai/pages/chat/chat_page.dart';
 import 'package:fast_ai/pages/home/home_page.dart';
 import 'package:fast_ai/pages/me/me_page.dart';
@@ -33,6 +34,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   late Future<void> _setupFuture;
+
+  late List<Widget> pages = <Widget>[];
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -88,6 +91,13 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       // 捕获超时异常或其他异常
       log.e('splash Setup error: $e');
     }
+
+    pages = [
+      KeepAliveWrapper(child: HomePage()),
+      KeepAliveWrapper(child: ChatPage()),
+      // if (AppCache().isBig) AiTabPage(),
+      KeepAliveWrapper(child: MePage()),
+    ];
   }
 
   void _initializeAsyncServices() {
@@ -127,12 +137,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
             backgroundColor: Colors.black,
             body: LazyIndexedStack(
               index: mainTabIndex.index,
-              children: [
-                HomePage(),
-                ChatPage(),
-                // if (AppCache().isBig) AiTabPage(),
-                MePage(),
-              ],
+              children: pages,
             ),
           );
         },
