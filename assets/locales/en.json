@@ -182,5 +182,6 @@
     "save_num": "Save @num%",
     "best_choice": "Best choice",
     "expiration_time": "Expiration time: ",
-    "back_updated_succ": "Background updated successfully!"
+    "back_updated_succ": "Background updated successfully!",
+    "popular": "Popular"
 }

@@ -2,7 +2,6 @@ import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/gradient_text.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
-import 'package:fast_ai/gen/fonts.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
 import 'package:fast_ai/services/api.dart';

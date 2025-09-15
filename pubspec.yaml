@@ -72,6 +72,7 @@ dependencies:
   dotted_border: ^3.1.0
   scroll_to_index: ^3.0.1
   blur: ^4.0.2
+  flutter_lazy_indexed_stack: ^0.1.0
 
 
 dev_dependencies:

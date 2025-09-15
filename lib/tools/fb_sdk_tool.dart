@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fast_ai/services/app_service.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/services.dart';
 
@@ -8,7 +9,7 @@ class FBSDKTool {
 
   /// 统一的日志输出方法
   static void _log(String message) {
-    print('[fbtool] $message');
+    log.d('[fbtool] $message');
   }
 
   // 记录Facebook SDK是否已经初始化
@@ -22,12 +23,10 @@ class FBSDKTool {
   /// 从远程配置获取Facebook SDK配置
   static Future<Map<String, String>?> _getConfigFromRemote() async {
     try {
-      final String facebookAppIdKey = Platform.isAndroid
-          ? 'facebook_app_id_android'
-          : 'facebook_app_id_ios';
-      final String facebookClientTokenKey = Platform.isAndroid
-          ? 'facebook_client_token_android'
-          : 'facebook_client_token_ios';
+      final String facebookAppIdKey =
+          Platform.isAndroid ? 'facebook_app_id_android' : 'facebook_app_id_ios';
+      final String facebookClientTokenKey =
+          Platform.isAndroid ? 'facebook_client_token_android' : 'facebook_client_token_ios';
 
       final remoteConfig = FirebaseRemoteConfig.instance;
 

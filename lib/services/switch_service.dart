@@ -5,7 +5,6 @@ import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:get/get.dart';
 
-/// TODO : clk
 class SwitchService {
   static Future request({bool isFisrt = false}) async {
     if (AppService().isDebugMode) {
@@ -61,7 +60,7 @@ class SwitchService {
     }
   }
 
-  // Android 点击事件请求
+  // TODO: Android 点击事件请求
   static Future<void> _requestAnd() async {
     try {
       final deviceId = await AppCache().phoneId(isOrigin: true);

@@ -1,3 +1,4 @@
+// ignore: depend_on_referenced_packages
 import 'package:extended_image/extended_image.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,15 @@ class FImage extends StatelessWidget {
     this.borderRadius,
     this.color,
     this.fit,
+    this.cacheWidth,
+    this.cacheHeight,
   });
 
   final String? url;
   final double? width;
   final double? height;
+  final int? cacheWidth;
+  final int? cacheHeight;
   final BoxShape? shape;
   final BoxBorder? border;
   final BorderRadius? borderRadius;
@@ -30,8 +35,8 @@ class FImage extends StatelessWidget {
       return _buildPlaceholder();
     }
 
-    int cacheWidth = width != null ? (width! * 2).toInt() : 1080;
-    int cacheHeight = height != null ? (height! * 2).toInt() : 1920;
+    // int targetWidth = cacheWidth ?? 1080;
+    // int targetHeight = cacheHeight ?? 1080;
 
     return ExtendedImage.network(
       url!,

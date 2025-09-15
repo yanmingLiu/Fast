@@ -29,7 +29,6 @@ class MaskEditPage extends GetView<MaskEditCtr> {
   );
   static const EdgeInsets _buttonMargin = EdgeInsets.symmetric(horizontal: 50);
   static const SizedBox _spacing8 = SizedBox(height: 8);
-  static const SizedBox _spacing20 = SizedBox(height: 20);
   static const BoxConstraints _multilineConstraints = BoxConstraints(minHeight: 88);
   static const Color _backgroundColor = Color(0xFF333333);
   static const Color _selectedColor = Color(0xFF3F8DFD);

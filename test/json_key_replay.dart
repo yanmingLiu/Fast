@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+
 // 在终端中直接运行 main 方法：
 /*
 dart run /Users/hookup/Documents/kira_ai/test/json_key_replay.dart
@@ -137,7 +139,7 @@ void replace(String folderPath) {
   // 获取文件夹
   final Directory directory = Directory(folderPath);
   if (!directory.existsSync()) {
-    print('文件夹不存在: $folderPath');
+    debugPrint('文件夹不存在: $folderPath');
     return;
   }
   final List<FileSystemEntity> files = directory.listSync();
@@ -167,7 +169,7 @@ void replace(String folderPath) {
       }
 
       entity.writeAsStringSync(replacedContent);
-      print('文件已成功替换: ${entity.path}');
+      debugPrint('文件已成功替换: ${entity.path}');
     }
   }
 }

@@ -32,6 +32,7 @@ class AppDialog {
     bool? clickMaskDismiss = true,
     String? tag,
     bool? showCloseButton = true,
+    void Function()? onCancel,
   }) async {
     final completer = Completer<void>();
 
@@ -54,7 +55,14 @@ class AppDialog {
             spacing: 20,
             children: [
               child,
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [_buildCloseButton()]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildCloseButton(
+                    onTap: onCancel,
+                  )
+                ],
+              ),
             ],
           );
         } else {
@@ -81,6 +89,7 @@ class AppDialog {
   }) async {
     return show(
       clickMaskDismiss: false,
+      onCancel: onCancel,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),

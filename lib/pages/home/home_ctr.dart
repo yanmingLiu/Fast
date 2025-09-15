@@ -26,7 +26,7 @@ extension HomeListCategoryExtension on HomeListCategroy {
   String get title {
     switch (this) {
       case HomeListCategroy.all:
-        return LocaleKeys.all.tr;
+        return LocaleKeys.popular.tr;
       case HomeListCategroy.realistic:
         return LocaleKeys.realistic.tr;
       case HomeListCategroy.anime:

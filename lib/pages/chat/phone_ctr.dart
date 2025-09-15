@@ -203,22 +203,16 @@ class PhoneCtr extends GetxController {
     log.d('_releaseResources');
 
     // 停止语音识别
-    _speech
-        .stop()
-        .then((_) {
-          _speech
-              .cancel()
-              .then((_) {
-                log.d('Speech recognition stopped and cancelled');
-              })
-              .catchError((error) {
-                log.d('Error cancelling speech: $error');
-              });
-        })
-        .catchError((error) {
-          log.d('Error stopping speech: $error');
-          FToast.toast(error.toString());
-        });
+    _speech.stop().then((_) {
+      _speech.cancel().then((_) {
+        log.d('Speech recognition stopped and cancelled');
+      }).catchError((error) {
+        log.d('Error cancelling speech: $error');
+      });
+    }).catchError((error) {
+      log.d('Error stopping speech: $error');
+      FToast.toast(error.toString());
+    });
 
     // 清理Timer（通过ResourceManager自动管理）
     _callTimer?.cancel();
@@ -314,16 +308,17 @@ class PhoneCtr extends GetxController {
         onStatus: (status) => log.d('onStatus: $status'),
         onError: (error) {
           log.e('onError: $error');
-          AppDialog.alert(
-            title: LocaleKeys.tips.tr,
-            message: LocaleKeys.speech_recognition_not_supported.tr,
-            onConfirm: () {
-              Get.back();
-            },
-            onCancel: () {
-              Get.back();
-            },
-          );
+          FToast.toast(error.toString());
+          // AppDialog.alert(
+          //   title: LocaleKeys.tips.tr,
+          //   message: LocaleKeys.speech_recognition_not_supported.tr,
+          //   onConfirm: () {
+          //     Get.back();
+          //   },
+          //   onCancel: () {
+          //     Get.back();
+          //   },
+          // );
         },
       );
     } catch (e) {

@@ -73,6 +73,8 @@ class HomeItem extends StatelessWidget {
               url: role.avatar,
               width: width,
               height: height,
+              cacheWidth: 1080,
+              cacheHeight: 1080,
               borderRadius: BorderRadius.circular(16),
               shape: BoxShape.rectangle,
             ),

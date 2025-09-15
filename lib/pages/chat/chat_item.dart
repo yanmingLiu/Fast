@@ -33,7 +33,14 @@ class ChatItem extends StatelessWidget {
         child: Row(
           spacing: 12,
           children: [
-            FImage(url: avatar, width: 52, height: 52, shape: BoxShape.circle),
+            FImage(
+              url: avatar,
+              width: 52,
+              height: 52,
+              shape: BoxShape.circle,
+              cacheWidth: 180,
+              cacheHeight: 180,
+            ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -53,7 +60,6 @@ class ChatItem extends StatelessWidget {
                           ),
                         ),
                       ),
-
                       Text(
                         formatSessionTime(updateTime ?? DateTime.now().millisecondsSinceEpoch),
                         maxLines: 1,

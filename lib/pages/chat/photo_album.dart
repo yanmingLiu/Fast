@@ -145,8 +145,10 @@ class PhotoAlbumItem extends StatelessWidget {
             children: [
               FImage(
                 url: !unlocked ? avatar : image.imageUrl,
-                width: imageHeight,
-                height: imageHeight,
+                // width: imageHeight,
+                // height: imageHeight,
+                cacheWidth: 640,
+                cacheHeight: 640,
               ),
               if (!unlocked)
                 BackdropFilter(

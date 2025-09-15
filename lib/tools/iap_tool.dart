@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:async';
 import 'dart:io';
 
@@ -10,7 +12,6 @@ import 'package:fast_ai/services/api.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_values.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
@@ -31,7 +32,7 @@ class IAPTool {
   }
 
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  // final FlutterSecureStorage _storage = const FlutterSecureStorage();
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
   Set<String> _consumableIds = {};
@@ -102,14 +103,10 @@ class IAPTool {
     final list = await Api.getSkuList();
     allList = list ?? [];
 
-    _consumableIds = allList
-        .where((e) => e.skuType == 0 && e.shelf == true)
-        .map((e) => e.sku ?? '')
-        .toSet();
-    _subscriptionIds = allList
-        .where((e) => e.skuType != 0 && e.shelf == true)
-        .map((e) => e.sku ?? '')
-        .toSet();
+    _consumableIds =
+        allList.where((e) => e.skuType == 0 && e.shelf == true).map((e) => e.sku ?? '').toSet();
+    _subscriptionIds =
+        allList.where((e) => e.skuType != 0 && e.shelf == true).map((e) => e.sku ?? '').toSet();
     log.d('[iap] _consumableIds: $_consumableIds');
     log.d('[iap] _subscriptionIds: $_subscriptionIds');
   }
@@ -277,10 +274,10 @@ class IAPTool {
       // 如果没有 v2 票据，就刷新并获取 v1 票据
       if (receipt.isEmpty) {
         // 刷新并获取 v1 票据 ：
-        final iosPlatformAddition = InAppPurchase.instance
-            .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-        PurchaseVerificationData? verificationData = await iosPlatformAddition
-            .refreshPurchaseVerificationData();
+        final iosPlatformAddition =
+            InAppPurchase.instance.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+        PurchaseVerificationData? verificationData =
+            await iosPlatformAddition.refreshPurchaseVerificationData();
 
         String? vdl = verificationData?.localVerificationData; // 这就是 v1 的 Base64 字符串
         String? vds = verificationData?.serverVerificationData;
@@ -290,9 +287,8 @@ class IAPTool {
         receipt = vds ?? '';
       }
 
-      var createImg = (_consFrom == ConsumeFrom.aiphoto || _consFrom == ConsumeFrom.undr)
-          ? true
-          : null;
+      var createImg =
+          (_consFrom == ConsumeFrom.aiphoto || _consFrom == ConsumeFrom.undr) ? true : null;
       var createVideo = _consFrom == ConsumeFrom.img2v ? true : null;
 
       var result = await Api.verifyIosOrder(
@@ -315,9 +311,8 @@ class IAPTool {
 
   Future<bool> _verifyGoogle(PurchaseDetails purchaseDetails) async {
     try {
-      var createImg = (_consFrom == ConsumeFrom.aiphoto || _consFrom == ConsumeFrom.undr)
-          ? true
-          : null;
+      var createImg =
+          (_consFrom == ConsumeFrom.aiphoto || _consFrom == ConsumeFrom.undr) ? true : null;
       var createVideo = _consFrom == ConsumeFrom.img2v ? true : null;
 
       final googleDetail = purchaseDetails as GooglePlayPurchaseDetails;
@@ -368,8 +363,8 @@ class IAPTool {
   Future _finishTransaction() async {
     // iOS 平台特定逻辑
     if (Platform.isIOS) {
-      final iosPlatformAddition = _inAppPurchase
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      final iosPlatformAddition =
+          _inAppPurchase.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
 
       // 清理挂起的交易
@@ -385,11 +380,11 @@ class IAPTool {
     // if (purchaseID != null) await _storage.write(key: purchaseID, value: 'processed');
   }
 
-  Future<bool> _isPurchaseProcessed(String? purchaseID) async {
-    if (purchaseID == null) return false;
-    final value = await _storage.read(key: purchaseID);
-    return value == 'processed';
-  }
+  // Future<bool> _isPurchaseProcessed(String? purchaseID) async {
+  //   if (purchaseID == null) return false;
+  //   final value = await _storage.read(key: purchaseID);
+  //   return value == 'processed';
+  // }
 
   Future<bool> _isAvailable() async {
     final isAvailable = await _inAppPurchase.isAvailable();

@@ -125,16 +125,23 @@ class AppRouter {
     required bool showVideo,
     CallState callState = CallState.calling,
   }) async {
-    // 检查 Mic 权限 和 语音权限
-    if (!await checkPermissions()) {
-      showNoPermissionDialog();
+    final roleId = role.id;
+    if (roleId == null) {
+      FToast.toast('roleId is null, please check!');
+      Get.back();
       return null;
     }
 
-    var seesion = await Api.addSession(role.id ?? ''); // 查会话
+    var seesion = await Api.addSession(roleId); // 查会话
     final sessionId = seesion?.id;
     if (sessionId == null) {
       FToast.toast('sessionId is null, please check!');
+      Get.back();
+      return null;
+    }
+    // 检查 Mic 权限 和 语音权限
+    if (!await checkPermissions()) {
+      showNoPermissionDialog();
       return null;
     }
 
@@ -203,7 +210,7 @@ class AppRouter {
   /// 导航到电话引导页面
   ///
   /// [role] 角色信息
-  static Future<T?>? pushPhoneGuide<T>({required Role role}) {
+  static Future<T?>? pushPhoneGuide<T>({required Role role}) async {
     return Get.toNamed(Routers.phoneGuide, arguments: {'role': role});
   }
 

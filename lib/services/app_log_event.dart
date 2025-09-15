@@ -1,11 +1,10 @@
-// 抽象的策略接口
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fast_ai/services/event_data.dart';
 import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/services/event_data.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -342,26 +341,22 @@ class AppLogEvent {
       final List<dynamic> dataList = logs.map((log) => jsonDecode(log.data)).toList();
 
       // 添加超时控制，避免网络请求卡住应用
-      final res = await _dio
-          .post('', data: dataList)
-          .timeout(
-            const Duration(seconds: 15),
-            onTimeout: () {
-              log.w('[ad]log Upload request timeout');
-              throw TimeoutException('Upload request timeout', const Duration(seconds: 15));
-            },
-          );
+      final res = await _dio.post('', data: dataList).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          log.w('[ad]log Upload request timeout');
+          throw TimeoutException('Upload request timeout', const Duration(seconds: 15));
+        },
+      );
 
       if (res.statusCode == 200) {
-        await _adLogService
-            .markLogsAsSuccess(logs)
-            .timeout(
-              const Duration(seconds: 5),
-              onTimeout: () {
-                log.w('[ad]log markLogsAsSuccess timeout');
-                throw TimeoutException('markLogsAsSuccess timeout', const Duration(seconds: 5));
-              },
-            );
+        await _adLogService.markLogsAsSuccess(logs).timeout(
+          const Duration(seconds: 5),
+          onTimeout: () {
+            log.w('[ad]log markLogsAsSuccess timeout');
+            throw TimeoutException('markLogsAsSuccess timeout', const Duration(seconds: 5));
+          },
+        );
         log.d('[ad]log Batch upload success: ${logs.length} logs');
       } else {
         log.e('[ad]log Batch upload error: ${res.statusMessage}');
@@ -387,26 +382,22 @@ class AppLogEvent {
       final List<dynamic> dataList = failedLogs.map((log) => jsonDecode(log.data)).toList();
 
       // 添加超时控制，避免网络请求卡住应用
-      final res = await _dio
-          .post('', data: dataList)
-          .timeout(
-            const Duration(seconds: 15),
-            onTimeout: () {
-              log.w('[ad]log Retry request timeout');
-              throw TimeoutException('Retry request timeout', const Duration(seconds: 15));
-            },
-          );
+      final res = await _dio.post('', data: dataList).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          log.w('[ad]log Retry request timeout');
+          throw TimeoutException('Retry request timeout', const Duration(seconds: 15));
+        },
+      );
 
       if (res.statusCode == 200) {
-        await _adLogService
-            .markLogsAsSuccess(failedLogs)
-            .timeout(
-              const Duration(seconds: 5),
-              onTimeout: () {
-                log.w('[ad]log markLogsAsSuccess timeout in retry');
-                throw TimeoutException('markLogsAsSuccess timeout', const Duration(seconds: 5));
-              },
-            );
+        await _adLogService.markLogsAsSuccess(failedLogs).timeout(
+          const Duration(seconds: 5),
+          onTimeout: () {
+            log.w('[ad]log markLogsAsSuccess timeout in retry');
+            throw TimeoutException('markLogsAsSuccess timeout', const Duration(seconds: 5));
+          },
+        );
         log.d('[ad]log Retry success for: ${failedLogs.length}');
       } else {
         final ids = failedLogs.map((e) => e.id).toList();
@@ -512,93 +503,97 @@ class _LogPageState extends State<LogPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _logs.isEmpty
-          ? const Center(child: Text('No logs found'))
-          : RefreshIndicator(
-              onRefresh: _loadLogs,
-              color: Colors.blue,
-              child: ListView.builder(
-                itemCount: _logs.length,
-                itemBuilder: (context, index) {
-                  final log = _logs[index];
+              ? const Center(child: Text('No logs found'))
+              : RefreshIndicator(
+                  onRefresh: _loadLogs,
+                  color: Colors.blue,
+                  child: ListView.builder(
+                    itemCount: _logs.length,
+                    itemBuilder: (context, index) {
+                      final log = _logs[index];
 
-                  var name = '';
-                  try {
-                    var dic = jsonDecode(log.data);
-                    name = Platform.isIOS ? dic["geode"] : '';
-                  } catch (e) {}
+                      var name = '';
+                      try {
+                        var dic = jsonDecode(log.data);
+                        name = Platform.isIOS ? dic["geode"] : '';
+                      } catch (e) {
+                        name = e.toString();
+                      }
 
-                  return ListTile(
-                    title: Text(
-                      'eventType: ${log.eventType}',
-                      style: TextStyle(color: Colors.deepOrange),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('id: ${log.id}', style: const TextStyle(color: Colors.blue)),
-                        Text('name: $name', style: const TextStyle(color: Colors.blue)),
-                        Text('Created: ${DateTime.fromMillisecondsSinceEpoch(log.createTime)}'),
-                        if (log.uploadTime != null)
-                          Text('Uploaded: ${DateTime.fromMillisecondsSinceEpoch(log.uploadTime!)}'),
-                        Row(
+                      return ListTile(
+                        title: Text(
+                          'eventType: ${log.eventType}',
+                          style: TextStyle(color: Colors.deepOrange),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              log.isUploaded ? Icons.cloud_done : Icons.cloud_upload,
-                              color: log.isUploaded ? Colors.green : Colors.orange,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              log.isUploaded ? 'Uploaded' : 'Pending',
-                              style: TextStyle(
-                                color: log.isUploaded ? Colors.green : Colors.orange,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            if (log.isUploaded)
-                              Icon(
-                                log.isSuccess ? Icons.check_circle : Icons.error,
-                                color: log.isSuccess ? Colors.green : Colors.red,
-                                size: 16,
-                              ),
-                            const SizedBox(width: 4),
-                            if (log.isUploaded)
+                            Text('id: ${log.id}', style: const TextStyle(color: Colors.blue)),
+                            Text('name: $name', style: const TextStyle(color: Colors.blue)),
+                            Text('Created: ${DateTime.fromMillisecondsSinceEpoch(log.createTime)}'),
+                            if (log.uploadTime != null)
                               Text(
-                                log.isSuccess ? 'Success' : 'Failed',
-                                style: TextStyle(color: log.isSuccess ? Colors.green : Colors.red),
+                                  'Uploaded: ${DateTime.fromMillisecondsSinceEpoch(log.uploadTime!)}'),
+                            Row(
+                              children: [
+                                Icon(
+                                  log.isUploaded ? Icons.cloud_done : Icons.cloud_upload,
+                                  color: log.isUploaded ? Colors.green : Colors.orange,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  log.isUploaded ? 'Uploaded' : 'Pending',
+                                  style: TextStyle(
+                                    color: log.isUploaded ? Colors.green : Colors.orange,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                if (log.isUploaded)
+                                  Icon(
+                                    log.isSuccess ? Icons.check_circle : Icons.error,
+                                    color: log.isSuccess ? Colors.green : Colors.red,
+                                    size: 16,
+                                  ),
+                                const SizedBox(width: 4),
+                                if (log.isUploaded)
+                                  Text(
+                                    log.isSuccess ? 'Success' : 'Failed',
+                                    style:
+                                        TextStyle(color: log.isSuccess ? Colors.green : Colors.red),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Log Details - ${log.eventType}'),
+                              content: SingleChildScrollView(
+                                child: SelectableText(log.data), // 替换为SelectableText
                               ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Log Details - ${log.eventType}'),
-                          content: SingleChildScrollView(
-                            child: SelectableText(log.data), // 替换为SelectableText
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Close'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Close'),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.content_copy),
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: log.data));
+                                    Get.snackbar('Copied', 'Log data copied to clipboard');
+                                  },
+                                ),
+                              ],
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.content_copy),
-                              onPressed: () {
-                                Clipboard.setData(ClipboardData(text: log.data));
-                                Get.snackbar('Copied', 'Log data copied to clipboard');
-                              },
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-              ),
-            ),
+                  ),
+                ),
     );
   }
 }

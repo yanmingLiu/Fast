@@ -67,7 +67,9 @@ class HomeListController {
         if (index != -1) {
           list[index].collect = e == FollowEvent.follow;
         }
-      } catch (e) {}
+      } catch (e) {
+        log.e(e.toString());
+      }
     });
   }
 

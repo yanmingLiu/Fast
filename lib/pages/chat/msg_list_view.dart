@@ -1,5 +1,6 @@
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/msg_item.dart';
+import 'package:fast_ai/services/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -45,7 +46,9 @@ class _MsgListViewState extends State<MsgListView> {
               } else {
                 SystemChannels.textInput.invokeMethod('TextInput.hide');
               }
-            } catch (e) {}
+            } catch (e) {
+              log.e(e.toString());
+            }
           },
           child: Obx(() {
             final list = ctr.list.reversed.toList();
