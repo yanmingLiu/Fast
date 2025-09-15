@@ -38,10 +38,9 @@ class AppService {
       'isDebugMode': true,
       'bundleId': 'com.dev.fast',
     },
-
     Environment.prod: Platform.isIOS
         ? {
-            'baseUrl': 'https://fastaiapptop.com/release',
+            'baseUrl': 'https://server.aifastapp.com/release',
             'isDebugMode': false,
             'bundleId': 'com.fastgpt.aiup',
           }
@@ -53,7 +52,7 @@ class AppService {
   String bundleId = '';
   static const prefix = 'release';
 
-  static const String privacy = 'https://fastaiapptop.com/fastaiapptop.com/privacy/';
+  static const String privacy = 'https://fastaiapptop.com/privacy/';
   static const terms = 'https://fastaiapptop.com/terms/';
   static const email = 'fastaiup@proton.me';
 
