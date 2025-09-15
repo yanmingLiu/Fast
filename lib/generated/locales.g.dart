@@ -391,7 +391,7 @@ class Locales {
     'every_day': '/日',
     'got_to_pro': 'Proに移行',
     'text_message_cost':
-        '1テキストメッセージ：2ジェム\n1オーディオメッセージ：4ジェム\nAIキャラクターに電話：10ジェム/分\n画像生成：8ジェム/画像\nビデオ生成：10ジェム/ビデオ',
+        '1テキストメッセージ：2ジェム\n1オーディオメッセージ：4ジェム\nAIキャラクターに電話：10ジェム/分',
     'text_message_call_cost': '1テキストメッセージ：2ジェム\nAIキャラクターに電話：10ジェム/分',
     'open_chats_unlock': 'チャットを開いてホット写真、ポルノビデオ、うめき声、画像・ビデオ生成、女の子への電話をアンロック！',
     'buy_gems_open_chats': 'ジェムを購入してチャットを開く。',
@@ -609,7 +609,7 @@ class Locales {
     'every_day': '/Tag',
     'got_to_pro': 'Zu Pro wechseln',
     'text_message_cost':
-        '1 Textnachricht: 2 Edelsteine\n1 Audionachricht: 4 Edelsteine\nKI-Charaktere anrufen: 10 Edelsteine/Min\nBild generieren: 8 Edelsteine/Bild\nVideo generieren: 10 Edelsteine/Video',
+        '1 Textnachricht: 2 Edelsteine\n1 Audionachricht: 4 Edelsteine\nKI-Charaktere anrufen: 10 Edelsteine/Min',
     'text_message_call_cost':
         '1 Textnachricht: 2 Edelsteine\nKI-Charaktere anrufen: 10 Edelsteine/Min',
     'open_chats_unlock':
@@ -829,7 +829,7 @@ class Locales {
     'every_day': '/dia',
     'got_to_pro': 'Ir para Pro',
     'text_message_cost':
-        '1 mensagem de texto: 2 gemas\n1 mensagem de áudio: 4 gemas\nLigar para personagens IA: 10 gemas/min\nGerar imagem: 8 gemas/imagem\nGerar vídeo: 10 gemas/vídeo',
+        '1 mensagem de texto: 2 gemas\n1 mensagem de áudio: 4 gemas\nLigar para personagens IA: 10 gemas/min',
     'text_message_call_cost':
         '1 mensagem de texto: 2 gemas\nLigar para personagens IA: 10 gemas/min',
     'open_chats_unlock':
@@ -1046,7 +1046,7 @@ class Locales {
     'every_day': '/day',
     'got_to_pro': 'Go to Pro',
     'text_message_cost':
-        '1 text message: 2 gems\n1 audio message: 4 gems\nCall AI characters: 10 gems/min\nGenerate image: 8 gems/image\nGenerate video: 10 gems/video',
+        '1 text message: 2 gems\n1 audio message: 4 gems\nCall AI characters: 10 gems/min',
     'text_message_call_cost':
         '1 text message: 2 gems\nCall AI characters: 10 gems/min',
     'open_chats_unlock':
@@ -1268,7 +1268,7 @@ class Locales {
     'every_day': '/jour',
     'got_to_pro': 'Passer à Pro',
     'text_message_cost':
-        '1 message texte : 2 gemmes\n1 message audio : 4 gemmes\nAppeler des personnages IA : 10 gemmes/min\nGénérer une image : 8 gemmes/image\nGénérer une vidéo : 10 gemmes/vidéo',
+        '1 message texte : 2 gemmes\n1 message audio : 4 gemmes\nAppeler des personnages IA : 10 gemmes/min',
     'text_message_call_cost':
         '1 message texte : 2 gemmes\nAppeler des personnages IA : 10 gemmes/min',
     'open_chats_unlock':
@@ -1469,8 +1469,7 @@ class Locales {
     'collect': '수집',
     'every_day': '/일',
     'got_to_pro': 'Pro로 이동',
-    'text_message_cost':
-        '1 텍스트 메시지: 2 젬\n1 오디오 메시지: 4 젬\nAI 캐릭터 통화: 10 젬/분\n이미지 생성: 8 젬/이미지\n비디오 생성: 10 젬/비디오',
+    'text_message_cost': '1 텍스트 메시지: 2 젬\n1 오디오 메시지: 4 젬\nAI 캐릭터 통화: 10 젬/분',
     'text_message_call_cost': '1 텍스트 메시지: 2 젬\nAI 캐릭터 통화: 10 젬/분',
     'open_chats_unlock':
         '채팅을 열고 핫 사진, 포르노 비디오, 신음, 이미지 및 비디오 생성, 여자들에게 전화하기를 잠금 해제하세요!',
@@ -1687,7 +1686,7 @@ class Locales {
     'every_day': '/día',
     'got_to_pro': 'Ir a Pro',
     'text_message_cost':
-        '1 mensaje de texto: 2 gemas\n1 mensaje de audio: 4 gemas\nLlamar personajes IA: 10 gemas/min\nGenerar imagen: 8 gemas/imagen\nGenerar video: 10 gemas/video',
+        '1 mensaje de texto: 2 gemas\n1 mensaje de audio: 4 gemas\nLlamar personajes IA: 10 gemas/min',
     'text_message_call_cost':
         '1 mensaje de texto: 2 gemas\nLlamar personajes IA: 10 gemas/min',
     'open_chats_unlock':
@@ -1900,7 +1899,7 @@ class Locales {
     'every_day': '/يوم',
     'got_to_pro': 'الانتقال إلى Pro',
     'text_message_cost':
-        '1 رسالة نصية: 2 جوهرة\n1 رسالة صوتية: 4 جواهر\nاتصال بشخصيات الذكاء الاصطناعي: 10 جواهر/دقيقة\nتوليد صورة: 8 جواهر/صورة\nتوليد فيديو: 10 جواهر/فيديو',
+        '1 رسالة نصية: 2 جوهرة\n1 رسالة صوتية: 4 جواهر\nاتصال بشخصيات الذكاء الاصطناعي: 10 جواهر/دقيقة',
     'text_message_call_cost':
         '1 رسالة نصية: 2 جوهرة\nاتصال بشخصيات الذكاء الاصطناعي: 10 جواهر/دقيقة',
     'open_chats_unlock':
