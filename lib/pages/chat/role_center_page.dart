@@ -407,7 +407,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
               child: Row(
                 spacing: 4,
                 children: [
-                  FIcon(assetName: Assets.svg.clear),
+                  FIcon(assetName: Assets.svg.report),
                   Text(
                     LocaleKeys.report.tr,
                     style: AppTextStyle.openSans(

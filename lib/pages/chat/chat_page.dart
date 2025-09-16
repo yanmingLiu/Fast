@@ -90,15 +90,15 @@ class _ChatPageState extends State<ChatPage> {
         child: Row(
           spacing: 12,
           children: [
-            Expanded(child: _buildItem(titles[0], 0)),
-            Expanded(child: _buildItem(titles[1], 1)),
+            Expanded(child: _buildItem(Assets.images.chatted.image(width: 20), titles[0], 0)),
+            Expanded(child: _buildItem(Assets.images.liked.image(width: 20), titles[1], 1)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildItem(String title, int index) {
+  Widget _buildItem(Widget icon, String title, int index) {
     return GestureDetector(
       child: AnimatedBuilder(
         animation: _linkedController,
@@ -110,6 +110,7 @@ class _ChatPageState extends State<ChatPage> {
                 final isActive = _linkedController.index == index;
                 return buildTabItem(
                   key: _linkedController.getTabKey(index),
+                  icon: icon,
                   title: title,
                   isActive: isActive,
                   onTap: () {
@@ -126,6 +127,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget buildTabItem({
     Key? key,
+    required Widget icon,
     required String title,
     required bool isActive,
     void Function()? onTap,
@@ -138,16 +140,21 @@ class _ChatPageState extends State<ChatPage> {
       onTap: onTap,
       padding: EdgeInsets.symmetric(horizontal: 8),
       constraints: BoxConstraints(minWidth: 50),
-      child: Center(
-        child: Text(
-          title,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-            fontSize: 14,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 4,
+        children: [
+          isActive ? icon : SizedBox(width: 20),
+          Text(
+            title,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: isActive ? Colors.white : Color(0xFF727374),
+              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+              fontSize: 14,
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

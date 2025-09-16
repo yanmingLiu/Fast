@@ -104,7 +104,6 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
             ),
             const SizedBox(height: 24),
             _buildType(),
-
             const SizedBox(height: 24),
             Expanded(child: _buildTags()),
             const SizedBox(height: 16),
@@ -210,7 +209,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
     }
 
     return Container(
-      height: 64,
+      height: 48,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
