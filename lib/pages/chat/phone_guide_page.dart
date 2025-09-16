@@ -39,6 +39,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
   Future<void>? _initializeVideoPlayerFuture;
 
   var playState = PlayState.init.obs;
+  bool _hasCalledPhoneAccept = false; // 添加标志位防止重复调用
 
   @override
   void initState() {
@@ -54,6 +55,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
   void _initVideoPlay() {
     // 创建一个包含下载和初始化的完整Future
     _initializeVideoPlayerFuture = _downloadAndInitVideo();
+    _hasCalledPhoneAccept = false; // 重置标志位
   }
 
   Future<void> _downloadAndInitVideo() async {
@@ -148,7 +150,8 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
       _controller?.pause();
       playState.value = PlayState.finish;
 
-      if (AppUser().isVip.value) {
+      if (AppUser().isVip.value && !_hasCalledPhoneAccept) {
+        _hasCalledPhoneAccept = true; // 设置标志位防止重复调用
         _phoneAccept();
       }
     }
@@ -181,8 +184,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
 
   Widget _buildBody() {
     final width = MediaQuery.of(context).size.width - 32;
-    final height =
-        MediaQuery.of(context).size.height -
+    final height = MediaQuery.of(context).size.height -
         32 -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom;
@@ -239,7 +241,6 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
                     return _buldName();
                   }),
                 ),
-
                 Positioned(
                   bottom: 0,
                   right: 0,
