@@ -62,7 +62,14 @@ class LevelView extends StatelessWidget {
                   Row(
                     spacing: 4,
                     children: [
-                      FImage(url: ctr.role.avatar, width: 20, height: 20, shape: BoxShape.circle),
+                      FImage(
+                        url: ctr.role.avatar,
+                        width: 20,
+                        height: 20,
+                        shape: BoxShape.circle,
+                        cacheWidth: 80,
+                        cacheHeight: 80,
+                      ),
                       Expanded(
                         child: Text(
                           ctr.role.name ?? '',

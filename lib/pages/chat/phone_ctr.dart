@@ -21,6 +21,37 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:vibration/vibration.dart';
 
+/// A class that holds the configuration for the speech recognition
+/// example app. This is used to pass the configuration to the
+/// setup dialog and to hold the current configuration.
+class SpeechExampleConfig {
+  final SpeechListenOptions options;
+  final String localeId;
+  final bool logEvents;
+  final bool debugLogging;
+  final int pauseFor;
+  final int listenFor;
+
+  SpeechExampleConfig(this.options, this.localeId, this.pauseFor, this.listenFor, this.logEvents,
+      this.debugLogging);
+
+  SpeechExampleConfig copyWith(
+      {SpeechListenOptions? options,
+      String? localeId,
+      bool? logEvents,
+      int? pauseFor,
+      int? listenFor,
+      bool? debugLogging}) {
+    return SpeechExampleConfig(
+        options ?? this.options,
+        localeId ?? this.localeId,
+        pauseFor ?? this.pauseFor,
+        listenFor ?? this.listenFor,
+        logEvents ?? this.logEvents,
+        debugLogging ?? this.debugLogging);
+  }
+}
+
 class PhoneCtr extends GetxController {
   bool _hasVideoPlayer = false;
   bool _showVideo = false;
@@ -305,20 +336,23 @@ class PhoneCtr extends GetxController {
       }
 
       _hasSpeech = await _speech.initialize(
+        debugLogging: true,
         onStatus: (status) => log.d('onStatus: $status'),
         onError: (error) {
           log.e('onError: $error');
-          FToast.toast(error.toString());
-          // AppDialog.alert(
-          //   title: LocaleKeys.tips.tr,
-          //   message: LocaleKeys.speech_recognition_not_supported.tr,
-          //   onConfirm: () {
-          //     Get.back();
-          //   },
-          //   onCancel: () {
-          //     Get.back();
-          //   },
-          // );
+          if (error.errorMsg.contains('error_language_not_supported') ||
+              error.errorMsg.contains('error_language_unavailable')) {
+            Get.back();
+            AppDialog.alert(
+              title: LocaleKeys.tips.tr,
+              message: LocaleKeys.speech_recognition_not_supported.tr,
+              onConfirm: () {
+                AppDialog.dismiss();
+              },
+            );
+          } else {
+            FToast.toast(error.toString());
+          }
         },
       );
     } catch (e) {
@@ -361,6 +395,12 @@ class PhoneCtr extends GetxController {
       listenFor: const Duration(seconds: 30),
       pauseFor: const Duration(seconds: 3),
       onResult: _onSpeechResult,
+      localeId: 'en-US',
+      listenOptions: SpeechListenOptions(
+        cancelOnError: true,
+        partialResults: true,
+        onDevice: true,
+      ),
     );
   }
 
