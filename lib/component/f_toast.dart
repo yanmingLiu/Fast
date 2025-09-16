@@ -12,7 +12,7 @@ class FToast {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
-            color: Color(0x33FFFFFF),
+            color: Color(0xD9404040),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(msg, style: TextStyle(color: Colors.white, fontSize: 14)),
