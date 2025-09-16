@@ -59,11 +59,19 @@ class RateDialog extends StatelessWidget {
                     },
                     color: Color(0xFFFFD170),
                     hasShadow: true,
+                    boxShadows: [
+                      BoxShadow(
+                        color: Color(0x4DFFD170),
+                        offset: Offset(0, 4),
+                        blurRadius: 4,
+                        spreadRadius: 0,
+                      ),
+                    ],
                     child: Center(
                       child: Text(
                         LocaleKeys.help_app.tr,
                         style: AppTextStyle.openSans(
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF531903),
                         ),

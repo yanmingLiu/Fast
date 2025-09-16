@@ -35,6 +35,7 @@ class FButton extends StatelessWidget {
     this.margin,
     this.color = _defaultColor,
     this.hasShadow = false,
+    this.boxShadows,
   });
 
   final Widget? child;
@@ -50,12 +51,19 @@ class FButton extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final Color color;
   final bool hasShadow;
+  final List<BoxShadow>? boxShadows;
 
   @override
   Widget build(BuildContext context) {
     // 圆角和阴影静态缓存，减少对象分配
     final BorderRadius br = borderRadius ?? _defaultBorderRadius;
-    final List<BoxShadow>? boxShadow = hasShadow ? _defaultBoxShadow : null;
+    final List<BoxShadow>? boxShadow;
+
+    if (boxShadows != null) {
+      boxShadow = boxShadows;
+    } else {
+      boxShadow = hasShadow ? _defaultBoxShadow : null;
+    }
 
     // 优化装饰对象缓存
     final BoxDecoration decoration = BoxDecoration(

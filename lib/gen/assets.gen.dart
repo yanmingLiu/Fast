@@ -25,6 +25,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/banan.png
   AssetGenImage get banan => const AssetGenImage('assets/images/banan.png');
 
+  /// File path: assets/images/chatted.png
+  AssetGenImage get chatted => const AssetGenImage('assets/images/chatted.png');
+
   /// File path: assets/images/edit.png
   AssetGenImage get edit => const AssetGenImage('assets/images/edit.png');
 
@@ -64,6 +67,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/level_bg.png
   AssetGenImage get levelBg =>
       const AssetGenImage('assets/images/level_bg.png');
+
+  /// File path: assets/images/liked.png
+  AssetGenImage get liked => const AssetGenImage('assets/images/liked.png');
 
   /// File path: assets/images/loading.png
   AssetGenImage get loading => const AssetGenImage('assets/images/loading.png');
@@ -177,10 +183,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/sure.png
   AssetGenImage get sure => const AssetGenImage('assets/images/sure.png');
 
-  /// File path: assets/images/video_bg.png
-  AssetGenImage get videoBg =>
-      const AssetGenImage('assets/images/video_bg.png');
-
   /// File path: assets/images/video_call.png
   AssetGenImage get videoCall =>
       const AssetGenImage('assets/images/video_call.png');
@@ -203,6 +205,7 @@ class $AssetsImagesGen {
         add,
         audioPause,
         banan,
+        chatted,
         edit,
         editm,
         female,
@@ -215,6 +218,7 @@ class $AssetsImagesGen {
         imagePlace,
         launchLogo,
         levelBg,
+        liked,
         loading,
         lock,
         male,
@@ -247,7 +251,6 @@ class $AssetsImagesGen {
         screen,
         selected,
         sure,
-        videoBg,
         videoCall,
         vipPageBg1,
         vipPageBg2,
@@ -258,11 +261,32 @@ class $AssetsImagesGen {
 class $AssetsLocalesGen {
   const $AssetsLocalesGen();
 
+  /// File path: assets/locales/ar.json
+  String get ar => 'assets/locales/ar.json';
+
+  /// File path: assets/locales/de.json
+  String get de => 'assets/locales/de.json';
+
   /// File path: assets/locales/en.json
   String get en => 'assets/locales/en.json';
 
+  /// File path: assets/locales/es.json
+  String get es => 'assets/locales/es.json';
+
+  /// File path: assets/locales/fr.json
+  String get fr => 'assets/locales/fr.json';
+
+  /// File path: assets/locales/ja.json
+  String get ja => 'assets/locales/ja.json';
+
+  /// File path: assets/locales/ko.json
+  String get ko => 'assets/locales/ko.json';
+
+  /// File path: assets/locales/pt.json
+  String get pt => 'assets/locales/pt.json';
+
   /// List of all assets
-  List<String> get values => [en];
+  List<String> get values => [ar, de, en, es, fr, ja, ko, pt];
 }
 
 class $AssetsLottieGen {

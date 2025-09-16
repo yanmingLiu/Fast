@@ -84,7 +84,7 @@ class _MsgEditPageState extends State<MsgEditPage> {
                     Get.back();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     child: const Icon(Icons.close, color: Colors.white),
                   ),
                 ),
@@ -106,7 +106,7 @@ class _MsgEditPageState extends State<MsgEditPage> {
                 InkWell(
                   onTap: _onSure,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     child: Assets.images.selected.image(width: 24, height: 24),
                   ),
                 ),
@@ -114,7 +114,8 @@ class _MsgEditPageState extends State<MsgEditPage> {
             ),
             if (widget.subtitle != null)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 16).copyWith(bottom: 6),
                 child: widget.subtitle!,
               ),
             Expanded(

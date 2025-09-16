@@ -58,9 +58,8 @@ class _GemsPageState extends State<GemsPage> {
   }
 
   void _showHelp() {
-    final str = AppCache().isBig
-        ? LocaleKeys.text_message_cost.tr
-        : LocaleKeys.text_message_call_cost.tr;
+    final str =
+        AppCache().isBig ? LocaleKeys.text_message_cost.tr : LocaleKeys.text_message_call_cost.tr;
     List<String> strList = str.split('\n');
 
     AppDialog.show(
@@ -292,6 +291,12 @@ class _GemsPageState extends State<GemsPage> {
                   ),
                   child: Row(
                     children: [
+                      isSelected
+                          ? Assets.images.selected.image(width: 20)
+                          : SizedBox(
+                              width: 20,
+                            ),
+                      SizedBox(width: 4),
                       Assets.images.gemls.image(width: 48),
                       Text(
                         numericPart,
@@ -327,6 +332,7 @@ class _GemsPageState extends State<GemsPage> {
                 ),
                 if (bestChoice)
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Container(
                         height: 20,
@@ -341,7 +347,11 @@ class _GemsPageState extends State<GemsPage> {
                         child: Center(
                           child: Text(
                             LocaleKeys.best_choice.tr,
-                            style: AppTextStyle.openSans(fontSize: 8, fontWeight: FontWeight.w400),
+                            style: AppTextStyle.openSans(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),

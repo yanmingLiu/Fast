@@ -7,6 +7,7 @@ import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
 import 'package:fast_ai/values/app_values.dart';
@@ -101,21 +102,22 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       child: Row(
         spacing: 12,
         children: [
-          FButton(
-            onTap: ctr.onTapFilter,
-            width: 44,
-            height: 44,
-            borderRadius: BorderRadius.all(Radius.circular(22)),
-            child: Center(
-              child: Obx(
-                () => FIcon(
-                  assetName: Assets.svg.filter,
-                  width: 24,
-                  color: ctr.selectTags.isEmpty ? Colors.white : AppColors.primary,
+          if (AppCache().isBig)
+            FButton(
+              onTap: ctr.onTapFilter,
+              width: 44,
+              height: 44,
+              borderRadius: BorderRadius.all(Radius.circular(22)),
+              child: Center(
+                child: Obx(
+                  () => FIcon(
+                    assetName: Assets.svg.filter,
+                    width: 24,
+                    color: ctr.selectTags.isEmpty ? Colors.white : AppColors.primary,
+                  ),
                 ),
               ),
             ),
-          ),
           Expanded(
             child: Container(
               height: 44,
