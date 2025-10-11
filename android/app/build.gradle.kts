@@ -75,10 +75,6 @@ flutter {
 
 
 dependencies {
-    // firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
-    implementation("com.google.firebase:firebase-analytics")
-
     // facebook
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
     //adjust  
