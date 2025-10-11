@@ -44,7 +44,11 @@ class AppService {
             'isDebugMode': false,
             'bundleId': 'com.fastgpt.aiup',
           }
-        : {'baseUrl': '', 'isDebugMode': false, 'bundleId': ''},
+        : {
+            'baseUrl': 'https://server.aifastapp.com/release',
+            'isDebugMode': false,
+            'bundleId': 'com.qqchat.fast',
+          },
   };
 
   // 平台
