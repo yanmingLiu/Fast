@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:android_id/android_id.dart';
 import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:get/get.dart';
@@ -60,33 +59,33 @@ class SwitchService {
     }
   }
 
-  // TODO: Android 点击事件请求
   static Future<void> _requestAnd() async {
     try {
       final deviceId = await AppCache().phoneId(isOrigin: true);
       final version = await AppService().version();
-      final adid = await const AndroidId().getId();
+      final gaid = await AppService().getGoogleAdId();
+      final androidId = await AppService().getAndroidId();
 
       final Map<String, dynamic> body = {
-        'culpa': 'com.blushai.meet',
-        'clerk': 'lillian',
-        'opinion': version,
-        'census': deviceId,
-        'hydrous': DateTime.now().millisecondsSinceEpoch,
-        'figurate': adid,
-        'blank': deviceId,
+        'adulate': 'com.qqchat.fast',
+        'nobodyd': 'bennett',
+        'smooth': version,
+        'aventine': DateTime.now().millisecondsSinceEpoch,
+        'thruway': deviceId,
+        'strode': gaid,
+        'thematic': androidId,
       };
 
       final client = GetConnect(timeout: const Duration(seconds: 60));
       log.d('Sending post request: $body');
 
       final response = await client.post(
-        'https://papyri.bushyai.com/sardonic/specific/sumac',
+        'https://shotgun.fastaiapptop.com/munition/nudge/dispute',
         body,
       );
       log.i('Response: ${response.body}');
 
-      if (response.isOk && response.body == 'rave') {
+      if (response.isOk && response.body == 'mute') {
         AppCache().isBig = true;
       }
     } catch (e) {
