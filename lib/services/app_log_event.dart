@@ -164,8 +164,9 @@ class AppLogEvent {
     });
   }
 
-  // TODO:-
-  String get androidURL => AppService().isDebugMode ? "" : "";
+  String get androidURL => AppService().isDebugMode
+      ? "https://test-ghoulish.fastaiapptop.com/endemic/imagen"
+      : "https://ghoulish.fastaiapptop.com/beefy/lure/muffle";
 
   String get iosURL => AppService().isDebugMode
       ? 'https://test-aint.fastaiapptop.com/iverson/typic/choose'
@@ -199,7 +200,21 @@ class AppLogEvent {
       if (Platform.isAndroid) {
         final gaid = await AppService().getGoogleAdId();
         final androidId = await AppService().getAndroidId();
-        return {"galloway": androidId, "beijing": gaid, "dahl": deviceId};
+        return {
+          "dust": Get.locale.toString(),
+          "implicit": deviceModel,
+          "koinonia": "mcc",
+          "thruway": deviceId,
+          "aventine": DateTime.now().millisecondsSinceEpoch,
+          "smooth": version,
+          "strive": uuid(),
+          "thematic": androidId,
+          "clare": osVersion,
+          "nobodyd": "bennett",
+          "adulate": "com.qqchat.fast",
+          "strode": gaid,
+          "freon": manufacturer,
+        };
       }
 
       return {
@@ -236,7 +251,17 @@ class AppLogEvent {
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36";
 
       if (Platform.isAndroid) {
-        // TODO:-
+        data["drunken"] = {
+          "iowa": "build/$build",
+          "bespeak": agent,
+          "madden": isLimitAdTrackingEnabled ? 'funerary' : 'holster',
+          "sly": DateTime.now().millisecondsSinceEpoch,
+          "enclave": DateTime.now().millisecondsSinceEpoch,
+          "morris": DateTime.now().millisecondsSinceEpoch,
+          "hospital": DateTime.now().millisecondsSinceEpoch,
+          "academic": DateTime.now().millisecondsSinceEpoch,
+          "ku": DateTime.now().millisecondsSinceEpoch,
+        };
       } else {
         data["geode"] = "gulf";
         data["rubbish"] = "build/$build";
@@ -273,8 +298,7 @@ class AppLogEvent {
       }
 
       if (Platform.isAndroid) {
-        // TODO:-
-        data['mayhem'] = {};
+        data['dim'] = {};
       } else {
         data['ravenous'] = {};
       }
@@ -299,12 +323,8 @@ class AppLogEvent {
         return;
       }
       if (Platform.isAndroid) {
-        // TODO:-
-        // data['swarthy'] = name;
-        // // 处理自定义参数
-        // params.forEach((key, value) {
-        //   data['$key@tung'] = value;
-        // });
+        data['coon'] = name;
+        data[name] = params;
       } else if (Platform.isIOS) {
         data['geode'] = name;
         // 处理自定义参数
@@ -422,7 +442,7 @@ class AppLogEvent {
 extension Clannish on Map<String, dynamic> {
   dynamic get logId {
     if (Platform.isAndroid) {
-      return ''; //TODO:
+      return this["strive"];
     } else {
       return this["chicory"]["walden"];
     }

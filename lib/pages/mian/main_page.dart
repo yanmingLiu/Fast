@@ -3,7 +3,6 @@ import 'package:fast_ai/pages/chat/chat_page.dart';
 import 'package:fast_ai/pages/home/home_page.dart';
 import 'package:fast_ai/pages/me/me_page.dart';
 import 'package:fast_ai/pages/mian/main_tab_bar.dart';
-import 'package:fast_ai/services/app_cache.dart';
 import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
@@ -47,6 +46,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.resumed:
         log.d('App is in resumed state 在前台运行');
+        AppLogEvent().logSessionEvent();
         break;
       default:
         break;
@@ -75,13 +75,6 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   Future<void> setup() async {
-    final isFirstLaunch = AppCache().isRestart == false;
-    if (isFirstLaunch) {
-      AppLogEvent().logInstallEvent();
-    }
-
-    AppLogEvent().logSessionEvent();
-
     try {
       _initializeAsyncServices();
 

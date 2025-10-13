@@ -1,6 +1,8 @@
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
 import 'package:fast_ai/values/app_colors.dart';
@@ -36,6 +38,13 @@ void main() async {
     AppService().init(env: kReleaseMode ? Environment.prod : Environment.dev);
 
     await AppService().start();
+
+    final isFirstLaunch = AppCache().isRestart == false;
+    if (isFirstLaunch) {
+      AppLogEvent().logInstallEvent();
+    } else {
+      AppLogEvent().logSessionEvent();
+    }
   } catch (e, s) {
     log.e('===> init error: $e\n$s');
   }

@@ -8,6 +8,7 @@ import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fast_ai/services/api_service.dart';
 import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/audio_manager.dart';
 import 'package:fast_ai/services/network_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -81,12 +82,14 @@ class AppService {
     // 初始化 GetStorage
     await GetStorage.init();
 
+    // 网络监听
     await Get.putAsync<NetworkService>(() => NetworkService().init());
 
     // 初始化全局音频管理器
     Get.put(AudioManager.instance, permanent: true);
     log.d('[AudioManager]: 全局音频管理器初始化完成 ✅');
 
+    // 三方 SDK 初始化
     await initAdjust();
     await initFirebase();
   }
