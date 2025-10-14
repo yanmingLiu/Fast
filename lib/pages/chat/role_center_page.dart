@@ -310,7 +310,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
 
   Widget _buildImages() {
     return Obx(() {
-      final images = ctr.images;
+      final images = ctr.images.value;
       if (!AppCache().isBig || images.isEmpty) {
         return const SizedBox();
       }
