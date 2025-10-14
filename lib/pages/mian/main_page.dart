@@ -78,7 +78,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     try {
       _initializeAsyncServices();
 
-      AppUser().getUserInfo();
+      await AppUser().getUserInfo();
       await SwitchService.request();
     } catch (e) {
       // 捕获超时异常或其他异常

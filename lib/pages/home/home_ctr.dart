@@ -14,7 +14,6 @@ import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/app_service.dart';
 import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/services/network_service.dart';
-import 'package:fast_ai/services/switch_service.dart';
 import 'package:fast_ai/values/app_values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -87,14 +86,6 @@ class HomeCtr extends GetxController {
 
   Future<void> setup() async {
     try {
-      await Future.wait([SwitchService.request(), AppUser().getUserInfo()]).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          return [];
-        },
-      );
-      await AppService().getIdfa();
-
       categroyList.addAll([
         HomeListCategroy.all,
         HomeListCategroy.realistic,
