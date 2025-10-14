@@ -61,11 +61,11 @@ class TypingRichText extends StatelessWidget {
           text,
           cursor: '',
           textStyle: nomarlStyel,
-          speed: const Duration(milliseconds: 30), // 打字速度（更快）
+          speed: const Duration(milliseconds: 10), // 打字速度（更快）
         ),
       ],
       totalRepeatCount: 1, // 打字动画只播放一次
-      pause: const Duration(milliseconds: 20), // 暂停时间（更短）
+      pause: const Duration(milliseconds: 10), // 暂停时间（更短）
       displayFullTextOnTap: true, // 点击文本显示完整内容
       onNext: (index, isLast) {
         // 在动画播放的每个字符后调用此方法
