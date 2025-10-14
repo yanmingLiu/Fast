@@ -351,6 +351,7 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                     ctr.msgCtr.onTapUnlockImage(image);
                   }
                 },
+                imageHeight: (MediaQuery.of(context).size.width - 32 - 12) / 4,
               );
             },
             itemCount: imageCount,

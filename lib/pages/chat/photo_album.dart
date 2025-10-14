@@ -118,14 +118,14 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
 class PhotoAlbumItem extends StatelessWidget {
   const PhotoAlbumItem({
     super.key,
-    this.imageHeight,
+    required this.imageHeight,
     required this.image,
     required this.unlocked,
     this.onTap,
     this.avatar,
   });
 
-  final double? imageHeight;
+  final double imageHeight;
   final RoleImage image;
   final bool unlocked;
   final void Function()? onTap;
@@ -145,10 +145,11 @@ class PhotoAlbumItem extends StatelessWidget {
             children: [
               FImage(
                 url: !unlocked ? avatar : image.imageUrl,
-                // width: imageHeight,
-                // height: imageHeight,
-                cacheWidth: 640,
-                cacheHeight: 640,
+                width: imageHeight,
+                height: imageHeight,
+                cacheWidth: 1080,
+                cacheHeight: 1920,
+                fit: BoxFit.fill,
               ),
               if (!unlocked)
                 BackdropFilter(
