@@ -67,6 +67,7 @@ class TypingRichText extends StatelessWidget {
       totalRepeatCount: 1, // 打字动画只播放一次
       pause: const Duration(milliseconds: 10), // 暂停时间（更短）
       displayFullTextOnTap: true, // 点击文本显示完整内容
+      isRepeatingAnimation: false,
       onNext: (index, isLast) {
         // 在动画播放的每个字符后调用此方法
         if (isLast) {
@@ -74,6 +75,11 @@ class TypingRichText extends StatelessWidget {
           if (onAnimationComplete != null) {
             onAnimationComplete!();
           }
+        }
+      },
+      onTap: () {
+        if (onAnimationComplete != null) {
+          onAnimationComplete!();
         }
       },
     );
