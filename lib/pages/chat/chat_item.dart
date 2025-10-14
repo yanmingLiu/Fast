@@ -36,8 +36,6 @@ class ChatItem extends StatelessWidget {
             width: 52,
             height: 52,
             shape: BoxShape.circle,
-            cacheWidth: 180,
-            cacheHeight: 180,
           ),
           Expanded(
             child: Column(
