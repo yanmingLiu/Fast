@@ -30,6 +30,7 @@ class MainActivity : FlutterActivity() {
                             FacebookSdk.setApplicationId(appId)
                             FacebookSdk.setClientToken(clientToken)
                             FacebookSdk.sdkInitialize(applicationContext)
+                            FacebookSdk.setAutoInitEnabled(true)
                             FacebookSdk.fullyInitialize()
 
                             // 激活应用事件记录
@@ -43,6 +44,9 @@ class MainActivity : FlutterActivity() {
                             FacebookSdk.addLoggingBehavior(LoggingBehavior.REQUESTS)
                             FacebookSdk.addLoggingBehavior(LoggingBehavior.DEVELOPER_ERRORS)
                             FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS)
+
+                            val logger = AppEventsLogger.newLogger(this)
+                            logger.logEvent("sdk_android_init")
 
                             result.success("Facebook SDK initialized successfully")
                         } else {
