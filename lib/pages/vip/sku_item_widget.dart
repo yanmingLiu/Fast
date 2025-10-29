@@ -142,10 +142,11 @@ class SkuItemWidget extends StatelessWidget {
                     child: Text(
                       originalPrice,
                       textAlign: TextAlign.center,
-                      style: AppTextStyle.openSans(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
+                        decoration: TextDecoration.lineThrough,
                       ),
                     ),
                   ),
