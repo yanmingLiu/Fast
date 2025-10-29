@@ -189,3 +189,17 @@
 
 # Final catch-all rule to prevent common obfuscation issues
 -keepnames class * { *; }
+
+# Facebook SDK
+-keep class com.facebook.** { *; }
+-keep class com.facebook.appevents.** { *; }
+-keep class com.facebook.internal.** { *; }
+
+-dontwarn com.facebook.**
+-dontwarn com.facebook.appevents.**
+-dontwarn com.facebook.internal.**
+
+-keepclassmembers class com.facebook.** {
+    public <init>(...);
+    public void *(...);
+}
