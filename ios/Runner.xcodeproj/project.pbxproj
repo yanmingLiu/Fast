@@ -12,6 +12,10 @@
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		415814BFCB613502BBADB865 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 329628A93BE2F0E5341D14AA /* Pods_RunnerTests.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		75058E052ED03D400000CB8B /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75058E042ED03D3F0000CB8B /* AppTrackingTransparency.framework */; };
+		75058E072ED03D450000CB8B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75058E062ED03D450000CB8B /* AdSupport.framework */; };
+		75058E092ED03D4E0000CB8B /* AdServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75058E082ED03D4E0000CB8B /* AdServices.framework */; };
+		75058E0B2ED03D690000CB8B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75058E0A2ED03D690000CB8B /* StoreKit.framework */; };
 		758B1BC52E5DA6C9005989F6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 758B1BC42E5DA6C9005989F6 /* GoogleService-Info.plist */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -56,6 +60,10 @@
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		75058E042ED03D3F0000CB8B /* AppTrackingTransparency.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppTrackingTransparency.framework; path = System/Library/Frameworks/AppTrackingTransparency.framework; sourceTree = SDKROOT; };
+		75058E062ED03D450000CB8B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		75058E082ED03D4E0000CB8B /* AdServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdServices.framework; path = System/Library/Frameworks/AdServices.framework; sourceTree = SDKROOT; };
+		75058E0A2ED03D690000CB8B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		758B1BC42E5DA6C9005989F6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
@@ -74,6 +82,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75058E0B2ED03D690000CB8B /* StoreKit.framework in Frameworks */,
+				75058E092ED03D4E0000CB8B /* AdServices.framework in Frameworks */,
+				75058E072ED03D450000CB8B /* AdSupport.framework in Frameworks */,
+				75058E052ED03D400000CB8B /* AppTrackingTransparency.framework in Frameworks */,
 				E81C6F8322D7EEAF83B25880 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -113,6 +125,10 @@
 		63DCFC94BB321DB6F833F4A2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				75058E0A2ED03D690000CB8B /* StoreKit.framework */,
+				75058E082ED03D4E0000CB8B /* AdServices.framework */,
+				75058E062ED03D450000CB8B /* AdSupport.framework */,
+				75058E042ED03D3F0000CB8B /* AppTrackingTransparency.framework */,
 				0B4BA4E5EEBB33EBDE123BA3 /* Pods_Runner.framework */,
 				329628A93BE2F0E5341D14AA /* Pods_RunnerTests.framework */,
 			);
@@ -476,7 +492,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -615,7 +631,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -666,7 +682,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;

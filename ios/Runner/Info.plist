@@ -50,18 +50,18 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>NSLocalNetworkUsageDescription</key>
-    <string>The app requires your consent to access the local network</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Microphone access is used for voice call features, enabling real-time communication with AI.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Allow access to the photo album, enabling users to upload pictures to change the chat background.</string>
-    <key>NSSpeechRecognitionUsageDescription</key>
-    <string>We need access to speech recognition for voice input during calls.</string>
-    <key>NSUserNotificationsUsageDescription</key>
-    <string>Used to display chat message notifications and live broadcast start reminders</string>
-    <key>NSUserTrackingUsageDescription</key>
-    <string>We use this permission to provide you with more relevant match recommendations and personalized content. For example, suggesting potentially compatible chat partners based on your interests.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app uses the local network to discover and connect to nearby devices.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app uses the microphone for voice calls and AI interaction.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to let you upload chat backgrounds.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app uses speech recognition for voice input during calls.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>This app uses notifications to alert you of new messages and live broadcasts.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to provide personalized match recommendations and content based on your interests.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
@@ -265,5 +265,26 @@
 			<string>3qcr597p9d.skadnetwork</string>
 		</dict>
 	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneDelegateClassName</key>
+					<string>FlutterSceneDelegate</string>
+					<key>UISceneConfigurationName</key>
+					<string>flutter</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 </dict>
 </plist>
