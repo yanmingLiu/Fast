@@ -8,7 +8,6 @@ import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fast_ai/services/api_service.dart';
 import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
 import 'package:fast_ai/services/audio_manager.dart';
 import 'package:fast_ai/services/network_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -152,8 +151,10 @@ class AppService {
       await remoteConfig.fetchAndActivate();
 
       // 获取配置值
-      maxFreeChatCount = _getConfigValue('free_chat_count', remoteConfig.getInt, 50);
-      showClothingCount = _getConfigValue('show_clothing_count', remoteConfig.getInt, 5);
+      maxFreeChatCount =
+          _getConfigValue('free_chat_count', remoteConfig.getInt, 50);
+      showClothingCount =
+          _getConfigValue('show_clothing_count', remoteConfig.getInt, 5);
     } catch (e) {
       log.e("Remote Config 错误: $e");
     }
@@ -332,7 +333,8 @@ class AppService {
 
   Future<bool> isLimitAdTrackingEnabled() async {
     if (Platform.isIOS) {
-      final attStatus = await AppTrackingTransparency.trackingAuthorizationStatus;
+      final attStatus =
+          await AppTrackingTransparency.trackingAuthorizationStatus;
       return attStatus == TrackingStatus.authorized;
     } else if (Platform.isAndroid) {
       final isLimitAdTracking = await Adjust.isEnabled();
