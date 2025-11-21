@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 
 class RoleCenterCtr extends GetxController {
   var images = <RoleImage>[].obs;
+  var changeCount = 0.obs;
   late Role role;
 
   var isLoading = false.obs;
@@ -32,6 +33,7 @@ class RoleCenterCtr extends GetxController {
 
     ever(msgCtr.roleImagesChaned, (_) {
       images.value = msgCtr.role.images ?? [];
+      changeCount.value++;
     });
   }
 

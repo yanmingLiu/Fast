@@ -90,7 +90,11 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
         ),
         body: Stack(
           children: [
-            Positioned(top: 0, left: 0, right: 0, child: Assets.images.pageBgRole.image()),
+            Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Assets.images.pageBgRole.image()),
             Positioned(
               top: _roleAvatarBgTop,
               right: 0,
@@ -161,7 +165,8 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                   ),
                   if (ctr.role.age != null)
                     Text(
-                      LocaleKeys.age_years_olds.trParams({'age': ctr.role.age.toString()}),
+                      LocaleKeys.age_years_olds
+                          .trParams({'age': ctr.role.age.toString()}),
                       style: AppTextStyle.openSans(
                         fontSize: 8,
                         fontWeight: FontWeight.w400,
@@ -186,7 +191,9 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                               FIcon(
                                 assetName: Assets.svg.like,
                                 width: 20,
-                                color: isCollect ? Color(0xFFFF4ACF) : Colors.white,
+                                color: isCollect
+                                    ? Color(0xFFFF4ACF)
+                                    : Colors.white,
                               ),
                               Text(
                                 '${ctr.role.likes ?? 0}',
@@ -195,7 +202,9 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                                 style: AppTextStyle.openSans(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
-                                  color: isCollect ? Color(0xFFFF4ACF) : Colors.white,
+                                  color: isCollect
+                                      ? Color(0xFFFF4ACF)
+                                      : Colors.white,
                                 ),
                               ),
                             ],
@@ -209,7 +218,10 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
                         child: Row(
                           spacing: 2,
                           children: [
-                            FIcon(assetName: Assets.svg.chat, width: 20, color: Colors.white),
+                            FIcon(
+                                assetName: Assets.svg.chat,
+                                width: 20,
+                                color: Colors.white),
                             Text(
                               ctr.role.sessionCount ?? '0',
                               maxLines: 1,
@@ -260,7 +272,8 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: const BoxDecoration(
                   color: Color(0x1AFFFFFF),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -310,7 +323,8 @@ class _RoleCenterPageState extends State<RoleCenterPage> {
 
   Widget _buildImages() {
     return Obx(() {
-      final images = ctr.images.value;
+      ctr.changeCount.value;
+      final images = ctr.images;
       if (!AppCache().isBig || images.isEmpty) {
         return const SizedBox();
       }
