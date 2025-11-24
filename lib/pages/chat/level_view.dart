@@ -3,7 +3,7 @@ import 'package:fast_ai/component/f_progress.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -74,7 +74,7 @@ class LevelView extends StatelessWidget {
                         child: Text(
                           ctr.role.name ?? '',
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyle.openSans(
+                          style: ThemeStyle.openSans(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -83,13 +83,17 @@ class LevelView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  AnimationProgress(progress: progress, height: 4, borderRadius: 2, width: 128),
+                  AnimationProgress(
+                      progress: progress,
+                      height: 4,
+                      borderRadius: 2,
+                      width: 128),
                   Row(
                     spacing: 4,
                     children: [
                       Text(
                         'Lv $level',
-                        style: AppTextStyle.openSans(
+                        style: ThemeStyle.openSans(
                           fontSize: 10,
                           fontWeight: FontWeight.w400,
                           color: const Color(0xFFE4E5FF),
@@ -97,7 +101,7 @@ class LevelView extends StatelessWidget {
                       ),
                       Text(
                         '$value%',
-                        style: AppTextStyle.openSans(
+                        style: ThemeStyle.openSans(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
@@ -107,7 +111,7 @@ class LevelView extends StatelessWidget {
                       Assets.images.gems.image(width: 16),
                       Text(
                         rewards,
-                        style: AppTextStyle.openSans(
+                        style: ThemeStyle.openSans(
                           fontSize: 9,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,

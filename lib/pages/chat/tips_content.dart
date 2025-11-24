@@ -1,5 +1,5 @@
 import 'package:fast_ai/data/msg_data.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 
 /// Tips样式相关的静态常量，遵循项目性能优化规范
@@ -14,7 +14,7 @@ class _TipsStyle {
   static const Color textColor = Colors.white;
 
   // 缓存样式对象，避免每次build时重新创建
-  static final TextStyle textStyle = AppTextStyle.openSans(
+  static final TextStyle textStyle = ThemeStyle.openSans(
     color: textColor,
     fontSize: fontSize,
     fontWeight: fontWeight,

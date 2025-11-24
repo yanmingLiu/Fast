@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/tools/ext.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 
 class ChatItem extends StatelessWidget {
@@ -49,7 +49,7 @@ class ChatItem extends StatelessWidget {
                         name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyle.openSans(
+                        style: ThemeStyle.openSans(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -57,10 +57,11 @@ class ChatItem extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      formatSessionTime(updateTime ?? DateTime.now().millisecondsSinceEpoch),
+                      formatSessionTime(
+                          updateTime ?? DateTime.now().millisecondsSinceEpoch),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.openSans(
+                      style: ThemeStyle.openSans(
                         color: Color(0xFF797C7B),
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -72,7 +73,7 @@ class ChatItem extends StatelessWidget {
                   lastMsg ?? '-',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.openSans(
+                  style: ThemeStyle.openSans(
                     color: Color(0xFF797C7B),
                     fontSize: 12,
                     fontWeight: FontWeight.w400,

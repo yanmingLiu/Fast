@@ -1,19 +1,19 @@
 import 'dart:math' as math;
 
-import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_button.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_loading.dart';
-import 'package:fast_ai/data/sku_data.dart';
+import 'package:fast_ai/data/p_d_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/vip/privacy_view.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_service.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/tools/iap_tool.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,21 +25,21 @@ class GemsPage extends StatefulWidget {
 }
 
 class _GemsPageState extends State<GemsPage> {
-  SkuData? _chooseProduct;
+  PDData? _chooseProduct;
 
-  late ConsumeFrom from;
+  late GemsFrom from;
 
-  List<SkuData> list = [];
+  List<PDData> list = [];
 
   @override
   void initState() {
     super.initState();
 
-    AppService().getIdfa();
+    FService().getIdfa();
 
     _loadData();
 
-    if (Get.arguments != null && Get.arguments is ConsumeFrom) {
+    if (Get.arguments != null && Get.arguments is GemsFrom) {
       from = Get.arguments;
     }
 
@@ -58,11 +58,12 @@ class _GemsPageState extends State<GemsPage> {
   }
 
   void _showHelp() {
-    final str =
-        AppCache().isBig ? LocaleKeys.text_message_cost.tr : LocaleKeys.text_message_call_cost.tr;
+    final str = FCache().isBig
+        ? LocaleKeys.text_message_cost.tr
+        : LocaleKeys.text_message_call_cost.tr;
     List<String> strList = str.split('\n');
 
-    AppDialog.show(
+    FDialog.show(
       clickMaskDismiss: false,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -120,7 +121,8 @@ class _GemsPageState extends State<GemsPage> {
               width: 44,
               height: 44,
               onTap: () => Get.back(),
-              child: Center(child: FIcon(assetName: Assets.svg.close, width: 24)),
+              child:
+                  Center(child: FIcon(assetName: Assets.svg.close, width: 24)),
             ),
           ],
         ),
@@ -129,7 +131,8 @@ class _GemsPageState extends State<GemsPage> {
             width: 44,
             height: 44,
             onTap: _showHelp,
-            child: Center(child: FIcon(assetName: Assets.svg.questing, width: 24)),
+            child:
+                Center(child: FIcon(assetName: Assets.svg.questing, width: 24)),
           ),
           SizedBox(width: 16),
         ],
@@ -151,12 +154,15 @@ class _GemsPageState extends State<GemsPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(height: kToolbarHeight + MediaQuery.paddingOf(context).top + 16),
+                        Container(
+                            height: kToolbarHeight +
+                                MediaQuery.paddingOf(context).top +
+                                16),
                         Text(
-                          AppCache().isBig
+                          FCache().isBig
                               ? LocaleKeys.open_chats_unlock.tr
                               : LocaleKeys.buy_gems_open_chats.tr,
-                          style: AppTextStyle.openSans(
+                          style: ThemeStyle.openSans(
                             color: Colors.white,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -189,10 +195,11 @@ class _GemsPageState extends State<GemsPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 40),
                           child: Text(
                             LocaleKeys.one_time_purchase_note.trParams({
-                              'price': _chooseProduct?.productDetails?.price ?? '',
+                              'price':
+                                  _chooseProduct?.productDetails?.price ?? '',
                             }),
                             textAlign: TextAlign.center,
-                            style: AppTextStyle.openSans(
+                            style: ThemeStyle.openSans(
                               color: Color(0xFF727374),
                               fontSize: 10,
                               fontWeight: FontWeight.w400,
@@ -207,8 +214,10 @@ class _GemsPageState extends State<GemsPage> {
                     margin: EdgeInsets.symmetric(horizontal: 65),
                     child: Center(
                       child: Text(
-                        AppCache().isBig ? LocaleKeys.btn_continue.tr : LocaleKeys.buy.tr,
-                        style: AppTextStyle.openSans(
+                        FCache().isBig
+                            ? LocaleKeys.btn_continue.tr
+                            : LocaleKeys.buy.tr,
+                        style: ThemeStyle.openSans(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -280,12 +289,14 @@ class _GemsPageState extends State<GemsPage> {
             child: Stack(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     color: Color(0x333F8DFD),
                     border: Border.all(
-                      color: isSelected ? Color(0xFF3F8DFD) : Colors.transparent,
+                      color:
+                          isSelected ? Color(0xFF3F8DFD) : Colors.transparent,
                       width: 1,
                     ),
                   ),
@@ -300,7 +311,7 @@ class _GemsPageState extends State<GemsPage> {
                       Assets.images.gemls.image(width: 48),
                       Text(
                         numericPart,
-                        style: AppTextStyle.openSans(
+                        style: ThemeStyle.openSans(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -311,7 +322,7 @@ class _GemsPageState extends State<GemsPage> {
                         children: [
                           Text(
                             discount,
-                            style: AppTextStyle.openSans(
+                            style: ThemeStyle.openSans(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -319,7 +330,7 @@ class _GemsPageState extends State<GemsPage> {
                           ),
                           Text(
                             price,
-                            style: AppTextStyle.openSans(
+                            style: ThemeStyle.openSans(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Colors.white,
@@ -347,7 +358,7 @@ class _GemsPageState extends State<GemsPage> {
                         child: Center(
                           child: Text(
                             LocaleKeys.best_choice.tr,
-                            style: AppTextStyle.openSans(
+                            style: ThemeStyle.openSans(
                               fontSize: 8,
                               fontWeight: FontWeight.w400,
                               color: Colors.white,

@@ -1,15 +1,15 @@
-import 'package:fast_ai/data/sku_data.dart';
+import 'package:fast_ai/data/p_d_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/tools/ext.dart';
-import 'package:fast_ai/values/app_colors.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_colors.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SkuItemWidget extends StatelessWidget {
-  final SkuData skuData;
+  final PDData skuData;
   final bool isSelected;
   final VoidCallback onTap;
   final double? minWidth; // 改为可选的最小宽度
@@ -25,7 +25,7 @@ class SkuItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 缓存计算结果以提高性能
-    final isBest = (skuData.defaultSku ?? false) && AppCache().isBig;
+    final isBest = (skuData.defaultSku ?? false) && FCache().isBig;
     final isLifetime = skuData.lifetime ?? false;
     final price = skuData.productDetails?.price ?? '';
     final skuType = skuData.skuType;
@@ -41,9 +41,10 @@ class SkuItemWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(16)),
                 border: Border.all(color: const Color(0X1AFFFFFF), width: 1.0),
-                color: isSelected ? AppColors.primary : const Color(0x333F8DFD),
+                color:
+                    isSelected ? ThemeColors.primary : const Color(0x333F8DFD),
               ),
-              child: AppCache().isBig
+              child: FCache().isBig
                   ? _buildBigVersionContent(price, isLifetime, skuType)
                   : _buildSmallVersionContent(price),
             ),
@@ -76,7 +77,7 @@ class SkuItemWidget extends StatelessWidget {
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: AppTextStyle.openSans(
+              style: ThemeStyle.openSans(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -93,7 +94,7 @@ class SkuItemWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.openSans(
+              style: ThemeStyle.openSans(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -125,7 +126,7 @@ class SkuItemWidget extends StatelessWidget {
                   child: Text(
                     price,
                     textAlign: TextAlign.center,
-                    style: AppTextStyle.openSans(
+                    style: ThemeStyle.openSans(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -167,8 +168,9 @@ class SkuItemWidget extends StatelessWidget {
                   child: Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: AppTextStyle.openSans(
-                      color: isSelected ? Colors.white : const Color(0xFFA8A8A8),
+                    style: ThemeStyle.openSans(
+                      color:
+                          isSelected ? Colors.white : const Color(0xFFA8A8A8),
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                     ),
@@ -184,8 +186,9 @@ class SkuItemWidget extends StatelessWidget {
                   child: Text(
                     skuData.number.toString(),
                     textAlign: TextAlign.center,
-                    style: AppTextStyle.openSans(
-                      color: isSelected ? Colors.white : const Color(0xFFA8A8A8),
+                    style: ThemeStyle.openSans(
+                      color:
+                          isSelected ? Colors.white : const Color(0xFFA8A8A8),
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                     ),
@@ -227,7 +230,7 @@ class SkuItemWidget extends StatelessWidget {
                   child: Text(
                     originalPrice,
                     textAlign: TextAlign.center,
-                    style: AppTextStyle.openSans(
+                    style: ThemeStyle.openSans(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -244,7 +247,7 @@ class SkuItemWidget extends StatelessWidget {
                     child: Text(
                       '/${LocaleKeys.week.tr}',
                       textAlign: TextAlign.center,
-                      style: AppTextStyle.openSans(
+                      style: ThemeStyle.openSans(
                         color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -265,7 +268,7 @@ class SkuItemWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.openSans(
+              style: ThemeStyle.openSans(
                 color: isSelected ? Colors.white : const Color(0xFFA8A8A8),
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
@@ -290,7 +293,7 @@ class SkuItemWidget extends StatelessWidget {
           bottomEnd: Radius.circular(12),
         ),
         gradient: LinearGradient(
-          colors: AppColors.vipTagGradient,
+          colors: ThemeColors.vipTagGradient,
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -305,7 +308,8 @@ class SkuItemWidget extends StatelessWidget {
       ),
       child: Text(
         LocaleKeys.best_offer.tr,
-        style: const TextStyle(color: Colors.black, fontSize: 9, fontWeight: FontWeight.w700),
+        style: const TextStyle(
+            color: Colors.black, fontSize: 9, fontWeight: FontWeight.w700),
       ),
     );
   }

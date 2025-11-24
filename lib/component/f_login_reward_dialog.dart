@@ -1,14 +1,14 @@
-import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_button.dart';
-import 'package:fast_ai/component/gradient_text.dart';
+import 'package:fast_ai/component/f_dialog.dart';
+import 'package:fast_ai/component/f_grad_text.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_colors.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/theme_colors.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
 
@@ -16,18 +16,18 @@ class FLoginRewardDialog extends StatelessWidget {
   const FLoginRewardDialog({super.key});
 
   void onTopCollect() async {
-    await Api.getDailyReward();
-    AppUser().getUserInfo();
-    AppDialog.dismiss(tag: loginRewardTag);
+    await FApi.getDailyReward();
+    MY().getUserInfo();
+    FDialog.dismiss(tag: loginRewardTag);
   }
 
   void onTapVip() {
-    AppRouter.pushVip(VipFrom.dailyrd);
+    AppRouter.pushVip(ProFrom.dailyrd);
   }
 
   @override
   Widget build(BuildContext context) {
-    var isVip = AppUser().isVip.value;
+    var isVip = MY().isVip.value;
 
     return Container(
       decoration: BoxDecoration(
@@ -46,13 +46,13 @@ class FLoginRewardDialog extends StatelessWidget {
             children: [
               Text(
                 'Daily reward',
-                style: AppTextStyle.openSans(
+                style: ThemeStyle.openSans(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
               ),
-              GradientText(
+              FGradText(
                 textAlign: TextAlign.center,
                 data: isVip ? '+50' : '+20',
                 gradient: const LinearGradient(
@@ -61,7 +61,8 @@ class FLoginRewardDialog extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   stops: [0.0, 1.0],
                 ),
-                style: AppTextStyle.openSans(fontSize: 16, fontWeight: FontWeight.w700),
+                style: ThemeStyle.openSans(
+                    fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -71,12 +72,12 @@ class FLoginRewardDialog extends StatelessWidget {
                   children: [
                     FButton(
                       onTap: onTopCollect,
-                      color: AppColors.primary,
+                      color: ThemeColors.primary,
                       hasShadow: true,
                       child: Center(
                         child: Text(
                           LocaleKeys.collect.tr,
-                          style: AppTextStyle.openSans(
+                          style: ThemeStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -94,13 +95,13 @@ class FLoginRewardDialog extends StatelessWidget {
                       children: [
                         Text(
                           'Pro',
-                          style: AppTextStyle.openSans(
+                          style: ThemeStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),
                         ),
-                        GradientText(
+                        FGradText(
                           textAlign: TextAlign.center,
                           data: "+50",
                           gradient: const LinearGradient(
@@ -109,12 +110,13 @@ class FLoginRewardDialog extends StatelessWidget {
                             end: Alignment.bottomCenter,
                             stops: [0.0, 1.0],
                           ),
-                          style: AppTextStyle.openSans(fontSize: 16, fontWeight: FontWeight.w700),
+                          style: ThemeStyle.openSans(
+                              fontSize: 16, fontWeight: FontWeight.w700),
                         ),
                         Assets.images.gems.image(width: 24),
                         Text(
                           LocaleKeys.every_day.tr,
-                          style: AppTextStyle.openSans(
+                          style: ThemeStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
@@ -124,12 +126,12 @@ class FLoginRewardDialog extends StatelessWidget {
                     ),
                     FButton(
                       onTap: onTapVip,
-                      color: AppColors.primary,
+                      color: ThemeColors.primary,
                       hasShadow: true,
                       child: Center(
                         child: Text(
                           LocaleKeys.got_to_pro.tr,
-                          style: AppTextStyle.openSans(
+                          style: ThemeStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -140,11 +142,11 @@ class FLoginRewardDialog extends StatelessWidget {
                     SizedBox(height: 12),
                     FButton(
                       onTap: onTopCollect,
-                      color: AppColors.white10,
+                      color: ThemeColors.white10,
                       child: Center(
                         child: Text(
                           LocaleKeys.collect.tr,
-                          style: AppTextStyle.openSans(
+                          style: ThemeStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,

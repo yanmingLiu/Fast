@@ -3,9 +3,9 @@ import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/main.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 引入统一颜色管理
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/theme_colors.dart'; // 引入统一颜色管理
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,7 +15,7 @@ class MeNotVip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => AppRouter.pushVip(VipFrom.mevip),
+      onTap: () => AppRouter.pushVip(ProFrom.mevip),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -50,7 +50,7 @@ class MeNotVip extends StatelessWidget {
                     children: [
                       Text(
                         LocaleKeys.up_to_vip.tr,
-                        style: AppTextStyle.openSans(
+                        style: ThemeStyle.openSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -58,7 +58,7 @@ class MeNotVip extends StatelessWidget {
                       ),
                       Text(
                         LocaleKeys.vip_get.tr,
-                        style: AppTextStyle.openSans(
+                        style: ThemeStyle.openSans(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
@@ -89,8 +89,8 @@ class MeNotVip extends StatelessWidget {
               child: Center(
                 child: Text(
                   LocaleKeys.explore.tr,
-                  style: AppTextStyle.openSans(
-                    color: AppColors.primary,
+                  style: ThemeStyle.openSans(
+                    color: ThemeColors.primary,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),

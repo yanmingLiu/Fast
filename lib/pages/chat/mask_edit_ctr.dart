@@ -1,13 +1,13 @@
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/data/mask_data.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -89,16 +89,14 @@ class MaskEditCtr extends GetxController {
   void _updateChangeStatus() {
     if (chatMask == null) {
       // 新建模式：只要有内容就认为有变更
-      isChanged.value =
-          nameController.text.isNotEmpty ||
+      isChanged.value = nameController.text.isNotEmpty ||
           ageController.text.isNotEmpty ||
           descriptionController.text.isNotEmpty ||
           otherInfoController.text.isNotEmpty ||
           selectedGender.value != null;
     } else {
       // 编辑模式：与原始数据比较
-      isChanged.value =
-          nameController.text != (chatMask?.profileName ?? '') ||
+      isChanged.value = nameController.text != (chatMask?.profileName ?? '') ||
           ageController.text != (chatMask?.age?.toString() ?? '') ||
           descriptionController.text != (chatMask?.description ?? '') ||
           otherInfoController.text != (chatMask?.otherInfo ?? '') ||
@@ -113,7 +111,8 @@ class MaskEditCtr extends GetxController {
     if (chatMask != null) {
       nameController.text = chatMask?.profileName ?? '';
       descriptionController.text = chatMask?.description ?? '';
-      ageController.text = chatMask?.age == null ? '' : chatMask?.age.toString() ?? '';
+      ageController.text =
+          chatMask?.age == null ? '' : chatMask?.age.toString() ?? '';
       otherInfoController.text = chatMask?.otherInfo ?? '';
       selectedGender.value = Gender.values.firstWhereOrNull(
         (gender) => gender.code == chatMask?.gender,
@@ -172,23 +171,24 @@ class MaskEditCtr extends GetxController {
 
     // 检查是否新建且余额不足
     if (chatMask == null) {
-      final balance = AppUser().balance.value;
-      final profileChange = AppUser().priceConfig?.profileChange ?? 5;
+      final balance = MY().balance.value;
+      final profileChange = MY().priceConfig?.profileChange ?? 5;
       if (balance < profileChange) {
-        AppRouter.pushGem(ConsumeFrom.mask);
+        AppRouter.pushGem(GemsFrom.mask);
         return;
       }
     }
 
-    final isEditChoosed = chatMask != null && chatMask?.id == msgCtr.session.profileId;
+    final isEditChoosed =
+        chatMask != null && chatMask?.id == msgCtr.session.profileId;
 
     if (isEditChoosed && isChanged.value) {
-      AppDialog.alert(
+      FDialog.alert(
         message: LocaleKeys.edit_choose_mask.tr,
         cancelText: LocaleKeys.cancel.tr,
         confirmText: LocaleKeys.restart.tr,
         onConfirm: () async {
-          AppDialog.dismiss();
+          FDialog.dismiss();
           await _saveRequest();
         },
       );
@@ -208,7 +208,7 @@ class MaskEditCtr extends GetxController {
     FLoading.showLoading();
 
     try {
-      final success = await Api.createOrUpdateMask(
+      final success = await FApi.createOrUpdateMask(
         name: nameController.text.trim(),
         age: ageController.text.trim(),
         gender: selectedGender.value?.code ?? Gender.unknown.code,
@@ -217,10 +217,11 @@ class MaskEditCtr extends GetxController {
         id: chatMask?.id,
       );
 
-      await AppUser().getUserInfo();
+      await MY().getUserInfo();
 
       if (success) {
-        final isEditChoosed = chatMask != null && chatMask?.id == msgCtr.session.profileId;
+        final isEditChoosed =
+            chatMask != null && chatMask?.id == msgCtr.session.profileId;
         if (isEditChoosed) {
           final id = chatMask?.id;
           if (id != null) {
@@ -243,5 +244,5 @@ class MaskEditCtr extends GetxController {
   bool get isEditMode => chatMask != null;
 
   /// 获取创建成本
-  int get createCost => AppUser().priceConfig?.profileChange ?? 5;
+  int get createCost => MY().priceConfig?.profileChange ?? 5;
 }

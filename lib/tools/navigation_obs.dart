@@ -32,7 +32,8 @@ class NavigationObs {
   }
 
   /// 自定义的 RouteObserver，方便页面订阅
-  final RouteObserver<ModalRoute<void>> observer = RouteObserver<ModalRoute<void>>();
+  final RouteObserver<ModalRoute<void>> observer =
+      RouteObserver<ModalRoute<void>>();
 
   /// 路由栈队列
   final Queue<Route<dynamic>> routeQueue = DoubleLinkedQueue<Route<dynamic>>();

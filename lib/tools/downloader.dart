@@ -7,7 +7,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-import '../services/app_service.dart';
+import '../services/f_service.dart';
 
 /// Represents different types of files that can be downloaded.
 ///
@@ -77,7 +77,8 @@ class Downloader {
     // Validate input URL
     if (url.isEmpty) {
       log.e('[DownloadUtil] Download failed: Empty URL provided');
-      SmartDialog.showNotify(msg: 'Invalid download URL', notifyType: NotifyType.error);
+      SmartDialog.showNotify(
+          msg: 'Invalid download URL', notifyType: NotifyType.error);
       return null;
     }
 
@@ -106,12 +107,15 @@ class Downloader {
         savePath = path.join(folderPath, originalFileName);
 
         // 获取文件的扩展名
-        String currentExtension = path.extension(originalFileName).toLowerCase();
-        String fileNameWithoutExtension = path.basenameWithoutExtension(originalFileName);
+        String currentExtension =
+            path.extension(originalFileName).toLowerCase();
+        String fileNameWithoutExtension =
+            path.basenameWithoutExtension(originalFileName);
 
         // 如果提供了扩展名覆盖，则使用它
         String finalExtension = fileExtension ?? currentExtension;
-        targetFilePath = path.join(folderPath, '$fileNameWithoutExtension$finalExtension');
+        targetFilePath =
+            path.join(folderPath, '$fileNameWithoutExtension$finalExtension');
       } else {
         // 使用原始文件名
         fileName = Uri.parse(url).pathSegments.last;
@@ -120,8 +124,10 @@ class Downloader {
 
         // 如果提供了扩展名覆盖，则替换原始扩展名
         if (fileExtension != null) {
-          String fileNameWithoutExtension = path.basenameWithoutExtension(fileName);
-          targetFilePath = path.join(folderPath, '$fileNameWithoutExtension$fileExtension');
+          String fileNameWithoutExtension =
+              path.basenameWithoutExtension(fileName);
+          targetFilePath =
+              path.join(folderPath, '$fileNameWithoutExtension$fileExtension');
         }
       }
 
@@ -139,7 +145,8 @@ class Downloader {
 
       // 检查临时下载文件是否存在
       if (File(savePath).existsSync()) {
-        log.d('[df] $fileType is being downloaded or already downloaded, path: $savePath');
+        log.d(
+            '[df] $fileType is being downloaded or already downloaded, path: $savePath');
         return savePath;
       }
 
@@ -173,7 +180,8 @@ class Downloader {
         File downloadedFile = File(savePath);
         if (downloadedFile.existsSync()) {
           File newFile = await downloadedFile.rename(targetFilePath);
-          log.d('[df] $fileType downloaded and renamed successfully, path: $targetFilePath');
+          log.d(
+              '[df] $fileType downloaded and renamed successfully, path: $targetFilePath');
           return newFile.path;
         }
         log.d('[df] $fileType rename failed, path: $savePath');
@@ -197,7 +205,8 @@ class Downloader {
             errorMessage = 'Connection timed out';
             break;
           case DioExceptionType.badResponse:
-            errorMessage = 'Server error: ${e.response?.statusCode ?? "Unknown"}';
+            errorMessage =
+                'Server error: ${e.response?.statusCode ?? "Unknown"}';
             break;
           case DioExceptionType.connectionError:
             errorMessage = 'No internet connection';

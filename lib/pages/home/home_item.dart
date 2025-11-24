@@ -1,14 +1,14 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_image.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/values/app_colors.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/values/theme_colors.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,9 +25,9 @@ class HomeItem extends StatelessWidget {
     required this.height,
   });
 
-  final Role role;
-  final void Function(Role role) onCollect;
-  final HomeListCategroy cate;
+  final APop role;
+  final void Function(APop role) onCollect;
+  final HomeCate cate;
 
   final double width;
   final double height;
@@ -40,7 +40,7 @@ class HomeItem extends StatelessWidget {
       return;
     }
 
-    if (cate == HomeListCategroy.video) {
+    if (cate == HomeCate.video) {
       AppRouter.pushPhoneGuide(role: role);
     } else {
       AppRouter.pushChat(id);
@@ -52,11 +52,13 @@ class HomeItem extends StatelessWidget {
     // 缓存条件判断结果，避免重复计算
     final isCollect = role.collect ?? false;
     final isVip = role.vip == true;
-    final isBigScreen = AppCache().isBig;
+    final isBigScreen = FCache().isBig;
 
     // 优化标签处理逻辑
     final displayTags = _buildDisplayTags();
     final shouldShowTags = displayTags.isNotEmpty && isBigScreen;
+
+    final intro = role.intro ?? '';
 
     return GestureDetector(
       onTap: _onTap,
@@ -84,13 +86,19 @@ class HomeItem extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(16)),
                 border: isVip
-                    ? const Border.fromBorderSide(BorderSide(color: AppColors.primary, width: 4))
+                    ? const Border.fromBorderSide(
+                        BorderSide(color: ThemeColors.primary, width: 4))
                     : null,
                 gradient: const LinearGradient(
-                  colors: AppColors.homeItemGradient,
+                  colors: [
+                    Color(0xED101010),
+                    Colors.transparent,
+                    Colors.transparent,
+                    Color(0xED101010),
+                  ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  stops: [0.0, 0.15, 0.6, 1.0],
+                  stops: [0.0, 0.15, 0.5, 1.0],
                 ),
               ),
             ),
@@ -110,9 +118,25 @@ class HomeItem extends StatelessWidget {
                   if (shouldShowTags) _buildTags(displayTags),
                   const SizedBox(height: 8),
 
+                  if (intro.isNotEmpty) ...[
+                    Text(
+                      intro,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: ThemeStyle.openSans(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+
                   // 聊天按钮
-                  _buildChatButton(),
-                  const SizedBox(height: 8),
+                  if (FCache().isBig) ...[
+                    _buildChatButton(),
+                    const SizedBox(height: 8),
+                  ]
                 ],
               ),
             ),
@@ -134,7 +158,7 @@ class HomeItem extends StatelessWidget {
             role.name ?? '',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -145,7 +169,7 @@ class HomeItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
           child: Text(
             '${role.age ?? 0}',
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: Colors.white,
               fontSize: 10,
               fontWeight: FontWeight.w500,
@@ -159,7 +183,7 @@ class HomeItem extends StatelessWidget {
   Widget _buildChatButton() {
     return FButton(
       onTap: _onTap,
-      color: AppColors.primary,
+      color: ThemeColors.primary,
       height: 32,
       margin: const EdgeInsetsDirectional.only(end: 40),
       constraints: const BoxConstraints(minWidth: 90),
@@ -167,7 +191,8 @@ class HomeItem extends StatelessWidget {
       child: Center(
         child: Text(
           LocaleKeys.chat.tr,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+          style: const TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
         ),
       ),
     );
@@ -183,7 +208,7 @@ class HomeItem extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.white10,
+              color: ThemeColors.white10,
               borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
             height: 20,
@@ -194,17 +219,17 @@ class HomeItem extends StatelessWidget {
                 FIcon(
                   assetName: Assets.svg.like,
                   width: 20,
-                  color: isCollected ? AppColors.secondary : Colors.white,
+                  color: isCollected ? ThemeColors.secondary : Colors.white,
                 ),
                 const SizedBox(width: 2),
                 Text(
                   '${role.likes ?? 0}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.openSans(
+                  style: ThemeStyle.openSans(
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
-                    color: isCollected ? AppColors.secondary : Colors.white,
+                    color: isCollected ? ThemeColors.secondary : Colors.white,
                   ),
                 ),
               ],
@@ -218,7 +243,8 @@ class HomeItem extends StatelessWidget {
   // 提取标签构建逻辑，避免build方法中重复计算
   List<String> _buildDisplayTags() {
     final tags = role.tags;
-    List<String> result = (tags != null && tags.length > 3) ? tags.take(3).toList() : tags ?? [];
+    List<String> result =
+        (tags != null && tags.length > 3) ? tags.take(3).toList() : tags ?? [];
 
     final tagType = role.tagType;
     if (tagType != null) {
@@ -241,7 +267,7 @@ class HomeItem extends StatelessWidget {
         for (int i = 0; i < displayTags.length; i++) ...[
           Text(
             displayTags[i],
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               fontSize: 10,
               fontWeight: FontWeight.w500,
               color: _getTagColor(displayTags[i]),
@@ -250,7 +276,10 @@ class HomeItem extends StatelessWidget {
           if (i < displayTags.length - 1)
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 2),
-              child: SizedBox(width: 1, height: 4, child: ColoredBox(color: AppColors.separator)),
+              child: SizedBox(
+                  width: 1,
+                  height: 4,
+                  child: ColoredBox(color: ThemeColors.separator)),
             ),
         ],
       ],
@@ -258,6 +287,8 @@ class HomeItem extends StatelessWidget {
   }
 
   Color _getTagColor(String text) {
-    return (text == kNSFW || text == kBDSM) ? AppColors.secondary : AppColors.success;
+    return (text == kNSFW || text == kBDSM)
+        ? ThemeColors.secondary
+        : ThemeColors.success;
   }
 }

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
-import '../services/app_service.dart';
+import '../services/f_service.dart';
 
 extension IntExt on int {
   String formatTimeMMSS() {
@@ -27,7 +27,8 @@ class VideoPreview extends StatefulWidget {
   State<VideoPreview> createState() => _VideoPreviewState();
 }
 
-class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver {
+class _VideoPreviewState extends State<VideoPreview>
+    with WidgetsBindingObserver {
   VideoPlayerController? _controller;
 
   bool _progressShow = true;
@@ -156,7 +157,8 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // 添加 inactive 状态判断避免来电等状态
-    if ((AppLifecycleState.paused == state || AppLifecycleState.inactive == state) &&
+    if ((AppLifecycleState.paused == state ||
+            AppLifecycleState.inactive == state) &&
         _isPlaying &&
         _controller != null) {
       _isPlaying = false;
@@ -214,7 +216,8 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                                 child: VideoPlayer(_controller!),
                               ),
                             )
-                          : const CupertinoActivityIndicator(radius: 16.0, color: Colors.white),
+                          : const CupertinoActivityIndicator(
+                              radius: 16.0, color: Colors.white),
                 ),
                 Visibility(
                   visible: _isInit && !_isPlaying && _controller != null,
@@ -223,7 +226,9 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                       _isPlaying = true;
                       _controller?.play();
                     },
-                    child: Center(child: Icon(Icons.play_circle, color: Colors.white, size: 80)),
+                    child: Center(
+                        child: Icon(Icons.play_circle,
+                            color: Colors.white, size: 80)),
                   ),
                 ),
                 Positioned(
@@ -254,8 +259,11 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                         ),
                         const SizedBox(width: 20),
                         Text(
-                          _controller?.value.position.inSeconds.formatTimeMMSS() ?? '00:00',
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                          _controller?.value.position.inSeconds
+                                  .formatTimeMMSS() ??
+                              '00:00',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -271,13 +279,17 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                                     padding: EdgeInsets.zero,
                                     allowScrubbing: false,
                                   )
-                                : Container(height: 2, color: const Color(0x4d000000)),
+                                : Container(
+                                    height: 2, color: const Color(0x4d000000)),
                           ),
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          _controller?.value.duration.inSeconds.formatTimeMMSS() ?? '00:00',
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                          _controller?.value.duration.inSeconds
+                                  .formatTimeMMSS() ??
+                              '00:00',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12),
                         ),
                       ],
                     ),
@@ -292,7 +304,8 @@ class _VideoPreviewState extends State<VideoPreview> with WidgetsBindingObserver
                     child: Center(
                       child: Text(
                         'Swipe down to close',
-                        style: TextStyle(color: Color(0xCCFFFFFF), fontSize: 14),
+                        style:
+                            TextStyle(color: Color(0xCCFFFFFF), fontSize: 14),
                       ),
                     ),
                   ),

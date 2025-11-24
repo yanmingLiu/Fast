@@ -8,11 +8,11 @@ import 'package:fast_ai/pages/chat/send_container.dart';
 import 'package:fast_ai/pages/chat/text_lock.dart';
 import 'package:fast_ai/pages/chat/typing_rich_text.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_colors.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/theme_colors.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,10 +25,10 @@ const double _continueButtonHeight = 24.0;
 const double _borderRadius = 16.0;
 
 // 性能优化：缓存样式对象，避免每次build重新创建
-final TextStyle _titleStyle = AppTextStyle.openSans(
+final TextStyle _titleStyle = ThemeStyle.openSans(
   fontSize: 14,
   fontWeight: FontWeight.w700,
-  color: AppColors.primary,
+  color: ThemeColors.primary,
 );
 
 // 静态组件常量，避免重复创建
@@ -66,7 +66,7 @@ class _TextContainerState extends State<TextContainer> {
   void initState() {
     super.initState();
     _ctr = Get.find<MsgCtr>();
-    _isBig = AppCache().isBig;
+    _isBig = FCache().isBig;
   }
 
   @override
@@ -117,12 +117,13 @@ class _TextContainerState extends State<TextContainer> {
   bool _shouldShowSendMessage(MsgData msg, String? sendText) {
     try {
       // 特殊情况：服装类型消息不显示发送文本
-      if (msg.source == MsgSource.clothe) {
+      if (msg.source == MsgType.clothe) {
         return false;
       }
 
       // 显示条件：发送文本类型或有发送内容且未在等待回答
-      return msg.source == MsgSource.sendText || (sendText != null && msg.onAnswer != true);
+      return msg.source == MsgType.sendText ||
+          (sendText != null && msg.onAnswer != true);
     } catch (e) {
       debugPrint('[TextContainer] 判断发送消息显示失败: $e');
       return false;
@@ -147,7 +148,7 @@ class _TextContainerState extends State<TextContainer> {
   /// 错误隔离设计：安全获取VIP状态
   bool _getVipStatusSafely() {
     try {
-      return AppUser().isVip.value;
+      return MY().isVip.value;
     } catch (e) {
       debugPrint('[TextContainer] 获取VIP状态失败,使用默认值false: $e');
       return false;
@@ -157,7 +158,7 @@ class _TextContainerState extends State<TextContainer> {
   /// 错误隔离设计：安全检查消息锁定状态
   bool _isMessageLocked() {
     try {
-      return widget.msg.textLock == MsgLockLevel.private.value;
+      return widget.msg.textLock == LockType.private.value;
     } catch (e) {
       debugPrint('[TextContainer] 检查消息锁定状态失败,使用默认值false: $e');
       return false;
@@ -169,8 +170,9 @@ class _TextContainerState extends State<TextContainer> {
   /// 根据用户设置和语言环境决定翻译相关的显示状态
   /// 返回 (shouldShowTranslate, shouldShowTransBtn, displayContent)
   (bool, bool, String) _calculateTranslationState(MsgData msg) {
-    final hasTranslation = msg.translateAnswer != null && msg.translateAnswer!.isNotEmpty;
-    final isAutoTranslateEnabled = AppUser().user?.autoTranslate == true;
+    final hasTranslation =
+        msg.translateAnswer != null && msg.translateAnswer!.isNotEmpty;
+    final isAutoTranslateEnabled = MY().user?.autoTranslate == true;
     final isEnglishLocale = Get.deviceLocale?.languageCode == 'en';
     final userRequestedTranslation = msg.showTranslate == true;
 
@@ -215,7 +217,8 @@ class _TextContainerState extends State<TextContainer> {
     final msg = widget.msg;
 
     // 使用优化后的翻译状态计算逻辑
-    final (showTranslate, showTransBtn, content) = _calculateTranslationState(msg);
+    final (showTranslate, showTransBtn, content) =
+        _calculateTranslationState(msg);
 
     // 性能优化：预计算屏幕宽度约束
     final maxWidth = MediaQuery.of(context).size.width * _maxWidthRatio;
@@ -226,7 +229,8 @@ class _TextContainerState extends State<TextContainer> {
       children: [
         Container(
           padding: _Constants.sendTextPadding,
-          decoration: BoxDecoration(color: _bgColor, borderRadius: _borderRadius),
+          decoration:
+              BoxDecoration(color: _bgColor, borderRadius: _borderRadius),
           constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -254,7 +258,8 @@ class _TextContainerState extends State<TextContainer> {
           ),
         ),
         const SizedBox(height: 8),
-        if (!_isTypingAnimationActive(msg)) _buildActionButtons(msg, showTranslate, showTransBtn),
+        if (!_isTypingAnimationActive(msg))
+          _buildActionButtons(msg, showTranslate, showTransBtn),
       ],
     );
   }
@@ -284,7 +289,8 @@ class _TextContainerState extends State<TextContainer> {
   }
 
   /// 构建操作按钮行
-  Widget _buildActionButtons(MsgData msg, bool showTranslate, bool showTransBtn) {
+  Widget _buildActionButtons(
+      MsgData msg, bool showTranslate, bool showTransBtn) {
     return Wrap(
       spacing: 16,
       crossAxisAlignment: WrapCrossAlignment.center,
@@ -333,7 +339,7 @@ class _TextContainerState extends State<TextContainer> {
         child: FIcon(
           assetName: Assets.svg.trans,
           width: _buttonSize,
-          color: showTranslate ? AppColors.primary : Colors.white,
+          color: showTranslate ? ThemeColors.primary : Colors.white,
         ),
       ),
     );
@@ -357,17 +363,20 @@ class _TextContainerState extends State<TextContainer> {
       _buildContinueButton(),
 
       // 编辑和刷新按钮（仅特定消息类型）
-      if (hasEditAndRefresh) ...[_buildEditButton(msg), _buildRefreshButton(msg)],
+      if (hasEditAndRefresh) ...[
+        _buildEditButton(msg),
+        _buildRefreshButton(msg)
+      ],
     ];
   }
 
   /// 判断消息是否支持编辑和刷新操作
   bool _hasEditAndRefreshActions(MsgData msg) {
     try {
-      return msg.source == MsgSource.text ||
-          msg.source == MsgSource.video ||
-          msg.source == MsgSource.audio ||
-          msg.source == MsgSource.photo;
+      return msg.source == MsgType.text ||
+          msg.source == MsgType.video ||
+          msg.source == MsgType.audio ||
+          msg.source == MsgType.photo;
     } catch (e) {
       debugPrint('[TextContainer] 检查编辑刷新权限失败: $e');
       return false;
@@ -403,7 +412,8 @@ class _TextContainerState extends State<TextContainer> {
       child: InkWell(
         splashColor: Colors.transparent,
         onTap: () => _handleEditMessage(msg),
-        child: Assets.images.edit.image(width: _buttonSize, height: _buttonSize),
+        child:
+            Assets.images.edit.image(width: _buttonSize, height: _buttonSize),
       ),
     );
   }
@@ -435,7 +445,8 @@ class _TextContainerState extends State<TextContainer> {
       child: InkWell(
         splashColor: Colors.transparent,
         onTap: () => _handleResendMessage(msg),
-        child: Assets.images.refresh.image(width: _buttonSize, height: _buttonSize),
+        child: Assets.images.refresh
+            .image(width: _buttonSize, height: _buttonSize),
       ),
     );
   }

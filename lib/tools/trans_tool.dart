@@ -1,9 +1,9 @@
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -20,7 +20,8 @@ class TransTool {
   bool shouldShowDialog() {
     final now = DateTime.now();
 
-    if (_firstClickTime == null || now.difference(_firstClickTime!).inMinutes > 1) {
+    if (_firstClickTime == null ||
+        now.difference(_firstClickTime!).inMinutes > 1) {
       // 超过1分钟，重置计数器
       _firstClickTime = now;
       _clickCount = 1;
@@ -38,19 +39,21 @@ class TransTool {
   }
 
   Future<void> handleTranslationClick() async {
-    final hasShownDialog = AppCache().hasShownTranslationDialog;
+    final hasShownDialog = FCache().hasShownTranslationDialog;
 
-    if (TransTool().shouldShowDialog() && !hasShownDialog && !AppUser().isVip.value) {
+    if (TransTool().shouldShowDialog() &&
+        !hasShownDialog &&
+        !MY().isVip.value) {
       // 弹出提示弹窗
       showTranslationDialog();
 
       // 记录弹窗已显示
-      AppCache().hasShownTranslationDialog = true;
+      FCache().hasShownTranslationDialog = true;
     }
   }
 
   void showTranslationDialog() {
-    AppDialog.alert(
+    FDialog.alert(
       message: LocaleKeys.aoto_trans.tr,
       confirmText: LocaleKeys.confirm.tr,
       onConfirm: () {
@@ -61,6 +64,6 @@ class TransTool {
   }
 
   void toVip() {
-    AppRouter.pushVip(VipFrom.trans);
+    AppRouter.pushVip(ProFrom.trans);
   }
 }

@@ -2,27 +2,27 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:extended_image/extended_image.dart';
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
-import 'package:fast_ai/data/chat_anser_level.dart';
-import 'package:fast_ai/data/clothing_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
+import 'package:fast_ai/data/a_pop_toy_data.dart';
+import 'package:fast_ai/data/ans_level.dart';
 import 'package:fast_ai/data/msg_data.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/r_clo_data.dart';
 import 'package:fast_ai/data/session_data.dart';
-import 'package:fast_ai/data/toys_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/chat_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/api_path.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/services/ur_path.dart';
 import 'package:fast_ai/tools/trans_tool.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,7 +31,7 @@ class MsgCtr extends GetxController {
 
   RxList inputTags = [].obs;
 
-  late Role role;
+  late APop role;
   late SessionData session;
   int? get sessionId => session.id;
 
@@ -41,7 +41,7 @@ class MsgCtr extends GetxController {
   var roleImagesChaned = 0.obs;
 
   // 聊天等级变动
-  Rx<ChatAnserLevel?> chatLevel = Rx<ChatAnserLevel?>(null);
+  Rx<AnsLevel?> chatLevel = Rx<AnsLevel?>(null);
 
   List<Map<String, dynamic>> chatLevelConfigs = [];
 
@@ -75,9 +75,9 @@ class MsgCtr extends GetxController {
 
     loadChatLevel();
 
-    AppUser().loadToysAndClotheConfigs();
-    AppUser().getPriceConfig();
-    AppUser().getUserInfo();
+    MY().loadToysAndClotheConfigs();
+    MY().getPriceConfig();
+    MY().getUserInfo();
   }
 
   Future loadMsg() async {
@@ -86,18 +86,18 @@ class MsgCtr extends GetxController {
     }
     list.clear();
     _addDefaaultTips();
-    final page = await Api.messageList(1, 10000, sessionId!);
+    final page = await FApi.messageList(1, 10000, sessionId!);
     if (page != null) {
       final records = page.records ?? [];
 
       // 获取已翻译消息 id
-      final Set<String> ids = AppCache().translationMsgIds;
+      final Set<String> ids = FCache().translationMsgIds;
       // 遍历消息列表，赋值 showTranslate
       for (var msg in records) {
         if (msg.id != null && ids.contains(msg.id)) {
           msg.showTranslate = true;
         }
-        if (AppUser().user?.autoTranslate == true && msg.translateAnswer != null) {
+        if (MY().user?.autoTranslate == true && msg.translateAnswer != null) {
           msg.showTranslate = true;
         }
       }
@@ -108,7 +108,7 @@ class MsgCtr extends GetxController {
 
   void _addDefaaultTips() {
     final tips = MsgData();
-    tips.source = MsgSource.tips;
+    tips.source = MsgType.tips;
     tips.answer = LocaleKeys.msg_tips.tr;
     list.add(tips);
 
@@ -116,13 +116,13 @@ class MsgCtr extends GetxController {
 
     if (scenario != null && scenario.isNotEmpty) {
       final intro = MsgData();
-      intro.source = MsgSource.scenario;
+      intro.source = MsgType.scenario;
       intro.answer = scenario;
       list.add(intro);
     } else {
       if (role.aboutMe != null && role.aboutMe!.isNotEmpty) {
         final intro = MsgData();
-        intro.source = MsgSource.intro;
+        intro.source = MsgType.intro;
         intro.answer = role.aboutMe;
         list.add(intro);
       }
@@ -166,14 +166,14 @@ class MsgCtr extends GetxController {
     msg.answer = str;
     // msg.voiceUrl = voiceUrl;
     // msg.voiceDur = voiceDur;
-    msg.source = MsgSource.welcome;
+    msg.source = MsgType.welcome;
     list.add(msg);
   }
 
   void setupTease() {
     inputTags.clear();
 
-    if (AppCache().isBig) {
+    if (FCache().isBig) {
       inputTags.add({
         'id': 0,
         'name': 'Tease',
@@ -197,10 +197,20 @@ class MsgCtr extends GetxController {
       });
     }
 
-    inputTags.add({'id': 3, 'name': 'Mask', 'icon': Assets.images.msgMask.path, 'list': []});
+    inputTags.add({
+      'id': 3,
+      'name': 'Mask',
+      'icon': Assets.images.msgMask.path,
+      'list': []
+    });
 
-    if (AppCache().isBig) {
-      inputTags.add({'id': 2, 'name': 'Gifts', 'icon': Assets.images.msgGift.path, 'list': []});
+    if (FCache().isBig) {
+      inputTags.add({
+        'id': 2,
+        'name': 'Gifts',
+        'icon': Assets.images.msgGift.path,
+        'list': []
+      });
     }
 
     // if (AppCache().isBig) {
@@ -214,7 +224,7 @@ class MsgCtr extends GetxController {
   Future<void> rechage() async {
     await FToast.toast(LocaleKeys.not_enough.tr);
     // v1.3.0 - 调整为跳订阅页
-    AppRouter.pushVip(VipFrom.send);
+    AppRouter.pushVip(ProFrom.send);
   }
 
   Future<bool> canSendMsg(String text) async {
@@ -237,27 +247,27 @@ class MsgCtr extends GetxController {
     if (roleId == null) {
       return false;
     }
-    if (!AppUser().isVip.value) {
+    if (!MY().isVip.value) {
       if (role.gems == true) {
-        final flag = AppUser().isBalanceEnough(ConsumeFrom.text);
+        final flag = MY().isBalanceEnough(GemsFrom.text);
         if (!flag) {
           rechage();
           return false;
         }
       } else {
         /// 免费角色 - 最大免费条数
-        final maxCount = AppService().maxFreeChatCount;
-        final sencCount = AppCache().sendMsgCount;
+        final maxCount = FService().maxFreeChatCount;
+        final sencCount = FCache().sendMsgCount;
 
         if (sencCount > maxCount) {
           log.d('[AppDialog]: maxFreeChatCount $maxCount');
 
-          AppDialog.alert(
+          FDialog.alert(
             message: LocaleKeys.free_chat_used.tr,
             confirmText: LocaleKeys.upgrade_to_chat.tr,
             onConfirm: () {
               logEvent('t_chat_send');
-              AppRouter.pushVip(VipFrom.send);
+              AppRouter.pushVip(ProFrom.send);
             },
           );
           return false;
@@ -269,7 +279,7 @@ class MsgCtr extends GetxController {
 
   void checkSendCount() async {
     // 发送成功后，更新发送次数
-    AppCache().sendMsgCount = AppCache().sendMsgCount + 1;
+    FCache().sendMsgCount = FCache().sendMsgCount + 1;
     setupTease();
 
     // if (AppCache().isBig) {
@@ -295,16 +305,16 @@ class MsgCtr extends GetxController {
   }
 
   void checkRateMsgCount() async {
-    AppCache().rateCount++;
-    log.d('[AppDialog]: checkRateMsgCount ${AppCache().rateCount}');
-    if (AppCache().rateCount == 8) {
-      AppDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
+    FCache().rateCount++;
+    log.d('[AppDialog]: checkRateMsgCount ${FCache().rateCount}');
+    if (FCache().rateCount == 8) {
+      FDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
     }
   }
 
   Future<bool> resetConv() async {
     FLoading.showLoading();
-    var result = await Api.resetSession(sessionId ?? 0);
+    var result = await FApi.resetSession(sessionId ?? 0);
     FLoading.dismiss();
     if (result != null) {
       session = result;
@@ -317,7 +327,7 @@ class MsgCtr extends GetxController {
 
   Future<bool> deleteConv() async {
     FLoading.showLoading();
-    var result = await Api.deleteSession(sessionId ?? 0);
+    var result = await FApi.deleteSession(sessionId ?? 0);
 
     if (result && Get.isRegistered<ChatCtr>()) {
       Get.find<ChatCtr>().dataList.removeWhere((r) => r.id == sessionId);
@@ -336,13 +346,13 @@ class MsgCtr extends GetxController {
 
     addTemSendMsg(text);
 
-    await sendMsgRequest(path: ApiPath.sendMsg, text: text);
+    await sendMsgRequest(path: UrPath.sendMsg, text: text);
   }
 
   void addTemSendMsg(String text) {
     final charId = role.id;
     final conversationId = sessionId ?? 0;
-    final uid = AppUser().user?.id;
+    final uid = MY().user?.id;
     if (charId == null || uid == null) {
       FToast.toast('charId or uid is null');
       return;
@@ -352,12 +362,12 @@ class MsgCtr extends GetxController {
     final msg = MsgData(
       id: tmpSendId,
       question: text,
-      userId: AppUser().user?.id,
+      userId: MY().user?.id,
       conversationId: conversationId,
       characterId: charId,
       onAnswer: true,
     );
-    msg.source = MsgSource.sendText;
+    msg.source = MsgType.sendText;
     list.add(msg);
     tmpSendMsg = msg;
   }
@@ -371,13 +381,17 @@ class MsgCtr extends GetxController {
     try {
       final charId = role.id;
       final conversationId = sessionId ?? 0;
-      final uid = AppUser().user?.id;
+      final uid = MY().user?.id;
       if (charId == null || uid == null || conversationId == 0) {
         FToast.toast(LocaleKeys.some_error_try_again.tr);
         return;
       }
 
-      var body = {'character_id': charId, 'conversation_id': conversationId, 'user_id': uid};
+      var body = {
+        'character_id': charId,
+        'conversation_id': conversationId,
+        'user_id': uid
+      };
       if (text != null) {
         body['message'] = text;
       }
@@ -389,7 +403,7 @@ class MsgCtr extends GetxController {
       if (isLoading == true) {
         FLoading.showLoading();
       }
-      final res = await Api.sendMsg(path: path, body: body);
+      final res = await FApi.sendMsg(path: path, body: body);
       FLoading.dismiss();
 
       final msg = res?.data;
@@ -418,7 +432,7 @@ class MsgCtr extends GetxController {
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       answer: LocaleKeys.some_error_try_again.tr,
     );
-    msg.source = MsgSource.error;
+    msg.source = MsgType.error;
     msg.answer = LocaleKeys.some_error_try_again.tr;
     list.add(msg);
   }
@@ -427,14 +441,16 @@ class MsgCtr extends GetxController {
     if (msg.conversationId != sessionId) {
       return;
     }
-    if (msg.textLock == MsgLockLevel.private.value) {
-      msg.typewriterAnimated = AppUser().isVip.value;
+    if (msg.textLock == LockType.private.value) {
+      msg.typewriterAnimated = MY().isVip.value;
     } else {
       msg.typewriterAnimated = true;
     }
 
     // 删除最后一条tmpSendMsg
-    if (list.isNotEmpty && list.last.id == tmpSendId && msg.question == list.last.question) {
+    if (list.isNotEmpty &&
+        list.last.id == tmpSendId &&
+        msg.question == list.last.question) {
       list.removeLast();
     }
 
@@ -447,7 +463,7 @@ class MsgCtr extends GetxController {
     }
     _checkChatLevel(msg);
 
-    await AppUser().getUserInfo();
+    await MY().getUserInfo();
 
     tmpSendMsg = null;
   }
@@ -464,9 +480,9 @@ class MsgCtr extends GetxController {
       await _showChatLevelUp(rewards);
 
       if ((level?.level ?? 0) == 3) {
-        if (AppDialog.rateLevel3Shoed == false) {
-          AppDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
-          AppDialog.rateLevel3Shoed = true;
+        if (FDialog.rateLevel3Shoed == false) {
+          FDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
+          FDialog.rateLevel3Shoed = true;
         }
       }
     } else {
@@ -475,7 +491,7 @@ class MsgCtr extends GetxController {
   }
 
   Future _showChatLevelUp(int rewards) async {
-    await AppDialog.showChatLevelUp(rewards);
+    await FDialog.showChatLevelUp(rewards);
 
     checkSendCount();
   }
@@ -485,34 +501,35 @@ class MsgCtr extends GetxController {
       return;
     }
     try {
-      final configs = await Api.getChatLevelConfig() ?? [];
+      final configs = await FApi.getChatLevelConfig() ?? [];
       chatLevelConfigs = configs.isEmpty
           ? chatLevelList
           : configs.map((c) {
               return {
                 'icon': c.title ?? '👋',
                 'level': c.level ?? 1,
-                'text': LocaleKeys.level_up_value.trParams({'level': '${c.level}'}),
+                'text':
+                    LocaleKeys.level_up_value.trParams({'level': '${c.level}'}),
                 'gems': c.reward ?? 0,
               };
             }).toList();
 
       final roleId = role.id;
-      final userId = AppUser().user?.id;
+      final userId = MY().user?.id;
       if (roleId == null || userId == null) {
         return;
       }
-      var res = await Api.fetchChatLevel(charId: roleId, userId: userId);
+      var res = await FApi.fetchChatLevel(charId: roleId, userId: userId);
       chatLevel.value = res;
     } catch (e) {
       log.e('loadChatLevel is error:$e');
     }
   }
 
-  Future<void> onTapUnlockImage(RoleImage image) async {
+  Future<void> onTapUnlockImage(APopImage image) async {
     final gems = image.gems ?? 0;
-    if (AppUser().balance.value < gems) {
-      AppRouter.pushGem(ConsumeFrom.album);
+    if (MY().balance.value < gems) {
+      AppRouter.pushGem(GemsFrom.album);
       return;
     }
 
@@ -523,7 +540,7 @@ class MsgCtr extends GetxController {
     }
 
     FLoading.showLoading();
-    final res = await Api.unlockImageReq(imageId, modelId);
+    final res = await FApi.unlockImageReq(imageId, modelId);
     FLoading.dismiss();
     if (res) {
       // 创建一个新的 images 列表
@@ -537,7 +554,7 @@ class MsgCtr extends GetxController {
       // 更新 Role 对象
       role = role.copyWith(images: updatedImages);
       roleImagesChaned.value++;
-      AppUser().getUserInfo();
+      MY().getUserInfo();
 
       onTapImage(image);
     } else {
@@ -545,7 +562,7 @@ class MsgCtr extends GetxController {
     }
   }
 
-  void onTapImage(RoleImage image) {
+  void onTapImage(APopImage image) {
     final imageUrl = image.imageUrl;
     if (imageUrl == null) {
       return;
@@ -567,7 +584,8 @@ class MsgCtr extends GetxController {
     if (content == null || content.isEmpty) return;
 
     // 定义更新消息的方法
-    Future<void> updateMessage({required bool showTranslate, String? translate}) async {
+    Future<void> updateMessage(
+        {required bool showTranslate, String? translate}) async {
       msg.showTranslate = showTranslate;
 
       if (id != null) {
@@ -578,7 +596,7 @@ class MsgCtr extends GetxController {
         msg.translateAnswer = translate;
 
         if (id != null) {
-          Api.saveMsgTrans(id: id, text: translate);
+          FApi.saveMsgTrans(id: id, text: translate);
         }
       }
       list.refresh();
@@ -595,7 +613,7 @@ class MsgCtr extends GetxController {
       if (msg.translateAnswer == null) {
         // 获取翻译内容
         FLoading.showLoading();
-        String? result = await Api.translateText(content);
+        String? result = await FApi.translateText(content);
         FLoading.dismiss();
         // 更新消息并显示翻译
         await updateMessage(showTranslate: true, translate: result);
@@ -608,22 +626,22 @@ class MsgCtr extends GetxController {
   }
 
   void _transCache({required bool isAdd, required String id}) {
-    final Set<String> ids = AppCache().translationMsgIds;
+    final Set<String> ids = FCache().translationMsgIds;
     if (isAdd) {
       ids.add(id); // 重复添加会自动忽略
     } else {
       ids.remove(id);
     }
-    AppCache().translationMsgIds = ids;
+    FCache().translationMsgIds = ids;
   }
 
-  void sendToy(ToysData toy) async {
+  void sendToy(APopToyData toy) async {
     try {
       FLoading.showLoading();
-      var balance = AppUser().balance.value;
+      var balance = MY().balance.value;
       var price = toy.itemPrice ?? 0;
       if (balance < price) {
-        AppRouter.pushGem(ConsumeFrom.gift_toy);
+        AppRouter.pushGem(GemsFrom.gift_toy);
         return;
       }
 
@@ -636,11 +654,11 @@ class MsgCtr extends GetxController {
       if (Get.isBottomSheetOpen == true) {
         Get.back();
       }
-      var msg = await Api.sendToys(convId: convId, id: giftId, roleId: roleId);
+      var msg = await FApi.sendToys(convId: convId, id: giftId, roleId: roleId);
       if (msg != null) {
         list.add(msg);
       }
-      AppUser().getUserInfo();
+      MY().getUserInfo();
     } catch (e) {
       FToast.toast(LocaleKeys.some_error_try_again.tr);
     } finally {
@@ -648,12 +666,12 @@ class MsgCtr extends GetxController {
     }
   }
 
-  void sendChothes(ClothingData clothings) async {
+  void sendChothes(RCloData clothings) async {
     try {
-      var balance = AppUser().balance.value;
+      var balance = MY().balance.value;
       var price = clothings.itemPrice ?? 0;
       if (balance < price) {
-        AppRouter.pushGem(ConsumeFrom.gift_clo);
+        AppRouter.pushGem(GemsFrom.gift_clo);
         return;
       }
 
@@ -665,23 +683,23 @@ class MsgCtr extends GetxController {
       }
       Get.back();
 
-      AppDialog.showGiftLoading();
+      FDialog.showGiftLoading();
 
       isRecieving = true;
 
-      MsgData? msg = await Api.sendClothes(convId: convId, id: id, roleId: roleId);
+      MsgData? msg =
+          await FApi.sendClothes(convId: convId, id: id, roleId: roleId);
 
       var imgUrl = msg?.giftImg;
 
       if (imgUrl != null) {
         Completer<void> completer = Completer<void>();
-        final ExtendedNetworkImageProvider imageProvider = ExtendedNetworkImageProvider(
+        final ExtendedNetworkImageProvider imageProvider =
+            ExtendedNetworkImageProvider(
           imgUrl,
           cache: true,
         );
-        imageProvider
-            .resolve(const ImageConfiguration())
-            .addListener(
+        imageProvider.resolve(const ImageConfiguration()).addListener(
               ImageStreamListener(
                 (ImageInfo image, bool synchronousCall) {
                   if (!completer.isCompleted) {
@@ -705,14 +723,14 @@ class MsgCtr extends GetxController {
 
         AppRouter.pushImagePreview(imgUrl ?? '');
 
-        AppUser().getUserInfo();
+        MY().getUserInfo();
       } else {
         FToast.toast(LocaleKeys.some_error_try_again.tr);
       }
     } catch (e) {
       FToast.toast(LocaleKeys.some_error_try_again.tr);
     } finally {
-      AppDialog.hiddenGiftLoading();
+      FDialog.hiddenGiftLoading();
     }
   }
 
@@ -736,19 +754,19 @@ class MsgCtr extends GetxController {
       final msg = list[i];
 
       // 如果是错误消息，删除它
-      if (msg.source == MsgSource.error) {
+      if (msg.source == MsgType.error) {
         list.removeAt(i);
         continue;
       }
 
       // 检查是否为服务器消息类型
       final source = msg.source;
-      if (source == MsgSource.text ||
-          source == MsgSource.video ||
-          source == MsgSource.audio ||
-          source == MsgSource.photo ||
-          source == MsgSource.gift ||
-          source == MsgSource.clothe) {
+      if (source == MsgType.text ||
+          source == MsgType.video ||
+          source == MsgType.audio ||
+          source == MsgType.photo ||
+          source == MsgType.gift ||
+          source == MsgType.clothe) {
         return msg; // 找到服务器消息，返回并停止遍历
       }
     }
@@ -762,13 +780,13 @@ class MsgCtr extends GetxController {
     if (!canSend) {
       return;
     }
-    await sendMsgRequest(path: ApiPath.continueWrite, isLoading: true);
+    await sendMsgRequest(path: UrPath.continueWrite, isLoading: true);
   }
 
   /// 重新发送消息
   Future<void> resendMsg(MsgData msg) async {
     MsgData? last = msg;
-    if (msg.source == MsgSource.error) {
+    if (msg.source == MsgType.error) {
       last = findLastServerMsg();
     }
     if (last == null) {
@@ -787,7 +805,7 @@ class MsgCtr extends GetxController {
       return;
     }
 
-    await sendMsgRequest(path: ApiPath.resendMsg, isLoading: true, msgId: id);
+    await sendMsgRequest(path: UrPath.resendMsg, isLoading: true, msgId: id);
   }
 
   /// 编辑消息
@@ -803,17 +821,18 @@ class MsgCtr extends GetxController {
       FToast.toast(LocaleKeys.some_error_try_again.tr);
       return;
     }
-    var data = await Api.editMsg(id: id, text: content);
+    var data = await FApi.editMsg(id: id, text: content);
     if (data != null) {
       // 查找上一个 sendtext 消息  如果存在question一样的，将它删除
-      MsgData? pre = list.firstWhereOrNull((element) => element.question == data.question);
+      MsgData? pre =
+          list.firstWhereOrNull((element) => element.question == data.question);
       if (pre != null) {
         list.remove(pre);
       }
       // 替换就消息
       list.removeWhere((element) => element.id == id);
       list.add(data);
-      AppUser().getUserInfo();
+      MY().getUserInfo();
     }
     isRecieving = false;
     FLoading.dismiss();
@@ -829,7 +848,8 @@ class MsgCtr extends GetxController {
         return;
       }
 
-      bool res = await Api.editScene(convId: conversationId, scene: scene, roleId: charId);
+      bool res = await FApi.editScene(
+          convId: conversationId, scene: scene, roleId: charId);
       if (res) {
         session.scene = scene;
         list.clear();
@@ -838,12 +858,12 @@ class MsgCtr extends GetxController {
       FLoading.dismiss();
     }
 
-    AppDialog.alert(
+    FDialog.alert(
       message: LocaleKeys.scenario_restart_warning.tr,
       cancelText: LocaleKeys.cancel.tr,
       confirmText: LocaleKeys.confirm.tr,
       onConfirm: () {
-        AppDialog.dismiss();
+        FDialog.dismiss();
         request();
       },
     );
@@ -863,7 +883,7 @@ class MsgCtr extends GetxController {
       return;
     }
     FLoading.showLoading();
-    bool res = await Api.editChatMode(convId: conversationId, mode: mode);
+    bool res = await FApi.editChatMode(convId: conversationId, mode: mode);
     if (res) {
       session.chatModel = mode;
       if (Get.isBottomSheetOpen == true) Get.back();
@@ -875,7 +895,8 @@ class MsgCtr extends GetxController {
   Future<bool> changeMask(int maskId) async {
     FLoading.showLoading();
     final conversationId = session.id;
-    final res = await Api.changeMask(conversationId: conversationId, maskId: maskId);
+    final res =
+        await FApi.changeMask(conversationId: conversationId, maskId: maskId);
     FLoading.dismiss();
     if (res) {
       session.profileId = maskId;
@@ -888,7 +909,7 @@ class MsgCtr extends GetxController {
 
   void _addMaskTips() {
     final msg = MsgData();
-    msg.source = MsgSource.maskTips;
+    msg.source = MsgType.maskTips;
     msg.answer = LocaleKeys.mask_applied.tr;
     list.add(msg);
   }

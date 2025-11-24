@@ -1,10 +1,10 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fast_ai/component/f_empty.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/home/home_item.dart';
 import 'package:fast_ai/pages/home/home_list_controller.dart';
-import 'package:fast_ai/services/network_service.dart';
+import 'package:fast_ai/services/net_o_b_s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -12,8 +12,8 @@ import 'package:get/get.dart';
 class HomeListView extends StatefulWidget {
   const HomeListView({super.key, required this.cate, this.onTap});
 
-  final HomeListCategroy cate;
-  final Function(Role)? onTap;
+  final HomeCate cate;
+  final Function(APop)? onTap;
 
   @override
   State<HomeListView> createState() => _HomeListViewState();
@@ -27,7 +27,7 @@ class _HomeListViewState extends State<HomeListView> {
     super.initState();
     _controller = HomeListController(widget.cate);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!NetworkService.to.isConnected.value) {
+      if (!NetOBS.to.isConnected.value) {
         return;
       }
       _controller.refreshCtr.callRefresh();
@@ -60,12 +60,13 @@ class _HomeListViewState extends State<HomeListView> {
     );
   }
 
-  Widget _buildList(ScrollPhysics physics, List<Role> list) {
+  Widget _buildList(ScrollPhysics physics, List<APop> list) {
     final width = MediaQuery.sizeOf(context).width / 2 - 16;
 
     return MasonryGridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2),
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
       itemCount: list.length,
@@ -79,7 +80,7 @@ class _HomeListViewState extends State<HomeListView> {
           width: width,
           height: height,
           role: role,
-          onCollect: (Role role) {
+          onCollect: (APop role) {
             _controller.onCollect(index, role);
           },
           cate: widget.cate,

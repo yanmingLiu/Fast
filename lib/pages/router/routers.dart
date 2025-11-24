@@ -1,4 +1,4 @@
-import 'package:fast_ai/component/image_preview.dart';
+import 'package:fast_ai/component/f_image_preview.dart';
 import 'package:fast_ai/component/video_preview.dart';
 import 'package:fast_ai/pages/chat/mask_edit_page.dart';
 import 'package:fast_ai/pages/chat/mask_page.dart';
@@ -23,21 +23,21 @@ class Routers {
 
   /// 应用路由路径定义
   static const String main = '/';
-  static const String splash = '/splash';
-  static const String phone = '/phone';
-  static const String phoneGuide = '/phone-guide';
-  static const String vip = '/vip';
-  static const String imagePreview = '/image-preview';
-  static const String videoPreview = '/video-preview';
-  static const String search = '/search';
-  static const String gems = '/gems';
-  static const String msg = '/msg';
-  static const String profile = '/profile';
-  static const String undr = '/undr';
-  static const String undrSku = '/undr-sku';
-  static const String mask = '/mask';
-  static const String maskEdit = '/mask-edit';
-  static const String homeFilter = '/home-fillter';
+  static const String splash = '/zx001';
+  static const String phone = '/zx002';
+  static const String phoneGuide = '/zx003';
+  static const String vip = '/zx004';
+  static const String imagePreview = '/zx005';
+  static const String videoPreview = '/zx006';
+  static const String search = '/zx007';
+  static const String gems = '/zx008';
+  static const String msg = '/zx009';
+  static const String profile = '/zx010';
+  static const String undr = '/zx011';
+  static const String undrSku = '/zx012';
+  static const String mask = '/zx013';
+  static const String maskEdit = '/zx014';
+  static const String homeFilter = '/zx015';
 
   /// 应用路由页面定义列表
   static final List<GetPage> pages = [
@@ -56,12 +56,18 @@ class Routers {
     // 特殊过渡效果路由
     GetPage(
       name: imagePreview,
-      page: () => const ImagePreview(),
+      page: () => const FImagePreview(),
       transition: Transition.zoom,
       fullscreenDialog: true,
     ),
-    GetPage(name: videoPreview, page: () => const VideoPreview(), fullscreenDialog: true),
-    GetPage(name: homeFilter, page: () => const HomeFiltterPage(), transition: Transition.downToUp),
+    GetPage(
+        name: videoPreview,
+        page: () => const VideoPreview(),
+        fullscreenDialog: true),
+    GetPage(
+        name: homeFilter,
+        page: () => const HomeFiltterPage(),
+        transition: Transition.downToUp),
 
     GetPage(
       name: vip,

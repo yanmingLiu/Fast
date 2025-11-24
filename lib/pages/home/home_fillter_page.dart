@@ -1,9 +1,9 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_loading.dart';
-import 'package:fast_ai/data/role_tags.dart';
+import 'package:fast_ai/data/a_pop_tags.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,9 +20,9 @@ class HomeFiltterPage extends StatefulWidget {
 class _HomeFiltterPageState extends State<HomeFiltterPage> {
   final ctr = Get.find<HomeCtr>();
 
-  RoleTagRes? selectedType;
+  APopTagRes? selectedType;
 
-  final _selectTags = <RoleTag>{}.obs;
+  final _selectTags = <APopTag>{}.obs;
 
   @override
   void initState() {
@@ -82,8 +82,10 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
                 setState(() {});
               },
               child: Text(
-                containsAll ? LocaleKeys.unselect_all.tr : LocaleKeys.select_all.tr,
-                style: AppTextStyle.openSans(
+                containsAll
+                    ? LocaleKeys.unselect_all.tr
+                    : LocaleKeys.select_all.tr,
+                style: ThemeStyle.openSans(
                   color: Color(0xFF3F8DFD),
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -100,7 +102,10 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
           children: [
             Text(
               LocaleKeys.choose_your_tags.tr,
-              style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                  fontSize: 32,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
             _buildType(),
@@ -116,7 +121,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
                 ctr.selectTags.assignAll(_selectTags);
                 Get.back();
                 ctr.filterEvent.value = (
-                  Set<RoleTag>.from(ctr.selectTags),
+                  Set<APopTag>.from(ctr.selectTags),
                   DateTime.now().millisecondsSinceEpoch,
                 );
                 ctr.filterEvent.refresh();
@@ -124,7 +129,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
               child: Center(
                 child: Text(
                   LocaleKeys.confirm.tr,
-                  style: AppTextStyle.openSans(
+                  style: ThemeStyle.openSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
@@ -162,7 +167,8 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
                   _selectTags.add(e);
                 }
               },
-              child: Row(mainAxisSize: MainAxisSize.min, children: [_buildItem(e)]),
+              child: Row(
+                  mainAxisSize: MainAxisSize.min, children: [_buildItem(e)]),
             );
           }).toList(),
         ),
@@ -170,7 +176,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
     );
   }
 
-  Widget _buildItem(RoleTag e) {
+  Widget _buildItem(APopTag e) {
     return Obx(() {
       var isSelected = _selectTags.contains(e);
       return Container(
@@ -178,12 +184,14 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
         padding: EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(16)),
-          border: Border.all(color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8), width: 1.0),
+          border: Border.all(
+              color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8),
+              width: 1.0),
         ),
         child: Center(
           child: Text(
             e.name ?? '',
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: isSelected ? Color(0xFF3F8DFD) : Color(0xFFA8A8A8),
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -199,11 +207,11 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
     if (tags.isEmpty) {
       return SizedBox.shrink();
     }
-    List<RoleTagRes> result = (tags.length > 2) ? tags.take(2).toList() : tags;
+    List<APopTagRes> result = (tags.length > 2) ? tags.take(2).toList() : tags;
 
-    RoleTagRes type1 = result[0];
+    APopTagRes type1 = result[0];
 
-    RoleTagRes? type2;
+    APopTagRes? type2;
     if (result.length > 1) {
       type2 = result[1];
     }
@@ -249,7 +257,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
     );
   }
 
-  Widget _buildTypeItem1(RoleTagRes type) {
+  Widget _buildTypeItem1(APopTagRes type) {
     bool isSelected = type == selectedType;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -263,7 +271,7 @@ class _HomeFiltterPageState extends State<HomeFiltterPage> {
           Text(
             type.labelType ?? '',
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: isSelected ? Colors.white : Color(0xFF727374),
               fontSize: isSelected ? 16 : 14,
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,

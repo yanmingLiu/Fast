@@ -1,4 +1,4 @@
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 
 class FSwitch extends StatefulWidget {
@@ -12,7 +12,7 @@ class FSwitch extends StatefulWidget {
     super.key,
     required this.value,
     this.onChanged,
-    this.activeColor = AppColors.primary,
+    this.activeColor = ThemeColors.primary,
     this.thumbColor = const Color(0xFFFFFFFF),
     this.trackColor = const Color(0xFFB3B3B3),
   });

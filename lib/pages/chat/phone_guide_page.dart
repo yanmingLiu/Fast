@@ -6,17 +6,17 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/phone_page.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/tools/downloader.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
-import 'package:fast_ai/values/app_colors.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/theme_colors.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -32,8 +32,9 @@ class PhoneGuidePage extends StatefulWidget {
 
 enum PlayState { init, playing, finish }
 
-class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, WidgetsBindingObserver {
-  late Role role;
+class _PhoneGuidePageState extends State<PhoneGuidePage>
+    with RouteAware, WidgetsBindingObserver {
+  late APop role;
 
   VideoPlayerController? _controller;
   Future<void>? _initializeVideoPlayerFuture;
@@ -60,7 +61,8 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
 
   Future<void> _downloadAndInitVideo() async {
     try {
-      final guide = role.characterVideoChat?.firstWhereOrNull((e) => e.tag == 'guide');
+      final guide =
+          role.characterVideoChat?.firstWhereOrNull((e) => e.tag == 'guide');
       var url = guide?.url;
       if (url == null) {
         throw Exception('Video URL not found');
@@ -129,7 +131,8 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
       _controller?.pause();
       setState(() {});
     }
@@ -150,7 +153,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
       _controller?.pause();
       playState.value = PlayState.finish;
 
-      if (AppUser().isVip.value && !_hasCalledPhoneAccept) {
+      if (MY().isVip.value && !_hasCalledPhoneAccept) {
         _hasCalledPhoneAccept = true; // 设置标志位防止重复调用
         _phoneAccept();
       }
@@ -208,12 +211,14 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: FImage(url: role.avatar, width: height, height: height),
+                  child:
+                      FImage(url: role.avatar, width: height, height: height),
                 ),
                 FutureBuilder(
                   future: _initializeVideoPlayerFuture,
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done && _controller != null) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        _controller != null) {
                       return Positioned.fill(
                         child: FittedBox(
                           fit: BoxFit.cover,
@@ -246,7 +251,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
                   right: 0,
                   left: 0,
                   child: Obx(() {
-                    final vip = AppUser().isVip.value;
+                    final vip = MY().isVip.value;
 
                     switch (playState.value) {
                       case PlayState.init:
@@ -275,7 +280,11 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
         spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          FImage(url: role.avatar, width: 48, height: 48, borderRadius: BorderRadius.circular(24)),
+          FImage(
+              url: role.avatar,
+              width: 48,
+              height: 48,
+              borderRadius: BorderRadius.circular(24)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,11 +294,15 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
                   role.name ?? '',
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700),
                 ),
                 if (role.age != null)
                   Text(
-                    LocaleKeys.age_years_olds.trParams({'age': role.age.toString()}),
+                    LocaleKeys.age_years_olds
+                        .trParams({'age': role.age.toString()}),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -311,10 +324,10 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
   }
 
   void _phoneAccept() async {
-    final vip = AppUser().isVip.value;
+    final vip = MY().isVip.value;
     if (vip) {
-      if (AppUser().balance.value < ConsumeFrom.call.gems) {
-        AppRouter.pushGem(ConsumeFrom.call);
+      if (MY().balance.value < GemsFrom.call.gems) {
+        AppRouter.pushGem(GemsFrom.call);
         return;
       }
       AppRouter.offPhone(role: role, showVideo: true);
@@ -325,7 +338,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
 
   void _pushVip() {
     logEvent('c_unlock_videocall');
-    AppRouter.pushVip(VipFrom.call);
+    AppRouter.pushVip(ProFrom.call);
   }
 
   Widget _playingView() {
@@ -337,12 +350,14 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
         Text(
           LocaleKeys.invites_you_to_video_call.tr,
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
+          style: TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            PhoneBtn(icon: Assets.images.hangup.image(), onTap: () => Get.back()),
+            PhoneBtn(
+                icon: Assets.images.hangup.image(), onTap: () => Get.back()),
             if (playState.value == PlayState.finish)
               PhoneBtn(icon: Assets.images.accept.image(), onTap: _phoneAccept),
           ],
@@ -369,26 +384,31 @@ class _PhoneGuidePageState extends State<PhoneGuidePage> with RouteAware, Widget
           Text(
             LocaleKeys.activate_benefits.tr,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+            style: TextStyle(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
           ),
           SizedBox(height: 8),
           Text(
             LocaleKeys.get_ai_interactive_video_chat.tr,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
           ),
           SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: FButton(
-              color: AppColors.primary,
+              color: ThemeColors.primary,
               onTap: _pushVip,
               hasShadow: true,
               margin: EdgeInsets.symmetric(horizontal: 40),
               child: Center(
                 child: Text(
                   LocaleKeys.btn_continue.tr,
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16),
                 ),
               ),
             ),

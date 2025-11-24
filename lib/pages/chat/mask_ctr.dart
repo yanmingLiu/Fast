@@ -3,7 +3,7 @@ import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/data/mask_data.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/router/routers.dart';
-import 'package:fast_ai/services/api.dart';
+import 'package:fast_ai/services/f_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -65,7 +65,7 @@ class MaskCtr extends GetxController {
 
     try {
       isLoading.value = true;
-      final response = await Api.getMaskList(page: currentPage.value, size: pageSize);
+      final response = await FApi.getMaskList(page: currentPage.value, size: pageSize);
 
       hasMore.value = (response?.records?.length ?? 0) >= pageSize;
 

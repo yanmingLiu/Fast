@@ -3,12 +3,12 @@ import 'dart:ui';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:fast_ai/component/f_image.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/phone_ctr.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -33,7 +33,8 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
           var callState = ctr.callState.value;
           if (callState == CallState.incoming) {
             return SafeArea(
-              child: Padding(padding: const EdgeInsets.all(16), child: _buildContainer()),
+              child: Padding(
+                  padding: const EdgeInsets.all(16), child: _buildContainer()),
             );
           }
           return _buildContainer();
@@ -48,7 +49,8 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
         Positioned.fill(
           child: FImage(
             url: ctr.guideVideo?.gifUrl ?? ctr.role.avatar,
-            borderRadius: BorderRadius.circular(ctr.callState.value == CallState.incoming ? 24 : 0),
+            borderRadius: BorderRadius.circular(
+                ctr.callState.value == CallState.incoming ? 24 : 0),
           ),
         ),
         Padding(
@@ -63,7 +65,9 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
                 Obx(() => _buildLoading()),
                 _buildAnswering(),
                 SizedBox(height: 30),
-                Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: _buildButtons()),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: _buildButtons()),
                 SizedBox(height: 24),
               ],
             ),
@@ -77,7 +81,8 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
     if (ctr.callState.value == CallState.calling ||
         ctr.callState.value == CallState.answering ||
         ctr.callState.value == CallState.listening) {
-      return LoadingAnimationWidget.staggeredDotsWave(color: Colors.white, size: 40);
+      return LoadingAnimationWidget.staggeredDotsWave(
+          color: Colors.white, size: 40);
     }
     return Container();
   }
@@ -134,12 +139,14 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
       width: Get.width - 60,
       child: Center(
         child: DefaultTextStyle(
-          style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
           child: AnimatedTextKit(
             key: ValueKey(ctr.callState.value),
             totalRepeatCount: 1,
             animatedTexts: [
-              TypewriterAnimatedText(text, speed: const Duration(milliseconds: 50), cursor: ''),
+              TypewriterAnimatedText(text,
+                  speed: const Duration(milliseconds: 50), cursor: ''),
             ],
           ),
         ),
@@ -148,10 +155,13 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
   }
 
   List<Widget> _buildButtons() {
-    List<Widget> buttons = [PhoneBtn(icon: Assets.images.hangup.image(), onTap: ctr.onTapHangup)];
+    List<Widget> buttons = [
+      PhoneBtn(icon: Assets.images.hangup.image(), onTap: ctr.onTapHangup)
+    ];
 
     if (ctr.callState.value == CallState.incoming) {
-      buttons.add(PhoneBtn(icon: Assets.images.accept.image(), onTap: ctr.onTapAccept));
+      buttons.add(
+          PhoneBtn(icon: Assets.images.accept.image(), onTap: ctr.onTapAccept));
     }
 
     if (ctr.callState.value == CallState.listening) {
@@ -167,7 +177,8 @@ class _PhonePageState extends State<PhonePage> with RouteAware {
     if (ctr.callState.value == CallState.answering ||
         ctr.callState.value == CallState.micOff ||
         ctr.callState.value == CallState.answered) {
-      buttons.add(PhoneBtn(icon: Assets.images.micoff.image(), onTap: () => ctr.onTapMic(true)));
+      buttons.add(PhoneBtn(
+          icon: Assets.images.micoff.image(), onTap: () => ctr.onTapMic(true)));
     }
 
     return buttons;
@@ -197,7 +208,8 @@ class PhoneBtn extends StatelessWidget {
           Container(
             width: 72,
             height: 72,
-            decoration: BoxDecoration(borderRadius: BorderRadiusDirectional.circular(36)),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadiusDirectional.circular(36)),
             child: Center(
               child: Stack(
                 alignment: Alignment.center,
@@ -209,7 +221,8 @@ class PhoneBtn extends StatelessWidget {
                       color: animationColor!,
                       borderWidth: 1.0,
                       rippleSpacing: 300, // ripple interval in milliseconds
-                      scaleMultiplier: 0.5, // adjust the scale multiplier to reduce the size change
+                      scaleMultiplier:
+                          0.5, // adjust the scale multiplier to reduce the size change
                     ),
                   icon,
                 ],
@@ -225,7 +238,7 @@ class PhoneBtn extends StatelessWidget {
 class PhoneTitle extends StatelessWidget {
   const PhoneTitle({super.key, required this.role});
 
-  final Role role;
+  final APop role;
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +254,8 @@ class PhoneTitle extends StatelessWidget {
                 color: Color(0x801C1C1C),
                 borderRadius: BorderRadius.circular(30),
               ),
-              constraints: BoxConstraints(maxWidth: context.mediaQuerySize.width / 2),
+              constraints:
+                  BoxConstraints(maxWidth: context.mediaQuerySize.width / 2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -264,7 +278,7 @@ class PhoneTitle extends StatelessWidget {
                               maxLines: 1,
                               textAlign: TextAlign.left, // 修改为左对齐
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyle.openSans(
+                              style: ThemeStyle.openSans(
                                 fontSize: 16,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
@@ -272,8 +286,9 @@ class PhoneTitle extends StatelessWidget {
                             ),
                             if (role.age != null)
                               Text(
-                                LocaleKeys.age_years_olds.trParams({'age': role.age.toString()}),
-                                style: AppTextStyle.openSans(
+                                LocaleKeys.age_years_olds
+                                    .trParams({'age': role.age.toString()}),
+                                style: ThemeStyle.openSans(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   color: Color(0xFFDEDEDE),
@@ -316,7 +331,8 @@ class WaterRippleEffect extends StatefulWidget {
   State<WaterRippleEffect> createState() => _WaterRippleEffectState();
 }
 
-class _WaterRippleEffectState extends State<WaterRippleEffect> with TickerProviderStateMixin {
+class _WaterRippleEffectState extends State<WaterRippleEffect>
+    with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
   late List<Timer> _timers;
@@ -325,7 +341,8 @@ class _WaterRippleEffectState extends State<WaterRippleEffect> with TickerProvid
   void initState() {
     super.initState();
     _controllers = List.generate(3, (index) {
-      return AnimationController(vsync: this, duration: const Duration(seconds: 1));
+      return AnimationController(
+          vsync: this, duration: const Duration(seconds: 1));
     });
 
     _animations = _controllers.map((controller) {
@@ -358,7 +375,8 @@ class _WaterRippleEffectState extends State<WaterRippleEffect> with TickerProvid
         return AnimatedBuilder(
           animation: _animations[index],
           builder: (context, child) {
-            double scale = 1.0 + _animations[index].value * widget.scaleMultiplier;
+            double scale =
+                1.0 + _animations[index].value * widget.scaleMultiplier;
             return Transform.scale(
               scale: scale,
               child: Opacity(
@@ -368,7 +386,8 @@ class _WaterRippleEffectState extends State<WaterRippleEffect> with TickerProvid
                   height: widget.height,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: widget.color, width: widget.borderWidth),
+                    border: Border.all(
+                        color: widget.color, width: widget.borderWidth),
                   ),
                 ),
               ),

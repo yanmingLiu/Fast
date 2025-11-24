@@ -1,16 +1,16 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_loading.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +19,7 @@ class HomeListController {
     _initState();
   }
 
-  final HomeListCategroy cate;
+  final HomeCate cate;
 
   final EasyRefreshController refreshCtr = EasyRefreshController(
     controlFinishRefresh: true,
@@ -36,7 +36,7 @@ class HomeListController {
   bool? changeClothing;
   int page = 1;
   int size = 10;
-  var list = <Role>[].obs;
+  var list = <APop>[].obs;
 
   Rx<EmptyType?> type = Rx<EmptyType?>(null);
 
@@ -107,7 +107,8 @@ class HomeListController {
 
       await Future.delayed(Duration(milliseconds: 50));
       refreshCtr.finishRefresh();
-      refreshCtr.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+      refreshCtr.finishLoad(
+          isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
     } finally {
       _isRefreshing = false;
     }
@@ -128,7 +129,8 @@ class HomeListController {
       await _fetchData();
 
       await Future.delayed(Duration(milliseconds: 50));
-      refreshCtr.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+      refreshCtr.finishLoad(
+          isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
     } catch (e) {
       page--;
       refreshCtr.finishLoad(IndicatorResult.fail);
@@ -137,39 +139,39 @@ class HomeListController {
     }
   }
 
-  void onCollect(int index, Role role) async {
+  void onCollect(int index, APop role) async {
     final chatId = role.id;
     if (chatId == null) {
       return;
     }
     if (role.collect == true) {
-      final res = await Api.cancelCollectRole(chatId);
+      final res = await FApi.cancelCollectRole(chatId);
       if (res) {
         role.collect = false;
         list.refresh();
       }
     } else {
-      final res = await Api.collectRole(chatId);
+      final res = await FApi.collectRole(chatId);
       if (res) {
         role.collect = true;
         list.refresh();
 
-        if (AppDialog.rateCollectShowd == false) {
-          AppDialog.showRateUs(LocaleKeys.rate_us_like.tr);
-          AppDialog.rateCollectShowd = true;
+        if (FDialog.rateCollectShowd == false) {
+          FDialog.showRateUs(LocaleKeys.rate_us_like.tr);
+          FDialog.rateCollectShowd = true;
         }
       }
     }
   }
 
-  Future<RolePage?> _fetchData() async {
-    if (cate == HomeListCategroy.realistic) {
-      rendStyl = HomeListCategroy.realistic.name.toUpperCase();
-    } else if (cate == HomeListCategroy.anime) {
-      rendStyl = HomeListCategroy.anime.name.toUpperCase();
-    } else if (cate == HomeListCategroy.video) {
+  Future<APopRes?> _fetchData() async {
+    if (cate == HomeCate.realistic) {
+      rendStyl = HomeCate.realistic.name.toUpperCase();
+    } else if (cate == HomeCate.anime) {
+      rendStyl = HomeCate.anime.name.toUpperCase();
+    } else if (cate == HomeCate.video) {
       videoChat = true;
-    } else if (cate == HomeListCategroy.dressUp) {
+    } else if (cate == HomeCate.dressUp) {
       changeClothing = true;
     }
 
@@ -178,7 +180,7 @@ class HomeListController {
     tagIds = ids;
 
     try {
-      final res = await Api.homeList(
+      final res = await FApi.homeList(
         page: page,
         size: size,
         rendStyl: rendStyl,
@@ -195,7 +197,7 @@ class HomeListController {
       if (page == 1) {
         list.clear();
 
-        if (AppUser().isVip.value == false) {
+        if (MY().isVip.value == false) {
           Get.find<HomeCallCtr>().onCall(records);
         }
       }

@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -62,11 +62,12 @@ class FEmpty extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: AppColors.primary,
+          color: ThemeColors.primary,
         ),
         child: Text(
           LocaleKeys.reload.tr,
-          style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+              fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -116,7 +117,7 @@ class FEmpty extends StatelessWidget {
             hintText ?? hint,
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.hintText,
+              color: ThemeColors.hintText,
               fontWeight: FontWeight.w500,
               fontStyle: FontStyle.italic,
             ),

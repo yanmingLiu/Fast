@@ -2,19 +2,19 @@ import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_loading.dart';
-import 'package:fast_ai/component/linked_tab_page_controller.dart';
+import 'package:fast_ai/component/link_tab_controller.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../services/app_service.dart';
+import '../../services/f_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,10 +23,11 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   final ctr = Get.put(HomeCtr());
 
-  late LinkedTabPageController _linkedController;
+  late LinkTabController _linkedController;
 
   @override
   void initState() {
@@ -48,7 +49,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned(top: 0, left: 0, right: 0, child: Assets.images.pageBg.image()),
+        Positioned(
+            top: 0, left: 0, right: 0, child: Assets.images.pageBg.image()),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: buildAppBar(),
@@ -58,7 +60,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 return FEmpty(type: EmptyType.loading);
               }
 
-              _linkedController = LinkedTabPageController(
+              _linkedController = LinkTabController(
                 items: ctr.categroyList,
                 onIndexChanged: (index) => log.d("当前选中 index: $index"),
                 onItemsChanged: (items) => log.d("数据源更新: $items"),
@@ -102,7 +104,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       child: Row(
         spacing: 12,
         children: [
-          if (AppCache().isBig)
+          if (FCache().isBig)
             FButton(
               onTap: ctr.onTapFilter,
               width: 44,
@@ -113,7 +115,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   () => FIcon(
                     assetName: Assets.svg.filter,
                     width: 24,
-                    color: ctr.selectTags.isEmpty ? Colors.white : AppColors.primary,
+                    color: ctr.selectTags.isEmpty
+                        ? Colors.white
+                        : ThemeColors.primary,
                   ),
                 ),
               ),
@@ -123,8 +127,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               height: 44,
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.white10,
-                border: BoxBorder.all(color: AppColors.white20, width: 1),
+                color: ThemeColors.white10,
+                border: BoxBorder.all(color: ThemeColors.white20, width: 1),
                 borderRadius: BorderRadius.circular(22),
               ),
               child: ListView.separated(
@@ -169,7 +173,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return FButton(
       key: key,
       borderRadius: BorderRadius.circular(16),
-      color: isActive ? AppColors.primary : Colors.transparent,
+      color: isActive ? ThemeColors.primary : Colors.transparent,
       onTap: onTap,
       padding: EdgeInsets.symmetric(horizontal: 8),
       constraints: BoxConstraints(minWidth: 50),
@@ -196,13 +200,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         child: Row(
           children: [
             Obx(() {
-              final isVip = AppUser().isVip.value;
+              final isVip = MY().isVip.value;
               if (isVip) {
                 return SizedBox();
               }
               return FButton(
                 onTap: () {
-                  AppRouter.pushVip(VipFrom.homevip);
+                  AppRouter.pushVip(ProFrom.homevip);
                 },
                 width: 44,
                 height: 44,
@@ -217,7 +221,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               constraints: BoxConstraints(minWidth: 44),
               padding: EdgeInsets.symmetric(horizontal: 12),
               onTap: () {
-                AppRouter.pushGem(ConsumeFrom.home);
+                AppRouter.pushGem(GemsFrom.home);
               },
               child: Center(
                 child: Row(
@@ -226,7 +230,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     Assets.images.gems.image(width: 24),
                     Obx(
                       () => Text(
-                        AppUser().balance.toString(),
+                        MY().balance.toString(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,

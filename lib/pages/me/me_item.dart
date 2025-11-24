@@ -1,4 +1,4 @@
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -62,17 +62,17 @@ class _MeItemState extends State<MeItem> {
 
   @override
   Widget build(BuildContext context) {
-    final sectionTitleStyle = AppTextStyle.openSans(
+    final sectionTitleStyle = ThemeStyle.openSans(
       color: const Color(0xFF858585),
       fontSize: 12,
       fontWeight: FontWeight.w400,
     );
-    final titleStyle = AppTextStyle.openSans(
+    final titleStyle = ThemeStyle.openSans(
       color: Colors.white,
       fontSize: 16,
       fontWeight: FontWeight.w700,
     );
-    final subtitleStyle = AppTextStyle.openSans(
+    final subtitleStyle = ThemeStyle.openSans(
       color: const Color(0xFF858585),
       fontSize: 12,
       fontWeight: FontWeight.w500,

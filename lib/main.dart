@@ -1,11 +1,11 @@
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/router/routers.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_service.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
-import 'package:fast_ai/values/app_colors.dart';
+import 'package:fast_ai/values/theme_colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,15 +35,15 @@ void main() async {
     PaintingBinding.instance.imageCache.maximumSize = 100;
     PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20;
 
-    AppService().init(env: kReleaseMode ? Environment.prod : Environment.dev);
+    FService().init(env: kReleaseMode ? Environment.prod : Environment.dev);
 
-    await AppService().start();
+    await FService().start();
 
-    final isFirstLaunch = AppCache().isRestart == false;
+    final isFirstLaunch = FCache().isRestart == false;
     if (isFirstLaunch) {
-      AppLogEvent().logInstallEvent();
+      FLogEvent().logInstallEvent();
     } else {
-      AppLogEvent().logSessionEvent();
+      FLogEvent().logSessionEvent();
     }
   } catch (e, s) {
     log.e('===> init error: $e\n$s');
@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Fast AI',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+        colorScheme: ColorScheme.fromSeed(seedColor: ThemeColors.primary),
         scaffoldBackgroundColor: const Color(0xFF111111), // 背景色
       ),
       getPages: Routers.pages,
@@ -114,7 +114,8 @@ class MyApp extends StatelessWidget {
           data: MediaQuery.of(context).copyWith(
             textScaler: TextScaler.linear(1.0), // 固定字体缩放比例为1.0，不跟随系统字体大小
           ),
-          child: FlutterSmartDialog.init(loadingBuilder: (msg) => FLoading.custom())(
+          child: FlutterSmartDialog.init(
+              loadingBuilder: (msg) => FLoading.custom())(
             context,
             child,
           ),

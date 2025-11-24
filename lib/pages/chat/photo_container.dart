@@ -4,10 +4,10 @@ import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,10 +36,10 @@ class PhotoContainer extends StatelessWidget {
 
   Widget _buildImageWidget(BuildContext context) {
     var imageUrl = msg.imgUrl ?? '';
-    if (msg.source == MsgSource.clothe) {
+    if (msg.source == MsgType.clothe) {
       imageUrl = msg.giftImg ?? '';
     }
-    var isLockImage = msg.mediaLock == MsgLockLevel.private.value;
+    var isLockImage = msg.mediaLock == LockType.private.value;
     var imageWidth = 200.0;
     var imageHeight = 240.0;
 
@@ -54,7 +54,7 @@ class PhotoContainer extends StatelessWidget {
     );
 
     return Obx(() {
-      var isHide = !AppUser().isVip.value && isLockImage;
+      var isHide = !MY().isVip.value && isLockImage;
       return isHide
           ? _buildLoackWidge(imageWidth, imageHeight, imageWidget)
           : GestureDetector(
@@ -66,7 +66,8 @@ class PhotoContainer extends StatelessWidget {
     });
   }
 
-  GestureDetector _buildLoackWidge(double imageWidth, double imageHeight, Widget imageWidget) {
+  GestureDetector _buildLoackWidge(
+      double imageWidth, double imageHeight, Widget imageWidget) {
     return GestureDetector(
       onTap: _onTapUnlock,
       child: Container(
@@ -116,7 +117,7 @@ class PhotoContainer extends StatelessWidget {
                 children: [
                   Text(
                     LocaleKeys.hot_photo.tr,
-                    style: AppTextStyle.openSans(
+                    style: ThemeStyle.openSans(
                       color: Colors.white,
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -133,9 +134,9 @@ class PhotoContainer extends StatelessWidget {
 
   void _onTapUnlock() async {
     logEvent('c_news_lockpic');
-    final isVip = AppUser().isVip.value;
+    final isVip = MY().isVip.value;
     if (!isVip) {
-      AppRouter.pushVip(VipFrom.lockpic);
+      AppRouter.pushVip(ProFrom.lockpic);
     }
   }
 }

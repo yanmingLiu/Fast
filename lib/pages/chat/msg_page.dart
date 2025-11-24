@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_button.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/component/f_toast.dart';
@@ -14,10 +14,10 @@ import 'package:fast_ai/pages/chat/msg_list_view.dart';
 import 'package:fast_ai/pages/chat/photo_album.dart';
 import 'package:fast_ai/pages/chat/role_lock_view.dart';
 import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,9 +36,12 @@ class MsgPage extends StatelessWidget {
       },
       child: Stack(
         children: [
-          Positioned.fill(child: FImage(url: ctr.session.background ?? role.avatar)),
-          if (AppCache().chatBgImagePath.isNotEmpty)
-            Positioned.fill(child: Image.file(File(AppCache().chatBgImagePath), fit: BoxFit.cover)),
+          Positioned.fill(
+              child: FImage(url: ctr.session.background ?? role.avatar)),
+          if (FCache().chatBgImagePath.isNotEmpty)
+            Positioned.fill(
+                child: Image.file(File(FCache().chatBgImagePath),
+                    fit: BoxFit.cover)),
           Scaffold(
             appBar: _buildAppBar(),
             extendBodyBehindAppBar: true,
@@ -64,7 +67,8 @@ class MsgPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       children: [
-                        if (AppCache().isBig) FloatItem(role: role, sessionId: ctr.sessionId ?? 0),
+                        if (FCache().isBig)
+                          FloatItem(role: role, sessionId: ctr.sessionId ?? 0),
                         const Spacer(),
                         const LevelView(),
                       ],
@@ -75,8 +79,9 @@ class MsgPage extends StatelessWidget {
             ),
           ),
           Obx(() {
-            final vip = AppUser().isVip.value;
-            if (role.vip == true && !vip) return const Positioned.fill(child: RoleLockView());
+            final vip = MY().isVip.value;
+            if (role.vip == true && !vip)
+              return const Positioned.fill(child: RoleLockView());
             return const SizedBox();
           }),
         ],
@@ -100,7 +105,7 @@ class MsgPage extends StatelessWidget {
         const SizedBox(width: 20),
         GestureDetector(
           onTap: () {
-            AppDialog.showChatLevel();
+            FDialog.showChatLevel();
           },
           child: Container(
             decoration: BoxDecoration(
@@ -116,7 +121,8 @@ class MsgPage extends StatelessWidget {
                   (element) => element['level'] == level,
                 );
                 var levelStr = map?['icon'] as String?;
-                return Text(levelStr ?? '👋', style: const TextStyle(fontSize: 17));
+                return Text(levelStr ?? '👋',
+                    style: const TextStyle(fontSize: 17));
               }),
             ),
           ),
@@ -124,13 +130,13 @@ class MsgPage extends StatelessWidget {
         IconButton(
           onPressed: () {
             logEvent('c_call');
-            if (!AppUser().isVip.value) {
-              AppRouter.pushVip(VipFrom.call);
+            if (!MY().isVip.value) {
+              AppRouter.pushVip(ProFrom.call);
               return;
             }
 
-            if (!AppUser().isBalanceEnough(ConsumeFrom.call)) {
-              AppRouter.pushGem(ConsumeFrom.call);
+            if (!MY().isBalanceEnough(GemsFrom.call)) {
+              AppRouter.pushGem(GemsFrom.call);
               return;
             }
 
@@ -140,7 +146,8 @@ class MsgPage extends StatelessWidget {
               return;
             }
 
-            AppRouter.pushPhone(sessionId: sessionId, role: ctr.role, showVideo: false);
+            AppRouter.pushPhone(
+                sessionId: sessionId, role: ctr.role, showVideo: false);
           },
           icon: Image.asset(Assets.images.phone.path, width: 24, height: 24),
         ),
@@ -152,7 +159,7 @@ class MsgPage extends StatelessWidget {
           constraints: BoxConstraints(minWidth: 44),
           padding: EdgeInsets.symmetric(horizontal: 12),
           onTap: () {
-            AppRouter.pushGem(ConsumeFrom.chat);
+            AppRouter.pushGem(GemsFrom.chat);
           },
           child: Center(
             child: Row(
@@ -161,7 +168,7 @@ class MsgPage extends StatelessWidget {
                 Assets.images.gems.image(width: 16),
                 Obx(
                   () => Text(
-                    AppUser().balance.toString(),
+                    MY().balance.toString(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,

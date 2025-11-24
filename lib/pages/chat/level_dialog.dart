@@ -1,7 +1,7 @@
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -38,7 +38,8 @@ class _LevelDialogState extends State<LevelDialog> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Color(0xFF333333)),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16), color: Color(0xFF333333)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,14 +47,17 @@ class _LevelDialogState extends State<LevelDialog> {
           Text(
             LocaleKeys.level_up_intimacy.tr,
             textAlign: TextAlign.center,
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 12),
-          Wrap(children: datas.map((e) => _buildRow(e['icon'], e['text'], e['gems'])).toList()),
+          Wrap(
+              children: datas
+                  .map((e) => _buildRow(e['icon'], e['text'], e['gems']))
+                  .toList()),
         ],
       ),
     );
@@ -66,7 +70,8 @@ class _LevelDialogState extends State<LevelDialog> {
       width: width,
       height: width,
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(Assets.images.levelBg.path), fit: BoxFit.fill),
+        image: DecorationImage(
+            image: AssetImage(Assets.images.levelBg.path), fit: BoxFit.fill),
       ),
       child: Column(
         spacing: 8,
@@ -75,7 +80,7 @@ class _LevelDialogState extends State<LevelDialog> {
           Text(icon, style: const TextStyle(fontSize: 27)),
           Text(
             text,
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               fontSize: 10,
               fontWeight: FontWeight.w400,
               color: Colors.white,
@@ -87,7 +92,7 @@ class _LevelDialogState extends State<LevelDialog> {
               Assets.images.gems.image(width: 12),
               Text(
                 "+ $gems",
-                style: AppTextStyle.openSans(
+                style: ThemeStyle.openSans(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -110,7 +115,8 @@ class ChatLevelUpDialog extends StatefulWidget {
   State<ChatLevelUpDialog> createState() => _ChatLevelUpDialogState();
 }
 
-class _ChatLevelUpDialogState extends State<ChatLevelUpDialog> with SingleTickerProviderStateMixin {
+class _ChatLevelUpDialogState extends State<ChatLevelUpDialog>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override

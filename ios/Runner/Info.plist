@@ -51,17 +51,15 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>This app uses the local network to discover and connect to nearby devices.</string>
+	<string>This app needs to access your local network to find and connect to devices, such as smart speakers or streaming boxes, for media sharing and control.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app uses the microphone for voice calls and AI interaction.</string>
+	<string>This app requires microphone access to enable voice and video calls and to process voice commands for AI features.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to let you upload chat backgrounds.</string>
+	<string>We need access to your photo library so you can select and upload images to set as your chat backgrounds and profile pictures.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>This app uses speech recognition for voice input during calls.</string>
-	<key>NSUserNotificationsUsageDescription</key>
-	<string>This app uses notifications to alert you of new messages and live broadcasts.</string>
+	<string>We use speech recognition to convert your voice input into text during voice chats and to process voice search queries.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>This identifier will be used to provide personalized match recommendations and content based on your interests.</string>
+	<string>Your device identifier will be used to analyze app usage for feature improvements and to provide tailored content, service recommendations, and personalized advertisements.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

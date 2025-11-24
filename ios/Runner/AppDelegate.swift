@@ -2,6 +2,7 @@ import Flutter
 import UIKit
 import FBSDKCoreKit
 import AppTrackingTransparency
+import CoreTelephony
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -85,6 +86,28 @@ import AppTrackingTransparency
                 result(FlutterMethodNotImplemented)
             }
         }
+        
+        
+        // sim check
+        let simChannel = FlutterMethodChannel(
+            name: "sim_check",
+            binaryMessenger: engineBridge.applicationRegistrar.messenger()
+        )
+        
+        simChannel.setMethodCallHandler { [weak self] (call, result) in
+            guard let self = self else { return }
+            if call.method == "hasSimCard" {
+                result(self.hasSim())
+            } else {
+                result(FlutterMethodNotImplemented)
+            }
+        }
+    }
+    
+    private func hasSim() -> Bool {
+        let networkInfo = CTTelephonyNetworkInfo()
+        let hasSim = networkInfo.serviceCurrentRadioAccessTechnology?.values.count ?? 0 != 0
+        return hasSim
     }
     
     override func application(

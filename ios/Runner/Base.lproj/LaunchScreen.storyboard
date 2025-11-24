@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -22,19 +22,19 @@
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
                                 <rect key="frame" x="196.33333333333334" y="426" width="0.33333333333334281" height="0.33333333333331439"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_icon" translatesAutoresizingMaskIntoConstraints="NO" id="1nc-Kz-iZL">
-                                <rect key="frame" x="106.66666666666669" y="336" width="180" height="180"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="1nc-Kz-iZL">
+                                <rect key="frame" x="136.66666666666666" y="150" width="119.99999999999997" height="120"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="180" id="NNo-2d-gK7"/>
-                                    <constraint firstAttribute="width" constant="180" id="aTS-kI-3VJ"/>
+                                    <constraint firstAttribute="height" constant="120" id="NNo-2d-gK7"/>
+                                    <constraint firstAttribute="width" constant="120" id="aTS-kI-3VJ"/>
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.24705882352941178" green="0.55294117647058827" blue="0.99215686274509807" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
-                            <constraint firstItem="1nc-Kz-iZL" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="GCT-Wg-qcc"/>
+                            <constraint firstItem="1nc-Kz-iZL" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" constant="150" id="ENq-7s-2W2"/>
                             <constraint firstItem="1nc-Kz-iZL" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="qqQ-h1-Dgi"/>
                         </constraints>
                     </view>
@@ -46,6 +46,6 @@
     </scenes>
     <resources>
         <image name="LaunchImage" width="0.3333333432674408" height="0.3333333432674408"/>
-        <image name="launch_icon" width="512" height="512"/>
+        <image name="logo" width="120" height="120"/>
     </resources>
 </document>

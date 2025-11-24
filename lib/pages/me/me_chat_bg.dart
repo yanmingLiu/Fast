@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -41,7 +41,7 @@ class MeChatBg extends StatelessWidget {
               Text(
                 LocaleKeys.set_chat_background.tr,
                 textAlign: TextAlign.center,
-                style: AppTextStyle.openSans(
+                style: ThemeStyle.openSans(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -65,11 +65,11 @@ class MeChatBg extends StatelessWidget {
       onTap: onTap,
       height: 48,
       borderRadius: BorderRadius.circular(24),
-      color: AppColors.primary,
+      color: ThemeColors.primary,
       child: Center(
         child: Text(
           title,
-          style: AppTextStyle.openSans(
+          style: ThemeStyle.openSans(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w700,
@@ -92,7 +92,7 @@ class MeChatBg extends StatelessWidget {
         children: [
           Text(
             title,
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: Color(0xFF727374),
               fontSize: 16,
               fontWeight: FontWeight.w700,

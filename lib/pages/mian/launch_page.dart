@@ -4,10 +4,10 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fast_ai/component/f_progress.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/router/routers.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/services/network_service.dart';
-import 'package:fast_ai/services/switch_service.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/services/f_switch_service.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/services/net_o_b_s.dart';
 import 'package:fast_ai/tools/iap_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -20,7 +20,8 @@ class LaunchPage extends StatefulWidget {
   State<LaunchPage> createState() => _LaunchPageState();
 }
 
-class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateMixin {
+class _LaunchPageState extends State<LaunchPage>
+    with SingleTickerProviderStateMixin {
   double _progressValue = 0.0;
   Timer? _progressTimer;
   bool _isProgressComplete = false;
@@ -31,10 +32,10 @@ class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateM
 
     initUI();
 
-    if (NetworkService.to.isConnected.value) {
+    if (NetOBS.to.isConnected.value) {
       setup();
     } else {
-      ever(NetworkService.to.isConnected, (v) {
+      ever(NetOBS.to.isConnected, (v) {
         setup();
       });
     }
@@ -47,7 +48,8 @@ class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateM
   }
 
   void initUI() {
-    EasyRefresh.defaultHeaderBuilder = () => const MaterialHeader(color: Color(0xFF3F8DFD));
+    EasyRefresh.defaultHeaderBuilder =
+        () => const MaterialHeader(color: Color(0xFF3F8DFD));
     EasyRefresh.defaultFooterBuilder = () => const ClassicFooter(
           showText: false,
           showMessage: false,
@@ -58,14 +60,14 @@ class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateM
 
   Future<void> setup() async {
     try {
-      await AppService().getIdfa();
+      await FService().getIdfa();
 
       // 启动进度条动画
       _startProgressAnimation();
 
       await Future.wait([
-        SwitchService.request(isFisrt: true),
-        AppUser().register(),
+        FSwitchService.request(isFisrt: true),
+        MY().register(),
         IAPTool().query(),
       ]).timeout(Duration(seconds: 7));
 
@@ -116,15 +118,21 @@ class _LaunchPageState extends State<LaunchPage> with SingleTickerProviderStateM
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 150),
-            Center(child: Assets.images.launchLogo.image(width: 150)),
+            Center(child: Assets.images.launchLogo.image(width: 120)),
             Spacer(),
             Text(
               'Fast Ai',
-              style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700),
             ),
             Text(
               'Effortless teamwork in an advanced AI realm',
-              style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 20),
             FProgress(
