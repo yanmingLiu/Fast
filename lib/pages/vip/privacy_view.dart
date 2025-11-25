@@ -1,5 +1,5 @@
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,9 +19,9 @@ class PrivacyView extends StatelessWidget {
       case PolicyBottomType.gems:
         return _buildGemsBottom();
       case PolicyBottomType.vip1:
-        return _buildVipBottom(AppColors.hintText, true);
+        return _buildVipBottom(ThemeColors.hintText, true);
       case PolicyBottomType.vip2:
-        return _buildVipBottom(AppColors.hintText, false);
+        return _buildVipBottom(ThemeColors.hintText, false);
     }
   }
 
@@ -33,9 +33,11 @@ class PrivacyView extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildButton(LocaleKeys.privacy_policy.tr, () => AppRouter.toPrivacy(), buttonColor),
+            _buildButton(LocaleKeys.privacy_policy.tr, () => NTN.toPrivacy(),
+                buttonColor),
             _buildSeparator(),
-            _buildButton(LocaleKeys.terms_of_use.tr, () => AppRouter.toTerms(), buttonColor),
+            _buildButton(
+                LocaleKeys.terms_of_use.tr, () => NTN.toTerms(), buttonColor),
           ],
         ),
         if (showSubscriptionText) ...[
@@ -45,7 +47,7 @@ class PrivacyView extends StatelessWidget {
             child: Text(
               LocaleKeys.subscription_auto_renew.tr,
               style: TextStyle(
-                color: AppColors.hintText,
+                color: ThemeColors.hintText,
                 fontSize: 10,
                 fontWeight: FontWeight.w400,
               ),
@@ -61,9 +63,9 @@ class PrivacyView extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildButton(LocaleKeys.terms_of_use.tr, () => AppRouter.toTerms(), null),
+        _buildButton(LocaleKeys.terms_of_use.tr, () => NTN.toTerms(), null),
         _buildSeparator(),
-        _buildButton(LocaleKeys.privacy_policy.tr, () => AppRouter.toPrivacy(), null),
+        _buildButton(LocaleKeys.privacy_policy.tr, () => NTN.toPrivacy(), null),
       ],
     );
   }
@@ -86,10 +88,10 @@ class PrivacyView extends StatelessWidget {
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 10,
-          color: color ?? AppColors.hintText,
+          color: color ?? ThemeColors.hintText,
           fontWeight: FontWeight.w500,
           decoration: TextDecoration.underline,
-          decorationColor: color ?? AppColors.hintText,
+          decorationColor: color ?? ThemeColors.hintText,
           decorationThickness: 1.0,
         ),
       ),

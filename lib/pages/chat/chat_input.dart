@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_button.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
@@ -10,14 +10,14 @@ import 'package:fast_ai/pages/chat/gift_page.dart';
 import 'package:fast_ai/pages/chat/mode_sheet.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/msg_edit_page.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/tools/ext.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -51,17 +51,17 @@ class _ChatInputState extends State<ChatInput> {
 
   void firstClickChatInputBox() async {
     focusNode.unfocus();
-    AppCache().firstClickChatInputBox = false;
+    FCache().firstClickChatInputBox = false;
     setState(() {}); // 更新UI，移除覆盖层
 
-    await AppDialog.alert(
+    await FDialog.alert(
       message: LocaleKeys.create_mask_profile_description.tr,
       cancelText: LocaleKeys.cancel.tr,
       confirmText: LocaleKeys.confirm.tr,
       clickMaskDismiss: false,
       onConfirm: () {
-        AppDialog.dismiss();
-        AppRouter.pushMask();
+        FDialog.dismiss();
+        NTN.pushMask();
       },
     );
   }
@@ -96,11 +96,11 @@ class _ChatInputState extends State<ChatInput> {
         textEditingController.text = list.randomOrNull ?? '';
         onSend();
       } else if (id == 1) {
-        AppRouter.pushUndr(ctr.role);
+        NTN.pushUndr(ctr.role);
       } else if (id == 2) {
         showGift();
       } else if (id == 3) {
-        AppRouter.pushMask();
+        NTN.pushMask();
       } else {
         FToast.toast(LocaleKeys.not_support.tr);
       }
@@ -116,8 +116,8 @@ class _ChatInputState extends State<ChatInput> {
             Get.back();
             return;
           }
-          if (!AppUser().isVip.value) {
-            AppRouter.pushVip(VipFrom.scenario);
+          if (!MY().isVip.value) {
+            NTN.pushVip(ProFrom.scenario);
             return;
           }
           Get.back();
@@ -128,7 +128,10 @@ class _ChatInputState extends State<ChatInput> {
           children: [
             Text(
               LocaleKeys.edit_scenario.tr,
-              style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -195,7 +198,9 @@ class _ChatInputState extends State<ChatInput> {
                               child: Center(
                                 child: FIcon(
                                   assetName: Assets.svg.send,
-                                  color: isSend ? AppColors.primary : AppColors.primaryMedium,
+                                  color: isSend
+                                      ? ThemeColors.primary
+                                      : ThemeColors.primaryMedium,
                                 ),
                               ),
                             ),
@@ -206,8 +211,9 @@ class _ChatInputState extends State<ChatInput> {
                   ),
                 ),
                 // 第一次使用时的覆盖层
-                if (AppCache().firstClickChatInputBox)
-                  Positioned.fill(child: GestureDetector(onTap: firstClickChatInputBox)),
+                if (FCache().firstClickChatInputBox)
+                  Positioned.fill(
+                      child: GestureDetector(onTap: firstClickChatInputBox)),
               ],
             ),
           ),
@@ -222,7 +228,7 @@ class _ChatInputState extends State<ChatInput> {
       onEditingComplete: onSend,
       minLines: 1,
       maxLines: null,
-      style: AppTextStyle.openSans(
+      style: ThemeStyle.openSans(
         height: 1.2,
         color: Colors.white,
         fontSize: 14,
@@ -234,7 +240,7 @@ class _ChatInputState extends State<ChatInput> {
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: LocaleKeys.type_here.tr,
-        hintStyle: AppTextStyle.openSans(color: Color(0xFF727374)),
+        hintStyle: ThemeStyle.openSans(color: Color(0xFF727374)),
         fillColor: Colors.transparent,
         border: InputBorder.none,
         filled: true,
@@ -273,7 +279,8 @@ class _ChatInputState extends State<ChatInput> {
         // Update the text and set the cursor between the two asterisks
         textEditingController.value = TextEditingValue(
           text: newText,
-          selection: TextSelection.fromPosition(TextPosition(offset: selection.start + 1)),
+          selection: TextSelection.fromPosition(
+              TextPosition(offset: selection.start + 1)),
         );
       },
       child: Container(
@@ -283,7 +290,8 @@ class _ChatInputState extends State<ChatInput> {
         child: const Center(
           child: Text(
             '*',
-            style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -330,15 +338,16 @@ class MsgInputButtons extends StatelessWidget {
                               spacing: 2,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Image.asset(item['icon'], width: 16, height: 16),
+                                Image.asset(item['icon'],
+                                    width: 16, height: 16),
                                 Text(
                                   item['name'],
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
-                                  style: AppTextStyle.openSans(
+                                  style: ThemeStyle.openSans(
                                     fontSize: 11,
-                                    color: AppColors.primary,
+                                    color: ThemeColors.primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

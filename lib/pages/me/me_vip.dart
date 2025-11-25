@@ -1,9 +1,9 @@
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/main.dart';
-import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/tools/ext.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -38,20 +38,20 @@ class MeVip extends StatelessWidget {
                 children: [
                   Text(
                     LocaleKeys.vip_member.tr,
-                    style: AppTextStyle.openSans(
+                    style: ThemeStyle.openSans(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
                   ),
                   Obx(() {
-                    AppUser().isVip.value;
-                    final timer =
-                        AppUser().user?.subscriptionEnd ?? DateTime.now().millisecondsSinceEpoch;
+                    MY().isVip.value;
+                    final timer = MY().user?.subscriptionEnd ??
+                        DateTime.now().millisecondsSinceEpoch;
                     final date = formatTimestamp(timer);
                     return Text(
                       LocaleKeys.deadline.trParams({'date': date}),
-                      style: AppTextStyle.openSans(
+                      style: ThemeStyle.openSans(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xB3FFFFFF),

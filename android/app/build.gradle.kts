@@ -26,13 +26,18 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.fast_ai"
+        applicationId = "com.qqchat.fast"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 23
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // 添加 ABI 过滤器，确保打包所需架构
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+        }
     }
 
     signingConfigs {
@@ -59,8 +64,8 @@ android {
         }
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -75,9 +80,10 @@ flutter {
 
 
 dependencies {
+    // facebook
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
-    //adjust  添加 Google Play 服务
-    implementation("com.google.android.gms:play-services-ads-identifier:18.1.0")
-    //adjust Google Play 推荐 API 
+    //adjust  
     implementation("com.android.installreferrer:installreferrer:2.2")
+    // adjust 添加 Google Play 服务
+    implementation("com.google.android.gms:play-services-ads-identifier:18.1.0")
 }

@@ -1,6 +1,6 @@
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/pages/chat/typing_rich_text.dart';
-import 'package:fast_ai/values/app_colors.dart';
+import 'package:fast_ai/values/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -20,8 +20,10 @@ class _SendContainerConstants {
   static const EdgeInsets loadingMargin = EdgeInsets.only(top: 16.0);
 
   // 圆角常量
-  static const BorderRadius messageBorderRadius = BorderRadius.all(Radius.circular(borderRadius));
-  static const BorderRadius loadingBorderRadius = BorderRadius.all(Radius.circular(borderRadius));
+  static const BorderRadius messageBorderRadius =
+      BorderRadius.all(Radius.circular(borderRadius));
+  static const BorderRadius loadingBorderRadius =
+      BorderRadius.all(Radius.circular(borderRadius));
 
   // 约束常量
   static BoxConstraints getMaxWidthConstraints(double screenWidth) =>
@@ -42,7 +44,8 @@ class SendContainer extends StatelessWidget {
 
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+      crossAxisAlignment:
+          isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
       children: [
         _buildMessageContainer(sendText, screenWidth, context),
         if (showLoading) _buildLoadingIndicator(context),
@@ -51,7 +54,8 @@ class SendContainer extends StatelessWidget {
   }
 
   /// 构建消息容器
-  Widget _buildMessageContainer(String text, double screenWidth, BuildContext context) {
+  Widget _buildMessageContainer(
+      String text, double screenWidth, BuildContext context) {
     final isRTL = Directionality.of(context) == TextDirection.rtl;
 
     return Align(
@@ -59,12 +63,14 @@ class SendContainer extends StatelessWidget {
       child: Container(
         padding: _SendContainerConstants.sendTextPadding,
         decoration: const BoxDecoration(
-          color: AppColors.primary,
+          color: ThemeColors.primary,
           borderRadius: _SendContainerConstants.messageBorderRadius,
         ),
-        constraints: _SendContainerConstants.getMaxWidthConstraints(screenWidth),
+        constraints:
+            _SendContainerConstants.getMaxWidthConstraints(screenWidth),
         child: RepaintBoundary(
-          child: TypingRichText(text: text, isSend: false, isTypingAnimation: false),
+          child: TypingRichText(
+              text: text, isSend: false, isTypingAnimation: false),
         ),
       ),
     );
@@ -97,7 +103,7 @@ class SendContainer extends StatelessWidget {
         child: Center(
           child: RepaintBoundary(
             child: LoadingAnimationWidget.newtonCradle(
-              color: AppColors.primary,
+              color: ThemeColors.primary,
               size: _SendContainerConstants.loadingAnimationSize,
             ),
           ),

@@ -1,5 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 
 class TypingRichText extends StatelessWidget {
@@ -18,14 +18,14 @@ class TypingRichText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nomarlStyel = AppTextStyle.openSans(
+    final nomarlStyel = ThemeStyle.openSans(
       color: Colors.white,
       fontSize: 14,
       fontWeight: FontWeight.w400,
       height: 1.3,
     );
 
-    final highlightSetyle = AppTextStyle.openSans(
+    final highlightSetyle = ThemeStyle.openSans(
       color: Colors.white,
       fontSize: 14,
       fontWeight: FontWeight.bold,
@@ -39,14 +39,18 @@ class TypingRichText extends StatelessWidget {
 
     exp.allMatches(text).forEach((match) {
       if (match.start > lastMatchEnd) {
-        spans.add(TextSpan(text: text.substring(lastMatchEnd, match.start), style: nomarlStyel));
+        spans.add(TextSpan(
+            text: text.substring(lastMatchEnd, match.start),
+            style: nomarlStyel));
       }
-      spans.add(TextSpan(text: ' *${match.group(1)!}* ', style: highlightSetyle));
+      spans.add(
+          TextSpan(text: ' *${match.group(1)!}* ', style: highlightSetyle));
       lastMatchEnd = match.end;
     });
 
     if (lastMatchEnd < text.length) {
-      spans.add(TextSpan(text: text.substring(lastMatchEnd), style: nomarlStyel));
+      spans.add(
+          TextSpan(text: text.substring(lastMatchEnd), style: nomarlStyel));
     }
 
     // 如果不需要动画，直接返回RichText
@@ -61,12 +65,13 @@ class TypingRichText extends StatelessWidget {
           text,
           cursor: '',
           textStyle: nomarlStyel,
-          speed: const Duration(milliseconds: 30), // 打字速度（更快）
+          speed: const Duration(milliseconds: 10), // 打字速度（更快）
         ),
       ],
       totalRepeatCount: 1, // 打字动画只播放一次
-      pause: const Duration(milliseconds: 20), // 暂停时间（更短）
+      pause: const Duration(milliseconds: 10), // 暂停时间（更短）
       displayFullTextOnTap: true, // 点击文本显示完整内容
+      isRepeatingAnimation: false,
       onNext: (index, isLast) {
         // 在动画播放的每个字符后调用此方法
         if (isLast) {
@@ -74,6 +79,11 @@ class TypingRichText extends StatelessWidget {
           if (onAnimationComplete != null) {
             onAnimationComplete!();
           }
+        }
+      },
+      onTap: () {
+        if (onAnimationComplete != null) {
+          onAnimationComplete!();
         }
       },
     );

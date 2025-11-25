@@ -3,15 +3,15 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
-import 'package:fast_ai/data/order_data.dart';
-import 'package:fast_ai/data/sku_data.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/data/p_d_data.dart';
+import 'package:fast_ai/data/pay_order.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
@@ -19,7 +19,7 @@ import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 import '../generated/locales.g.dart';
-import '../services/app_service.dart';
+import '../services/f_service.dart';
 
 enum IAPEvent { vipSucc, goldSucc }
 
@@ -38,16 +38,16 @@ class IAPTool {
   Set<String> _consumableIds = {};
   Set<String> _subscriptionIds = {};
 
-  List<SkuData> allList = [];
-  List<SkuData> consumableList = [];
-  List<SkuData> subscriptionList = [];
+  List<PDData> allList = [];
+  List<PDData> consumableList = [];
+  List<PDData> subscriptionList = [];
 
-  VipFrom? _vipFrom;
-  ConsumeFrom? _consFrom;
-  OrderData? _orderData;
+  ProFrom? _vipFrom;
+  GemsFrom? _consFrom;
+  PayOrder? _orderData;
 
   bool _isUserBuy = false;
-  SkuData? _currentSkuData;
+  PDData? _currentSkuData;
 
   final RxInt _eventCounter = 0.obs;
   Rxn<(IAPEvent, String, int)> iapEvent = Rxn<(IAPEvent, String, int)>();
@@ -84,35 +84,44 @@ class IAPTool {
     }
 
     for (final productDetails in response.productDetails) {
-      final skuData = allList.firstWhereOrNull((e) => e.sku == productDetails.id);
+      final skuData =
+          allList.firstWhereOrNull((e) => e.sku == productDetails.id);
       if (skuData != null) {
         skuData.productDetails = productDetails;
       }
     }
 
     // 根据 sku.orderNum 从小到大排序
-    consumableList = allList.where((sku) => _consumableIds.contains(sku.sku)).toList()
+    consumableList = allList
+        .where((sku) => _consumableIds.contains(sku.sku))
+        .toList()
       ..sort((a, b) => (a.orderNum ?? 0).compareTo(b.orderNum ?? 0));
 
-    subscriptionList = allList.where((sku) => _subscriptionIds.contains(sku.sku)).toList()
+    subscriptionList = allList
+        .where((sku) => _subscriptionIds.contains(sku.sku))
+        .toList()
       ..sort((a, b) => (a.orderNum ?? 0).compareTo(b.orderNum ?? 0));
   }
 
   Future<void> _getSkuDatas() async {
     log.d('[iap] _getSkuDatas');
-    final list = await Api.getSkuList();
+    final list = await FApi.getSkuList();
     allList = list ?? [];
 
-    _consumableIds =
-        allList.where((e) => e.skuType == 0 && e.shelf == true).map((e) => e.sku ?? '').toSet();
-    _subscriptionIds =
-        allList.where((e) => e.skuType != 0 && e.shelf == true).map((e) => e.sku ?? '').toSet();
+    _consumableIds = allList
+        .where((e) => e.skuType == 0 && e.shelf == true)
+        .map((e) => e.sku ?? '')
+        .toSet();
+    _subscriptionIds = allList
+        .where((e) => e.skuType != 0 && e.shelf == true)
+        .map((e) => e.sku ?? '')
+        .toSet();
     log.d('[iap] _consumableIds: $_consumableIds');
     log.d('[iap] _subscriptionIds: $_subscriptionIds');
   }
 
   // 购买产品
-  Future<void> buy(SkuData data, {VipFrom? vipFrom, ConsumeFrom? consFrom}) async {
+  Future<void> buy(PDData data, {ProFrom? vipFrom, GemsFrom? consFrom}) async {
     try {
       FLoading.showLoading();
       if (!await _isAvailable()) return;
@@ -125,7 +134,6 @@ class IAPTool {
       final productDetails = data.productDetails;
       if (productDetails == null) {
         FLoading.dismiss();
-        log.e('[iap] buy productDetails is null');
         FToast.toast('So sorry, ProductDetails is null.');
         return;
       }
@@ -160,13 +168,13 @@ class IAPTool {
   Future<void> restore({bool isNeedShowLoading = true}) async {
     if (!await _isAvailable()) return;
 
-    log.d('[iap] restore.....');
     _isUserBuy = true;
     await _inAppPurchase.restorePurchases();
   }
 
   // 处理购买详情
-  Future<void> _processPurchaseDetails(List<PurchaseDetails> purchaseDetailsList) async {
+  Future<void> _processPurchaseDetails(
+      List<PurchaseDetails> purchaseDetailsList) async {
     if (purchaseDetailsList.isEmpty) return;
 
     // 按交易日期降序排序
@@ -208,23 +216,25 @@ class IAPTool {
     }
   }
 
-  Future<void> _handleSuccessfulPurchase(PurchaseDetails purchaseDetails) async {
-    log.d(' 购买成功 status: ${purchaseDetails.status}');
-    log.d(' 购买成功 pendingCompletePurchase: ${purchaseDetails.pendingCompletePurchase}');
-    log.d(
-      '[iap] 成功购买: ${purchaseDetails.productID}, ${purchaseDetails.purchaseID}, ${purchaseDetails.transactionDate}',
-    );
+  Future<void> _handleSuccessfulPurchase(
+      PurchaseDetails purchaseDetails) async {
+    // log.d(' 购买成功 status: ${purchaseDetails.status}');
+    // log.d(
+    //     ' 购买成功 pendingCompletePurchase: ${purchaseDetails.pendingCompletePurchase}');
+    // log.d(
+    //   '[iap] 成功购买: ${purchaseDetails.productID}, ${purchaseDetails.purchaseID}, ${purchaseDetails.transactionDate}',
+    // );
     if (!_isUserBuy) {
-      log.d('[iap] 自动购买, 不需要处理');
+      // log.d('[iap] 自动购买, 不需要处理');
       return;
     }
 
     // if (await _isPurchaseProcessed(purchaseDetails.purchaseID)) return;
 
     if (await _verifyAndCompletePurchase(purchaseDetails)) {
-      await _markPurchaseAsProcessed(purchaseDetails.purchaseID);
+      // await _markPurchaseAsProcessed(purchaseDetails.purchaseID);
     } else {
-      log.e('[iap] 验证失败: ${purchaseDetails.productID}');
+      // log.e('[iap] 验证失败: ${purchaseDetails.productID}');
     }
     _isUserBuy = false;
     _currentSkuData = null;
@@ -242,12 +252,13 @@ class IAPTool {
     );
   }
 
-  Future<bool> _verifyAndCompletePurchase(PurchaseDetails purchaseDetails) async {
+  Future<bool> _verifyAndCompletePurchase(
+      PurchaseDetails purchaseDetails) async {
     bool isValid = await verifyPurchaseWithServer(purchaseDetails);
     FLoading.dismiss();
     if (isValid) {
       _reportPurchase(purchaseDetails);
-      AppUser().getUserInfo();
+      MY().getUserInfo();
     }
     return isValid;
   }
@@ -263,35 +274,39 @@ class IAPTool {
       final purchaseID = purchaseDetails.purchaseID;
       final transactionDate = purchaseDetails.transactionDate;
       final productID = purchaseDetails.productID;
-      log.d('[iap] purchaseID: $purchaseID, transactionDate:$transactionDate');
+      // log.d('[iap] purchaseID: $purchaseID, transactionDate:$transactionDate');
 
       // 获取服务器验证数据 v2
       var receipt = purchaseDetails.verificationData.serverVerificationData;
-      final localVerificationData = purchaseDetails.verificationData.localVerificationData;
-      log.d('[iap] receipt: $receipt');
-      log.d('[iap] localVerificationData: $localVerificationData');
+      // final localVerificationData =
+      //     purchaseDetails.verificationData.localVerificationData;
+      // log.d('[iap] receipt: $receipt');
+      // log.d('[iap] localVerificationData: $localVerificationData');
 
       // 如果没有 v2 票据，就刷新并获取 v1 票据
       if (receipt.isEmpty) {
         // 刷新并获取 v1 票据 ：
-        final iosPlatformAddition =
-            InAppPurchase.instance.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+        final iosPlatformAddition = InAppPurchase.instance
+            .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
         PurchaseVerificationData? verificationData =
             await iosPlatformAddition.refreshPurchaseVerificationData();
 
-        String? vdl = verificationData?.localVerificationData; // 这就是 v1 的 Base64 字符串
+        String? vdl =
+            verificationData?.localVerificationData; // 这就是 v1 的 Base64 字符串
         String? vds = verificationData?.serverVerificationData;
-        log.d('[iap] vdl: $vdl');
-        log.d('[iap] vds: $vds');
+        // log.d('[iap] vdl: $vdl');
+        // log.d('[iap] vds: $vds');
 
-        receipt = vds ?? '';
+        receipt = vds ?? vdl ?? '';
       }
 
       var createImg =
-          (_consFrom == ConsumeFrom.aiphoto || _consFrom == ConsumeFrom.undr) ? true : null;
-      var createVideo = _consFrom == ConsumeFrom.img2v ? true : null;
+          (_consFrom == GemsFrom.aiphoto || _consFrom == GemsFrom.undr)
+              ? true
+              : null;
+      var createVideo = _consFrom == GemsFrom.img2v ? true : null;
 
-      var result = await Api.verifyIosOrder(
+      var result = await FApi.verifyIosOrder(
         receipt: receipt,
         skuId: productID,
         transactionId: purchaseID,
@@ -312,15 +327,19 @@ class IAPTool {
   Future<bool> _verifyGoogle(PurchaseDetails purchaseDetails) async {
     try {
       var createImg =
-          (_consFrom == ConsumeFrom.aiphoto || _consFrom == ConsumeFrom.undr) ? true : null;
-      var createVideo = _consFrom == ConsumeFrom.img2v ? true : null;
+          (_consFrom == GemsFrom.aiphoto || _consFrom == GemsFrom.undr)
+              ? true
+              : null;
+      var createVideo = _consFrom == GemsFrom.img2v ? true : null;
 
       final googleDetail = purchaseDetails as GooglePlayPurchaseDetails;
-      final result = await Api.verifyAndOrder(
+      final result = await FApi.verifyAndOrder(
         originalJson: googleDetail.billingClientPurchase.originalJson,
         purchaseToken: googleDetail.billingClientPurchase.purchaseToken,
         skuId: purchaseDetails.productID,
-        orderType: _subscriptionIds.contains(purchaseDetails.productID) ? 'SUBSCRIPTION' : 'GEMS',
+        orderType: _subscriptionIds.contains(purchaseDetails.productID)
+            ? 'SUBSCRIPTION'
+            : 'GEMS',
         orderId: _orderData?.orderNo ?? '',
         createImg: createImg,
         createVideo: createVideo,
@@ -335,12 +354,16 @@ class IAPTool {
   }
 
   Future<void> _createOrder(ProductDetails productDetails) async {
-    final orderType = _consumableIds.contains(productDetails.id) ? 'GEMS' : 'SUBSCRIPTION';
+    final orderType =
+        _consumableIds.contains(productDetails.id) ? 'GEMS' : 'SUBSCRIPTION';
 
     if (Platform.isIOS) {
       try {
-        final order = await Api.makeIosOrder(orderType: orderType, skuId: productDetails.id);
-        if (order == null || order.id == null) throw Exception('Creat order error');
+        final order = await FApi.makeIosOrder(
+            orderType: orderType, skuId: productDetails.id);
+        if (order == null || order.id == null) {
+          throw Exception('Creat order error');
+        }
         _orderData = order;
       } catch (e) {
         FToast.toast('${LocaleKeys.create_order_error.tr} $e');
@@ -349,8 +372,11 @@ class IAPTool {
     }
     if (Platform.isAndroid) {
       try {
-        final order = await Api.makeAndOrder(orderType: orderType, skuId: productDetails.id);
-        if (order == null || order.orderNo == null) throw Exception('Creat order error');
+        final order = await FApi.makeAndOrder(
+            orderType: orderType, skuId: productDetails.id);
+        if (order == null || order.orderNo == null) {
+          throw Exception('Creat order error');
+        }
 
         _orderData = order;
       } catch (e) {
@@ -363,8 +389,8 @@ class IAPTool {
   Future _finishTransaction() async {
     // iOS 平台特定逻辑
     if (Platform.isIOS) {
-      final iosPlatformAddition =
-          _inAppPurchase.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      final iosPlatformAddition = _inAppPurchase
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
 
       // 清理挂起的交易
@@ -376,9 +402,9 @@ class IAPTool {
   }
 
   // 工具方法：标记购买为已处理
-  Future<void> _markPurchaseAsProcessed(String? purchaseID) async {
-    // if (purchaseID != null) await _storage.write(key: purchaseID, value: 'processed');
-  }
+  // Future<void> _markPurchaseAsProcessed(String? purchaseID) async {
+  //   // if (purchaseID != null) await _storage.write(key: purchaseID, value: 'processed');
+  // }
 
   // Future<bool> _isPurchaseProcessed(String? purchaseID) async {
   //   if (purchaseID == null) return false;
@@ -396,7 +422,7 @@ class IAPTool {
   }
 
   void _reportPurchase(PurchaseDetails purchaseDetails) {
-    log.d('[iap] 上报购买事件: ${purchaseDetails.productID}');
+    // log.d('[iap] 上报购买事件: ${purchaseDetails.productID}');
     final id = purchaseDetails.productID;
     var path = '';
     var from = '';
@@ -409,11 +435,11 @@ class IAPTool {
       final name = 'suc_${path}_${id}_$from';
       log.d('[iap] report: $name');
       logEvent(name);
-      if (_consFrom != ConsumeFrom.undr &&
-          _consFrom != ConsumeFrom.creaimg &&
-          _consFrom != ConsumeFrom.creavideo &&
-          _consFrom != ConsumeFrom.aiphoto &&
-          _consFrom != ConsumeFrom.img2v) {
+      if (_consFrom != GemsFrom.undr &&
+          _consFrom != GemsFrom.creaimg &&
+          _consFrom != GemsFrom.creavideo &&
+          _consFrom != GemsFrom.aiphoto &&
+          _consFrom != GemsFrom.img2v) {
         _showRechargeSuccess(id);
       }
       iapEvent.value = (IAPEvent.goldSucc, id, _eventCounter.value);
@@ -430,7 +456,7 @@ class IAPTool {
   }
 
   void _handleVipSuccess() {
-    if (_vipFrom == VipFrom.dailyrd) {
+    if (_vipFrom == ProFrom.dailyrd) {
       _dailyrdSubSuccess();
     } else {
       Get.back();
@@ -439,11 +465,11 @@ class IAPTool {
 
   void _dailyrdSubSuccess() async {
     FLoading.showLoading();
-    await Api.getDailyReward();
-    await AppUser().getUserInfo();
+    await FApi.getDailyReward();
+    await MY().getUserInfo();
     FLoading.dismiss();
 
-    AppDialog.dismiss();
+    FDialog.dismiss();
     Get.back();
   }
 
@@ -451,12 +477,12 @@ class IAPTool {
     logEvent('t_suc_gems');
 
     final number = _currentSkuData?.number ?? 0;
-    AppDialog.showRechargeSuccess(number);
+    FDialog.showRechargeSuccess(number);
   }
 
   void _handleError(IAPError error) {
     FLoading.dismiss();
-    log.e('[iap] 错误: ${error.message}');
+    log.e('[iap] _handleError: ${error.message}');
     FToast.toast(error.message);
   }
 

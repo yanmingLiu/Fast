@@ -1,12 +1,12 @@
 import 'package:blur/blur.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,8 +18,8 @@ class TextLock extends StatelessWidget {
 
   void _unLockTextGems() async {
     logEvent('c_news_locktext');
-    if (!AppUser().isVip.value) {
-      AppRouter.pushVip(VipFrom.locktext);
+    if (!MY().isVip.value) {
+      NTN.pushVip(ProFrom.locktext);
     }
   }
 
@@ -50,7 +50,8 @@ class TextLock extends StatelessWidget {
       child: Text(
         textContent,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+        style: TextStyle(
+            color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
       ),
     ).blurred(
       borderRadius: BorderRadius.circular(16),
@@ -69,7 +70,7 @@ class TextLock extends StatelessWidget {
           children: [
             Text(
               LocaleKeys.tap_to_see_messages.tr,
-              style: AppTextStyle.openSans(
+              style: ThemeStyle.openSans(
                 color: Colors.white,
                 fontSize: 10,
                 fontWeight: FontWeight.w400,
@@ -84,7 +85,7 @@ class TextLock extends StatelessWidget {
               ),
               child: Text(
                 LocaleKeys.message.tr,
-                style: AppTextStyle.openSans(
+                style: ThemeStyle.openSans(
                   color: Colors.black,
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
@@ -126,7 +127,7 @@ class TextLock extends StatelessWidget {
   }
 
   Widget _buildLabel() {
-    if (!AppCache().isBig) {
+    if (!FCache().isBig) {
       return const SizedBox(width: 22, height: 22);
     }
     return Row(
@@ -142,7 +143,7 @@ class TextLock extends StatelessWidget {
           ),
           child: Text(
             LocaleKeys.unlock_text_reply.tr,
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: Colors.black,
               fontSize: 10,
               fontWeight: FontWeight.w400,

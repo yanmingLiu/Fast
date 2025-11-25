@@ -34,18 +34,32 @@
 	<string>Fast Ai</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string></string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>The app requires your consent to access the local network</string>
+	<string>This app needs to access your local network to find and connect to devices, such as smart speakers or streaming boxes, for media sharing and control.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone access is used for voice call features, enabling real-time communication with AI.</string>
+	<string>This app requires microphone access to enable voice and video calls and to process voice commands for AI features.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow access to the photo album, enabling users to upload pictures to change the chat background.</string>
+	<string>We need access to your photo library so you can select and upload images to set as your chat backgrounds and profile pictures.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>We need access to speech recognition for voice input during calls.</string>
-	<key>NSUserNotificationsUsageDescription</key>
-	<string>Used to display chat message notifications and live broadcast start reminders</string>
+	<string>We use speech recognition to convert your voice input into text during voice chats and to process voice search queries.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>We use this permission to provide you with more relevant match recommendations and personalized content. For example, suggesting potentially compatible chat partners based on your interests.</string>
+	<string>Your device identifier will be used to analyze app usage for feature improvements and to provide tailored content, service recommendations, and personalized advertisements.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
@@ -249,21 +263,26 @@
 			<string>3qcr597p9d.skadnetwork</string>
 		</dict>
 	</array>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UIStatusBarHidden</key>
-	<false/>
-	<key>UIStatusBarStyle</key>
-	<string></string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneDelegateClassName</key>
+					<string>FlutterSceneDelegate</string>
+					<key>UISceneConfigurationName</key>
+					<string>flutter</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 </dict>
 </plist>

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fast_ai/services/app_service.dart';
+import 'package:fast_ai/services/f_service.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/services.dart';
 
@@ -23,21 +23,25 @@ class FBSDKTool {
   /// 从远程配置获取Facebook SDK配置
   static Future<Map<String, String>?> _getConfigFromRemote() async {
     try {
-      final String facebookAppIdKey =
-          Platform.isAndroid ? 'facebook_app_id_android' : 'facebook_app_id_ios';
-      final String facebookClientTokenKey =
-          Platform.isAndroid ? 'facebook_client_token_android' : 'facebook_client_token_ios';
+      final String facebookAppIdKey = Platform.isAndroid
+          ? 'facebook_app_id_android'
+          : 'facebook_app_id_ios';
+      final String facebookClientTokenKey = Platform.isAndroid
+          ? 'facebook_client_token_android'
+          : 'facebook_client_token_ios';
 
       final remoteConfig = FirebaseRemoteConfig.instance;
 
       final String facebookAppId = remoteConfig.getString(facebookAppIdKey);
-      final String facebookClientToken = remoteConfig.getString(facebookClientTokenKey);
+      final String facebookClientToken =
+          remoteConfig.getString(facebookClientTokenKey);
 
-      _log('获取到Facebook SDK配置: appId=$facebookAppId, clientToken=$facebookClientToken');
+      _log(
+          '获取到Facebook SDK配置: appId=$facebookAppId, clientToken=$facebookClientToken');
 
       // 验证配置是否有效
       if (facebookAppId.isEmpty || facebookClientToken.isEmpty) {
-        _log('Facebook SDK配置无效，跳过初始化');
+        _log('facebookAppId.isEmpty');
         return null;
       }
 
@@ -53,15 +57,15 @@ class FBSDKTool {
     try {
       final config = await _getConfigFromRemote();
       if (config != null) {
-        _log('获取到Facebook SDK配置 开始初始化');
-        await initializeFacebookSDK(appId: config['appId']!, clientToken: config['clientToken']!);
+        await initializeFacebookSDK(
+            appId: config['appId']!, clientToken: config['clientToken']!);
       } else {
-        _log('未获取到有效的Facebook SDK配置，跳过初始化');
+        _log('facebookAppId.isEmpty');
         // 不抛出异常，只是记录日志，避免阻塞应用启动
         return;
       }
     } catch (e) {
-      _log('Facebook SDK初始化过程中发生错误: $e');
+      _log('Facebook error: $e');
       // 不重新抛出异常，避免阻塞应用启动
       return;
     }
@@ -73,7 +77,7 @@ class FBSDKTool {
       final result = await _channel.invokeMethod('isFacebookSDKInitialized');
       return result as bool? ?? false;
     } catch (e) {
-      _log('检查Facebook SDK初始化状态失败: $e');
+      _log('Facebook check error: $e');
       return false;
     }
   }
@@ -102,9 +106,9 @@ class FBSDKTool {
         'appId': appId,
         'clientToken': clientToken,
       });
-      _log('Facebook SDK初始化 result: $result');
+      _log('Facebook SDK  result: $result');
     } on PlatformException catch (e) {
-      _log('Facebook SDK初始化失败: ${e.message}');
+      _log('Facebook SDK error: ${e.message}');
       _isInitialized = false;
       rethrow;
     }
@@ -114,18 +118,17 @@ class FBSDKTool {
   static Future<void> retryInitializationIfNeeded() async {
     try {
       if (!_isInitialized) {
-        _log('网络恢复，尝试重新初始化Facebook SDK');
-
         // 如果有缓存配置，直接使用
         if (_cachedAppId != null && _cachedClientToken != null) {
-          await initializeFacebookSDK(appId: _cachedAppId!, clientToken: _cachedClientToken!);
+          await initializeFacebookSDK(
+              appId: _cachedAppId!, clientToken: _cachedClientToken!);
         } else {
           // 如果没有缓存配置，重新从远程获取
           await initializeWithRemoteConfig();
         }
       }
     } catch (e) {
-      _log('Facebook SDK 初始化重试失败: $e');
+      _log('Facebook SDK retry error: $e');
     }
   }
 }

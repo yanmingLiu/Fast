@@ -1,14 +1,14 @@
-import 'package:fast_ai/component/base_list_view.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/component/f_list_view.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/pages/chat/chat_item.dart';
 import 'package:fast_ai/pages/chat/liked_ctr.dart';
 import 'package:flutter/material.dart';
 
-class LikedListView extends BaseListView<Role, LikedCtr> {
+class LikedListView extends FListView<APop, LikedCtr> {
   // 简化构造函数，只传递必要的controller
   const LikedListView({super.key, required super.controller});
 
-  Widget buildItem(BuildContext context, Role item) {
+  Widget buildItem(BuildContext context, APop item) {
     // 将itemBuilder逻辑移到重写方法中
     return ChatItem(
       avatar: item.avatar ?? '',

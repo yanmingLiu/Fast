@@ -6,7 +6,7 @@ import 'package:fast_ai/pages/chat/text_container.dart';
 import 'package:fast_ai/pages/chat/tips_content.dart';
 import 'package:fast_ai/pages/chat/toys_container.dart';
 import 'package:fast_ai/pages/chat/video_container.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,24 +26,26 @@ class MessageContainerFactory {
   /// 使用工厂模式创建对应的消息容器
   ///
   /// 相比switch语句，Map查找性能更好，O(1)时间复杂度
-  static final Map<MsgSource, Widget Function(MsgData)> _containerBuilders = {
-    MsgSource.tips: (msg) => TipsContent(msg: msg),
-    MsgSource.maskTips: (msg) => TipsContent(msg: msg),
-    MsgSource.error: (msg) => TipsContent(msg: msg),
-    MsgSource.welcome: (msg) => TextContainer(msg: msg),
-    MsgSource.scenario: (msg) => TextContainer(msg: msg, title: "${LocaleKeys.scenario.tr}:"),
-    MsgSource.intro: (msg) => TextContainer(msg: msg, title: "${LocaleKeys.intro.tr}:"),
-    MsgSource.sendText: (msg) => TextContainer(msg: msg),
-    MsgSource.text: (msg) => TextContainer(msg: msg),
-    MsgSource.photo: (msg) => PhotoContainer(msg: msg),
-    MsgSource.clothe: (msg) => PhotoContainer(msg: msg),
-    MsgSource.video: (msg) => VideoContainer(msg: msg),
-    MsgSource.audio: (msg) => AudioContainer(msg: msg),
-    MsgSource.gift: (msg) => ToysContainer(msg: msg),
+  static final Map<MsgType, Widget Function(MsgData)> _containerBuilders = {
+    MsgType.tips: (msg) => TipsContent(msg: msg),
+    MsgType.maskTips: (msg) => TipsContent(msg: msg),
+    MsgType.error: (msg) => TipsContent(msg: msg),
+    MsgType.welcome: (msg) => TextContainer(msg: msg),
+    MsgType.scenario: (msg) =>
+        TextContainer(msg: msg, title: "${LocaleKeys.scenario.tr}:"),
+    MsgType.intro: (msg) =>
+        TextContainer(msg: msg, title: "${LocaleKeys.intro.tr}:"),
+    MsgType.sendText: (msg) => TextContainer(msg: msg),
+    MsgType.text: (msg) => TextContainer(msg: msg),
+    MsgType.photo: (msg) => PhotoContainer(msg: msg),
+    MsgType.clothe: (msg) => PhotoContainer(msg: msg),
+    MsgType.video: (msg) => VideoContainer(msg: msg),
+    MsgType.audio: (msg) => AudioContainer(msg: msg),
+    MsgType.gift: (msg) => ToysContainer(msg: msg),
   };
 
   /// 创建消息容器widget
-  static Widget createContainer(MsgSource source, MsgData msg) {
+  static Widget createContainer(MsgType source, MsgData msg) {
     final builder = _containerBuilders[source];
     return builder?.call(msg) ?? const SizedBox.shrink();
   }
@@ -62,7 +64,7 @@ class MsgItem extends StatelessWidget {
   final MsgData msg;
 
   /// 缓存消息源，避免重复访问
-  MsgSource get source => msg.source;
+  MsgType get source => msg.source;
 
   @override
   Widget build(BuildContext context) {

@@ -3,13 +3,12 @@ import 'package:fast_ai/pages/chat/chat_page.dart';
 import 'package:fast_ai/pages/home/home_page.dart';
 import 'package:fast_ai/pages/me/me_page.dart';
 import 'package:fast_ai/pages/mian/main_tab_bar.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
 import 'package:fast_ai/services/audio_manager.dart';
-import 'package:fast_ai/services/network_service.dart';
-import 'package:fast_ai/services/switch_service.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/services/f_switch_service.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/services/net_o_b_s.dart';
 import 'package:fast_ai/tools/fb_sdk_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,6 +46,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.resumed:
         log.d('App is in resumed state 在前台运行');
+        FLogEvent().logSessionEvent();
         break;
       default:
         break;
@@ -60,11 +60,11 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     // 注册监听器
     WidgetsBinding.instance.addObserver(this);
 
-    if (NetworkService.to.isConnected.value) {
+    if (NetOBS.to.isConnected.value) {
       _setupFuture = setup();
     } else {
       _setupFuture = Future.value();
-      ever(NetworkService.to.isConnected, (v) {
+      ever(NetOBS.to.isConnected, (v) {
         if (v) {
           setState(() {
             _setupFuture = setup();
@@ -75,28 +75,21 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   Future<void> setup() async {
-    final isFirstLaunch = AppCache().isRestart == false;
-    if (isFirstLaunch) {
-      AppLogEvent().logInstallEvent();
-    }
-
-    AppLogEvent().logSessionEvent();
-
     try {
       _initializeAsyncServices();
 
-      AppUser().getUserInfo();
-      await SwitchService.request();
+      await MY().getUserInfo();
+      await FSwitchService.request();
     } catch (e) {
       // 捕获超时异常或其他异常
       log.e('splash Setup error: $e');
     }
 
     pages = [
-      KeepAliveWrapper(child: HomePage()),
-      KeepAliveWrapper(child: ChatPage()),
+      FKeepAlive(child: HomePage()),
+      FKeepAlive(child: ChatPage()),
       // if (AppCache().isBig) AiTabPage(),
-      KeepAliveWrapper(child: MePage()),
+      FKeepAlive(child: MePage()),
     ];
   }
 
@@ -118,7 +111,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     setState(() {
       mainTabIndex = index;
     });
-    AppUser().getUserInfo();
+    MY().getUserInfo();
   }
 
   @override

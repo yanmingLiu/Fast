@@ -1,16 +1,16 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_image.dart';
-import 'package:fast_ai/component/linked_tab_page_controller.dart';
-import 'package:fast_ai/data/clothing_data.dart';
-import 'package:fast_ai/data/toys_data.dart';
+import 'package:fast_ai/component/f_link_tab_controller.dart';
+import 'package:fast_ai/data/a_pop_toy_data.dart';
+import 'package:fast_ai/data/r_clo_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,8 +27,8 @@ enum MsgGiftViewCategory { clothing, toys }
 class _GiftPageConstants {
   // 使用统一颜色管理
   static const Color backgroundColor = Color(0xFF333333);
-  static const Color primaryBlue = AppColors.primary; // 使用AppColors
-  static const Color primaryBlueLight = AppColors.primaryLight; // 使用AppColors
+  static const Color primaryBlue = ThemeColors.primary; // 使用AppColors
+  static const Color primaryBlueLight = ThemeColors.primaryLight; // 使用AppColors
   static const Color borderColor = Color(0x33FFFFFF);
   static const Color backgroundLight = Color(0x1AFFFFFF);
   static const Color priceTagBackground = Color(0x801C1C1C);
@@ -42,8 +42,10 @@ class _GiftPageConstants {
   static const double clipSize = 50.0;
 
   // 边距常量
-  static const EdgeInsets contentPadding = EdgeInsets.symmetric(horizontal: 16.0);
-  static const EdgeInsets tabPadding = EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
+  static const EdgeInsets contentPadding =
+      EdgeInsets.symmetric(horizontal: 16.0);
+  static const EdgeInsets tabPadding =
+      EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
 }
 
 class _GiftPageState extends State<GiftPage> {
@@ -54,58 +56,64 @@ class _GiftPageState extends State<GiftPage> {
   final MsgCtr _ctr = Get.find<MsgCtr>();
 
   /// 玩具数据列表
-  List<ToysData>? _toys;
+  List<APopToyData>? _toys;
 
   /// 当前选中的玩具
-  ToysData? _selectedToy;
+  APopToyData? _selectedToy;
 
   /// 服装数据列表
-  List<ClothingData>? _clothings;
+  List<RCloData>? _clothings;
 
   /// 当前选中的服装
-  ClothingData? _selectedClothing;
+  RCloData? _selectedClothing;
 
   /// 是否显示服装选项
   bool _showClothing = false;
 
   /// 分类标题
-  final List<String> _categoryTitles = [LocaleKeys.clothing.tr, LocaleKeys.toys.tr];
+  final List<String> _categoryTitles = [
+    LocaleKeys.clothing.tr,
+    LocaleKeys.toys.tr
+  ];
 
   /// 标签页控制器
-  late LinkedTabPageController _linkedController;
+  late FLinkTabController _linkedController;
 
   @override
   void initState() {
     super.initState();
-    _linkedController = LinkedTabPageController(items: _categoryTitles);
+    _linkedController = FLinkTabController(items: _categoryTitles);
     _loadData();
   }
 
   /// 加载礼物数据
   Future<void> _loadData() async {
-    await AppUser().loadToysAndClotheConfigs();
+    await MY().loadToysAndClotheConfigs();
 
     // 加载玩具数据
-    _toys = AppUser().toysConfigs;
+    _toys = MY().toysConfigs;
     _selectedToy = _toys?.firstOrNull;
 
     // 加载服装数据
-    final clotheConfigs = AppUser().clotheConfigs;
+    final clotheConfigs = MY().clotheConfigs;
     final List<ChangeClothe> roleClothings = _ctr.role.changeClothes ?? [];
 
     // 过滤出角色可用的服装
     _clothings = [
       for (final clothing in clotheConfigs)
-        if (roleClothings.any((role) => clothing.togsType == role.clothingType)) clothing,
+        if (roleClothings.any((role) => clothing.togsType == role.clothingType))
+          clothing,
     ];
 
     _selectedClothing = _clothings?.firstOrNull;
 
     // 判断是否显示服装选项
-    _showClothing = _ctr.role.changeClothing == true && (_clothings?.isNotEmpty ?? false);
+    _showClothing =
+        _ctr.role.changeClothing == true && (_clothings?.isNotEmpty ?? false);
 
     // 根据缓存决定默认选中的分类
-    _selectedCategory = _showClothing ? MsgGiftViewCategory.clothing : MsgGiftViewCategory.toys;
+    _selectedCategory =
+        _showClothing ? MsgGiftViewCategory.clothing : MsgGiftViewCategory.toys;
 
     // 更新UI
     if (mounted) {
@@ -155,7 +163,8 @@ class _GiftPageState extends State<GiftPage> {
   void _handlePageChanged(int index) {
     _linkedController.handlePageChanged(index);
     setState(() {
-      _selectedCategory = index == 0 ? MsgGiftViewCategory.clothing : MsgGiftViewCategory.toys;
+      _selectedCategory =
+          index == 0 ? MsgGiftViewCategory.clothing : MsgGiftViewCategory.toys;
     });
   }
 
@@ -167,8 +176,10 @@ class _GiftPageState extends State<GiftPage> {
         padding: _GiftPageConstants.tabPadding,
         decoration: BoxDecoration(
           color: _GiftPageConstants.backgroundLight,
-          border: BoxBorder.all(color: _GiftPageConstants.borderColor, width: 1),
-          borderRadius: BorderRadius.circular(_GiftPageConstants.tabBorderRadius),
+          border:
+              BoxBorder.all(color: _GiftPageConstants.borderColor, width: 1),
+          borderRadius:
+              BorderRadius.circular(_GiftPageConstants.tabBorderRadius),
         ),
         child: Row(
           children: [
@@ -185,7 +196,8 @@ class _GiftPageState extends State<GiftPage> {
       children: [
         Text(
           LocaleKeys.toys.tr,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
         ),
       ],
     );
@@ -255,7 +267,7 @@ class _GiftPageState extends State<GiftPage> {
               children: [
                 Text(
                   LocaleKeys.send_a_gift_and_get_a_picture.tr,
-                  style: AppTextStyle.openSans(
+                  style: ThemeStyle.openSans(
                     color: _GiftPageConstants.redText,
                     fontSize: 10,
                     fontWeight: FontWeight.w400,
@@ -365,7 +377,8 @@ class _GiftPageState extends State<GiftPage> {
           // 图片区域
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(_GiftPageConstants.borderRadius),
+              borderRadius:
+                  BorderRadius.circular(_GiftPageConstants.borderRadius),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -373,7 +386,8 @@ class _GiftPageState extends State<GiftPage> {
                   Positioned.fill(
                     child: FImage(
                       url: imgUrl,
-                      borderRadius: BorderRadius.circular(_GiftPageConstants.borderRadius),
+                      borderRadius: BorderRadius.circular(
+                          _GiftPageConstants.borderRadius),
                     ),
                   ),
 
@@ -385,8 +399,11 @@ class _GiftPageState extends State<GiftPage> {
                         clipColor: _GiftPageConstants.primaryBlue,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(_GiftPageConstants.borderRadius),
-                            border: Border.all(color: _GiftPageConstants.primaryBlue, width: 2),
+                            borderRadius: BorderRadius.circular(
+                                _GiftPageConstants.borderRadius),
+                            border: Border.all(
+                                color: _GiftPageConstants.primaryBlue,
+                                width: 2),
                           ),
                         ),
                       ),
@@ -409,7 +426,8 @@ class _GiftPageState extends State<GiftPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: _GiftPageConstants.priceTagBackground,
@@ -442,7 +460,7 @@ class _GiftPageState extends State<GiftPage> {
           const SizedBox(height: 2),
           Text(
             name ?? '',
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: Colors.white,
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -463,7 +481,8 @@ class _GiftPageState extends State<GiftPage> {
       child: Center(
         child: Text(
           LocaleKeys.send.tr,
-          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
+          style: const TextStyle(
+              color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
         ),
       ),
     );

@@ -3,8 +3,8 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/mask_edit_ctr.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -21,15 +21,18 @@ class MaskEditPage extends GetView<MaskEditCtr> {
   static const double genderIconSize = 16.0;
 
   /// 静态常量缓存，提升性能
-  static const EdgeInsets _genderPadding = EdgeInsets.symmetric(horizontal: 8, vertical: 6);
-  static const EdgeInsets _textFieldPadding = EdgeInsets.symmetric(horizontal: 16);
+  static const EdgeInsets _genderPadding =
+      EdgeInsets.symmetric(horizontal: 8, vertical: 6);
+  static const EdgeInsets _textFieldPadding =
+      EdgeInsets.symmetric(horizontal: 16);
   static const EdgeInsets _multilineTextFieldPadding = EdgeInsets.symmetric(
     horizontal: 16,
     vertical: 12,
   );
   static const EdgeInsets _buttonMargin = EdgeInsets.symmetric(horizontal: 50);
   static const SizedBox _spacing8 = SizedBox(height: 8);
-  static const BoxConstraints _multilineConstraints = BoxConstraints(minHeight: 88);
+  static const BoxConstraints _multilineConstraints =
+      BoxConstraints(minHeight: 88);
   static const Color _backgroundColor = Color(0xFF333333);
   static const Color _selectedColor = Color(0xFF3F8DFD);
   static const Color _unselectedColor = Color(0x33FFFFFF);
@@ -83,7 +86,8 @@ class MaskEditPage extends GetView<MaskEditCtr> {
       ),
       title: Text(
         LocaleKeys.create_profile_mask.tr,
-        style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+        style: const TextStyle(
+            color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -119,7 +123,8 @@ class MaskEditPage extends GetView<MaskEditCtr> {
         Obx(
           () => _buildTitle(
             LocaleKeys.your_name.tr,
-            subtitle: '(${controller.nameLength.value}/${MaskEditCtr.maxNameLength})',
+            subtitle:
+                '(${controller.nameLength.value}/${MaskEditCtr.maxNameLength})',
           ),
         ),
         _buildTextFieldContainer(
@@ -145,9 +150,12 @@ class MaskEditPage extends GetView<MaskEditCtr> {
           mainAxisAlignment: MainAxisAlignment.start,
           spacing: 8,
           children: [
-            _buildGenderOption(Gender.female, Gender.female.display, Assets.images.female),
-            _buildGenderOption(Gender.male, Gender.male.display, Assets.images.male),
-            _buildGenderOption(Gender.nonBinary, Gender.nonBinary.display, Assets.images.nonbinary),
+            _buildGenderOption(
+                Gender.female, Gender.female.display, Assets.images.female),
+            _buildGenderOption(
+                Gender.male, Gender.male.display, Assets.images.male),
+            _buildGenderOption(Gender.nonBinary, Gender.nonBinary.display,
+                Assets.images.nonbinary),
           ],
         ),
       ],
@@ -155,7 +163,8 @@ class MaskEditPage extends GetView<MaskEditCtr> {
   }
 
   /// 构建性别选项
-  Widget _buildGenderOption(Gender gender, String label, AssetGenImage selectedIcon) {
+  Widget _buildGenderOption(
+      Gender gender, String label, AssetGenImage selectedIcon) {
     return Obx(() {
       final isSelected = controller.selectedGender.value == gender;
       return GestureDetector(
@@ -164,7 +173,9 @@ class MaskEditPage extends GetView<MaskEditCtr> {
         },
         child: Container(
           decoration: BoxDecoration(
-            border: BoxBorder.all(color: isSelected ? _selectedColor : _unselectedColor, width: 1),
+            border: BoxBorder.all(
+                color: isSelected ? _selectedColor : _unselectedColor,
+                width: 1),
             borderRadius: BorderRadius.circular(20),
           ),
           padding: _genderPadding,
@@ -219,7 +230,8 @@ class MaskEditPage extends GetView<MaskEditCtr> {
         Obx(
           () => _buildTitle(
             LocaleKeys.description.tr,
-            subtitle: '(${controller.descriptionLength.value}/${MaskEditCtr.maxDescriptionLength})',
+            subtitle:
+                '(${controller.descriptionLength.value}/${MaskEditCtr.maxDescriptionLength})',
             query: true,
           ),
         ),
@@ -245,7 +257,8 @@ class MaskEditPage extends GetView<MaskEditCtr> {
         Obx(
           () => _buildTitle(
             LocaleKeys.other_info.tr,
-            subtitle: '(${controller.otherInfoLength.value}/${MaskEditCtr.maxOtherInfoLength})',
+            subtitle:
+                '(${controller.otherInfoLength.value}/${MaskEditCtr.maxOtherInfoLength})',
             query: false,
           ),
         ),
@@ -300,7 +313,8 @@ class MaskEditPage extends GetView<MaskEditCtr> {
 
   /// 构建文本样式
   TextStyle _buildTextStyle() {
-    return const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500);
+    return const TextStyle(
+        color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500);
   }
 
   /// 构建底部按钮
@@ -350,7 +364,7 @@ class MaskEditPage extends GetView<MaskEditCtr> {
             : Center(
                 child: Text(
                   LocaleKeys.save.tr,
-                  style: AppTextStyle.openSans(
+                  style: ThemeStyle.openSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
@@ -367,7 +381,7 @@ class MaskEditPage extends GetView<MaskEditCtr> {
       children: [
         Text(
           title,
-          style: AppTextStyle.openSans(
+          style: ThemeStyle.openSans(
             fontSize: 14,
             color: Colors.white,
             fontWeight: FontWeight.w700,
@@ -376,7 +390,7 @@ class MaskEditPage extends GetView<MaskEditCtr> {
         if (query)
           Text(
             '*',
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               fontSize: 14,
               color: _requiredColor,
               fontWeight: FontWeight.w700,
@@ -385,7 +399,7 @@ class MaskEditPage extends GetView<MaskEditCtr> {
         if (subtitle != null)
           Text(
             subtitle,
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               fontSize: 14,
               color: Colors.white,
               fontWeight: FontWeight.w700,
@@ -398,7 +412,8 @@ class MaskEditPage extends GetView<MaskEditCtr> {
 
 class _AgeInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.text.isEmpty) {
       return newValue;
     }
@@ -414,7 +429,8 @@ class _AgeInputFormatter extends TextInputFormatter {
 
 class _NoLeadingSpaceFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     // 如果新值为空，直接返回
     if (newValue.text.isEmpty) {
       return newValue;

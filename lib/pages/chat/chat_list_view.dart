@@ -1,10 +1,10 @@
-import 'package:fast_ai/component/base_list_view.dart';
+import 'package:fast_ai/component/f_list_view.dart';
 import 'package:fast_ai/data/session_data.dart';
 import 'package:fast_ai/pages/chat/chat_ctr.dart';
 import 'package:fast_ai/pages/chat/chat_item.dart';
 import 'package:flutter/material.dart';
 
-class ChatListView extends BaseListView<SessionData, ChatCtr> {
+class ChatListView extends FListView<SessionData, ChatCtr> {
   const ChatListView({super.key, required super.controller});
 
   @override

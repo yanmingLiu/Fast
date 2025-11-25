@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:fast_ai/component/f_image.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,7 +22,7 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
 
   final ctr = Get.find<MsgCtr>();
 
-  RxList<RoleImage> images = <RoleImage>[].obs;
+  RxList<APopImage> images = <APopImage>[].obs;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
   Widget _buildImages() {
     final imageCount = images.length;
 
-    if (!AppCache().isBig || imageCount == 0 || images.isEmpty) {
+    if (!FCache().isBig || imageCount == 0 || images.isEmpty) {
       return Container(height: 1, color: const Color(0x801C1C1C));
     }
 
@@ -104,7 +104,9 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
             child: Center(
               child: Icon(
                 color: Colors.white,
-                _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                _isExpanded
+                    ? Icons.keyboard_arrow_up
+                    : Icons.keyboard_arrow_down,
                 size: 16,
               ),
             ),
@@ -118,15 +120,15 @@ class _PhotoAlbumState extends State<PhotoAlbum> {
 class PhotoAlbumItem extends StatelessWidget {
   const PhotoAlbumItem({
     super.key,
-    this.imageHeight,
+    required this.imageHeight,
     required this.image,
     required this.unlocked,
     this.onTap,
     this.avatar,
   });
 
-  final double? imageHeight;
-  final RoleImage image;
+  final double imageHeight;
+  final APopImage image;
   final bool unlocked;
   final void Function()? onTap;
   final String? avatar;
@@ -145,10 +147,11 @@ class PhotoAlbumItem extends StatelessWidget {
             children: [
               FImage(
                 url: !unlocked ? avatar : image.imageUrl,
-                // width: imageHeight,
-                // height: imageHeight,
-                cacheWidth: 640,
-                cacheHeight: 640,
+                width: imageHeight,
+                height: imageHeight,
+                cacheWidth: 800,
+                cacheHeight: 800,
+                // fit: BoxFit.fill,
               ),
               if (!unlocked)
                 BackdropFilter(
@@ -168,7 +171,7 @@ class PhotoAlbumItem extends StatelessWidget {
                                 Assets.images.gems.image(width: 16, height: 16),
                                 Text(
                                   '${image.gems ?? 0}',
-                                  style: AppTextStyle.openSans(
+                                  style: ThemeStyle.openSans(
                                     color: Colors.white,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
