@@ -6,6 +6,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/liked_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/values/values.dart';
 import 'package:get/get.dart';
@@ -35,11 +36,15 @@ class SearchCtr extends GetxController {
 
   /// 设置搜索防抖
   void _setupSearchDebounce() {
-    debounce(searchQuery, (_) {
-      final requestId = _generateRequestId();
-      currentRequestId.value = requestId;
-      search(searchQuery.value, requestId);
-    }, time: _debounceDelay);
+    debounce(
+      searchQuery,
+      (_) {
+        final requestId = _generateRequestId();
+        currentRequestId.value = requestId;
+        search(searchQuery.value, requestId);
+      },
+      time: _debounceDelay,
+    );
   }
 
   /// 生成唯一请求ID
@@ -169,9 +174,9 @@ class SearchCtr extends GetxController {
 
   /// 显示评分对话框（如果需要）
   void _showRateDialogIfNeeded() {
-    if (!FDialog.rateCollectShowd) {
+    if (!FCache().isRateCollectShowd) {
+      FCache().isRateCollectShowd = true;
       FDialog.showRateUs(LocaleKeys.rate_us_like.tr);
-      FDialog.rateCollectShowd = true;
     }
   }
 }

@@ -21,16 +21,20 @@ class _FRateState extends State<FRate> {
 
   String _text = '';
   int _rate = 0;
+  String _btnText = 'Submit';
 
   void _onTap(int rate) {
     setState(() {
       _rate = rate;
       if (rate == 1) {
         _text = 'Not satisfied, needs improvement.';
+        _btnText = 'Submit a feedback';
       } else if (rate == 2) {
         _text = "It's okay, could be better.";
+        _btnText = 'Submit a feedback';
       } else if (rate == 3) {
         _text = "Great! I'm loving it.";
+        _btnText = 'Submit';
       }
     });
   }
@@ -181,7 +185,7 @@ class _FRateState extends State<FRate> {
                       ],
                       child: Center(
                         child: Text(
-                          'Submit',
+                          _btnText,
                           style: ThemeStyle.openSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,

@@ -4,6 +4,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/values/values.dart';
 import 'package:get/get.dart';
 
@@ -94,9 +95,9 @@ class RoleCenterCtr extends GetxController {
           DateTime.now().millisecondsSinceEpoch,
         );
 
-        if (FDialog.rateCollectShowd == false) {
+        if (FCache().isRateCollectShowd == false) {
+          FCache().isRateCollectShowd = true;
           FDialog.showRateUs(LocaleKeys.rate_us_like.tr);
-          FDialog.rateCollectShowd = true;
         }
       }
       isLoading.value = false;

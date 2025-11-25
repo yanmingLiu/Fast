@@ -126,4 +126,12 @@ class FCache {
   // 同一个 AI 连续发送 2 次消息拉起评分
   bool get isRateMsg => _box.read<bool>('Sn8tC3b') ?? false;
   set isRateMsg(bool value) => _box.write('Sn8tC3b', value);
+
+  // rate collect showd
+  bool get isRateCollectShowd => _box.read<bool>('Lx7qA4z') ?? false;
+  set isRateCollectShowd(bool value) => _box.write('Lx7qA4z', value);
+
+  // rate level 2 showd
+  bool get isRateLevel2Showd => _box.read<bool>('Bn3oY7d') ?? false;
+  set isRateLevel2Showd(bool value) => _box.write('Bn3oY7d', value);
 }
