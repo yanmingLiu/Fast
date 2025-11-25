@@ -37,7 +37,10 @@ class FImage extends StatelessWidget {
     }
 
     var imageUrl = url!;
-    if (cacheHeight != null || cacheWidth != null) {
+
+    if ((cacheHeight != null || cacheWidth != null) &&
+        !imageUrl.contains('.gif') &&
+        !imageUrl.contains('.webp')) {
       imageUrl += urlSuffix;
     }
 
