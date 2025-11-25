@@ -1,5 +1,5 @@
 import 'package:fast_ai/component/f_image_preview.dart';
-import 'package:fast_ai/component/video_preview.dart';
+import 'package:fast_ai/component/f_video_preview.dart';
 import 'package:fast_ai/pages/chat/mask_edit_page.dart';
 import 'package:fast_ai/pages/chat/mask_page.dart';
 import 'package:fast_ai/pages/chat/msg_page.dart';
@@ -17,9 +17,8 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
 /// 应用路由定义类
-class Routers {
-  // 私有构造函数，防止实例化
-  Routers._();
+class NPN {
+  NPN._();
 
   /// 应用路由路径定义
   static const String main = '/';
@@ -62,7 +61,7 @@ class Routers {
     ),
     GetPage(
         name: videoPreview,
-        page: () => const VideoPreview(),
+        page: () => const FVideoPreview(),
         fullscreenDialog: true),
     GetPage(
         name: homeFilter,

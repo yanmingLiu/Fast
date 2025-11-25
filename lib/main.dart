@@ -1,6 +1,6 @@
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/f_service.dart';
@@ -53,13 +53,13 @@ void main() async {
 
 Iterable<Locale> supportedLocales = const [
   Locale('en'), // 英语
-  Locale('ar'), // 阿拉伯语
-  Locale('fr'), // 法语
-  Locale('de'), // 德语
-  Locale('es'), // 西班牙语
-  Locale('pt'), // 葡萄牙语
-  Locale('ja'), // 日语
-  Locale('ko'), // 韩语
+  // Locale('ar'), // 阿拉伯语
+  // Locale('fr'), // 法语
+  // Locale('de'), // 德语
+  // Locale('es'), // 西班牙语
+  // Locale('pt'), // 葡萄牙语
+  // Locale('ja'), // 日语
+  // Locale('ko'), // 韩语
 ];
 
 // 缓存语言判断结果避免重复调用
@@ -87,8 +87,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: ThemeColors.primary),
         scaffoldBackgroundColor: const Color(0xFF111111), // 背景色
       ),
-      getPages: Routers.pages,
-      initialRoute: Routers.splash,
+      getPages: NPN.pages,
+      initialRoute: NPN.splash,
       navigatorObservers: [
         FlutterSmartDialog.observer,
         NavigationObs().observer,
@@ -112,7 +112,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(1.0), // 固定字体缩放比例为1.0，不跟随系统字体大小
+            textScaler: TextScaler.linear(1.0),
           ),
           child: FlutterSmartDialog.init(
               loadingBuilder: (msg) => FLoading.custom())(

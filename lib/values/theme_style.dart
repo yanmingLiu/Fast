@@ -1,4 +1,3 @@
-import 'package:fast_ai/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
 
 class ThemeStyle {
@@ -16,7 +15,7 @@ class ThemeStyle {
         fontWeight: fontWeight,
         color: color,
         fontStyle: fontStyle,
-        fontFamily: FontFamily.openSans,
+        fontFamily: 'OpenSans',
         height: height,
       );
 }

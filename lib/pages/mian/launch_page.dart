@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fast_ai/component/f_progress.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
-import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
 import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/services/f_switch_service.dart';
 import 'package:fast_ai/services/m_y.dart';
@@ -105,7 +105,7 @@ class _LaunchPageState extends State<LaunchPage>
 
   Future<void> _navigateToMain() async {
     if (!mounted) return;
-    Get.offAllNamed(Routers.main);
+    Get.offAllNamed(NPN.main);
   }
 
   @override
@@ -121,14 +121,14 @@ class _LaunchPageState extends State<LaunchPage>
             Center(child: Assets.images.launchLogo.image(width: 120)),
             Spacer(),
             Text(
-              'Fast Ai',
+              'Fast AI',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 32,
                   fontWeight: FontWeight.w700),
             ),
             Text(
-              'Effortless teamwork in an advanced AI realm',
+              'Effortless Collaboration, Advanced AI.',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 10,

@@ -5,7 +5,7 @@ import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/values/theme_colors.dart';
 import 'package:fast_ai/values/theme_style.dart';
@@ -41,9 +41,9 @@ class HomeItem extends StatelessWidget {
     }
 
     if (cate == HomeCate.video) {
-      AppRouter.pushPhoneGuide(role: role);
+      NTN.pushPhoneGuide(role: role);
     } else {
-      AppRouter.pushChat(id);
+      NTN.pushChat(id);
     }
   }
 

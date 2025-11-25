@@ -1,6 +1,6 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/values/theme_style.dart';
 import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class RoleLockView extends StatelessWidget {
                         ],
                       ),
                       onTap: () {
-                        AppRouter.pushVip(ProFrom.viprole);
+                        NTN.pushVip(ProFrom.viprole);
                       },
                     ),
                   ],

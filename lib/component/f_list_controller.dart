@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import 'f_empty.dart';
 
-abstract class BaseListController<T> extends GetxController {
+abstract class FListController<T> extends GetxController {
   var dataList = <T>[].obs;
   int page = 1;
   int size = 100;
@@ -32,7 +32,7 @@ abstract class BaseListController<T> extends GetxController {
       // 如果访问isClosed抛出异常，说明控制器可能已被销毁
       return;
     }
-    
+
     _isRefreshing = true;
     try {
       page = 1;
@@ -41,7 +41,8 @@ abstract class BaseListController<T> extends GetxController {
       // 再次检查控制器状态
       if (!isClosed) {
         refreshController.finishRefresh();
-        refreshController.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+        refreshController.finishLoad(
+            isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
       }
     } finally {
       _isRefreshing = false;
@@ -58,7 +59,8 @@ abstract class BaseListController<T> extends GetxController {
     try {
       page++;
       await fetchData();
-      refreshController.finishLoad(isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+      refreshController.finishLoad(
+          isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
     } catch (e) {
       page--;
       refreshController.finishLoad(IndicatorResult.fail);

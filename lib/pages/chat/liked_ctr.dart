@@ -1,11 +1,11 @@
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/data/a_pop.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_api.dart';
 
-import '../../component/base_list_controller.dart';
+import '../../component/f_list_controller.dart';
 
-class LikedCtr extends BaseListController<APop> {
+class LikedCtr extends FListController<APop> {
   @override
   Future<void> fetchData() async {
     try {
@@ -24,6 +24,6 @@ class LikedCtr extends BaseListController<APop> {
 
   @override
   Future<void> onItemTap(APop session) async {
-    AppRouter.pushChat(session.id);
+    NTN.pushChat(session.id);
   }
 }

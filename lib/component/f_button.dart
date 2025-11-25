@@ -32,6 +32,7 @@ class FButton extends StatelessWidget {
     this.color = _kDefaultColor,
     this.hasShadow = false,
     this.boxShadows,
+    this.border,
   });
 
   /// The widget below this widget in the tree.
@@ -78,6 +79,9 @@ class FButton extends StatelessWidget {
   /// Custom list of box shadows. If provided, overrides the default shadow.
   final List<BoxShadow>? boxShadows;
 
+  /// A border to draw above the background color.
+  final BoxBorder? border;
+
   static final BorderRadius _defaultBorderRadius =
       BorderRadius.circular(_kDefaultHeight / 2);
 
@@ -115,12 +119,17 @@ class FButton extends StatelessWidget {
       // Wrap with DecoratedBox/SizedBox if we need shadow or specific dimensions
       // that CupertinoButton doesn't handle exactly as desired, or to match
       // original logic.
-      if (hasShadow || height != null || width != null || constraints != null) {
+      if (hasShadow ||
+          height != null ||
+          width != null ||
+          constraints != null ||
+          border != null) {
         result = DecoratedBox(
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: effectiveBorderRadius,
             boxShadow: effectiveBoxShadow,
+            border: border,
           ),
           child: SizedBox(
             height: height,
@@ -136,6 +145,7 @@ class FButton extends StatelessWidget {
           color: color,
           borderRadius: effectiveBorderRadius,
           boxShadow: effectiveBoxShadow,
+          border: border,
         ),
         child: SizedBox(
           height: height,
@@ -145,6 +155,13 @@ class FButton extends StatelessWidget {
             child: content,
           ),
         ),
+      );
+    }
+
+    if (onTap == null) {
+      result = Opacity(
+        opacity: 0.6,
+        child: result,
       );
     }
 

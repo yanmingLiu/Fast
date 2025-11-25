@@ -7,7 +7,7 @@ import 'package:fast_ai/pages/chat/msg_edit_page.dart';
 import 'package:fast_ai/pages/chat/send_container.dart';
 import 'package:fast_ai/pages/chat/text_lock.dart';
 import 'package:fast_ai/pages/chat/typing_rich_text.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/values/theme_colors.dart';
@@ -323,7 +323,7 @@ class _TextContainerState extends State<TextContainer> {
       child: FButton(
         width: _buttonSize,
         height: _buttonSize,
-        onTap: AppRouter.report,
+        onTap: NTN.report,
         child: FIcon(assetName: Assets.svg.report, width: _buttonSize),
       ),
     );

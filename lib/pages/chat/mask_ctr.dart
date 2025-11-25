@@ -2,7 +2,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/data/mask_data.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
 import 'package:fast_ai/services/f_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,7 +26,8 @@ class MaskCtr extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    refreshController = EasyRefreshController(controlFinishRefresh: true, controlFinishLoad: true);
+    refreshController = EasyRefreshController(
+        controlFinishRefresh: true, controlFinishLoad: true);
 
     // 延迟触发刷新
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -54,7 +55,8 @@ class MaskCtr extends GetxController {
   Future<void> onLoad() async {
     currentPage.value += 1;
     await _fetchData();
-    refreshController.finishLoad(hasMore.value ? IndicatorResult.none : IndicatorResult.noMore);
+    refreshController.finishLoad(
+        hasMore.value ? IndicatorResult.none : IndicatorResult.noMore);
   }
 
   /// 获取数据
@@ -65,7 +67,8 @@ class MaskCtr extends GetxController {
 
     try {
       isLoading.value = true;
-      final response = await FApi.getMaskList(page: currentPage.value, size: pageSize);
+      final response =
+          await FApi.getMaskList(page: currentPage.value, size: pageSize);
 
       hasMore.value = (response?.records?.length ?? 0) >= pageSize;
 
@@ -75,7 +78,9 @@ class MaskCtr extends GetxController {
       maskList.addAll(response?.records ?? []);
 
       // 自动选择当前会话的 mask
-      if (selectedMask.value == null && maskList.isNotEmpty && msgCtr.session.profileId != null) {
+      if (selectedMask.value == null &&
+          maskList.isNotEmpty &&
+          msgCtr.session.profileId != null) {
         selectedMask.value = maskList.firstWhereOrNull(
           (element) => element.id == msgCtr.session.profileId,
         );
@@ -99,7 +104,7 @@ class MaskCtr extends GetxController {
 
   /// 推送编辑页面
   Future<void> pushEditPage({MaskData? mask}) async {
-    await Get.toNamed(Routers.maskEdit, arguments: mask);
+    await Get.toNamed(NPN.maskEdit, arguments: mask);
     onRefresh();
   }
 

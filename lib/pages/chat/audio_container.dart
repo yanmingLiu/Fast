@@ -3,7 +3,7 @@ import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/audio_manager.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/m_y.dart';
@@ -233,7 +233,7 @@ class _AudioContainerState extends State<AudioContainer>
       if (!MY().isVip.value) {
         debugPrint('🔒 AudioContainer: 非VIP用户，跳转到VIP页面');
         logEvent('c_news_lockaudio');
-        AppRouter.pushVip(ProFrom.lockaudio);
+        NTN.pushVip(ProFrom.lockaudio);
         return;
       }
 

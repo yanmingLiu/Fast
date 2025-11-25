@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_image.dart';
-import 'package:fast_ai/component/link_tab_controller.dart';
+import 'package:fast_ai/component/f_link_tab_controller.dart';
 import 'package:fast_ai/data/a_pop_toy_data.dart';
 import 'package:fast_ai/data/r_clo_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
@@ -77,12 +77,12 @@ class _GiftPageState extends State<GiftPage> {
   ];
 
   /// 标签页控制器
-  late LinkTabController _linkedController;
+  late FLinkTabController _linkedController;
 
   @override
   void initState() {
     super.initState();
-    _linkedController = LinkTabController(items: _categoryTitles);
+    _linkedController = FLinkTabController(items: _categoryTitles);
     _loadData();
   }
 

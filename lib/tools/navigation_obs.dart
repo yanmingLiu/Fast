@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:fast_ai/pages/chat/chat_ctr.dart';
 import 'package:fast_ai/pages/chat/liked_ctr.dart';
-import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/router_report.dart';
@@ -55,7 +55,7 @@ class NavigationObs {
     // Update current route to the last route in queue, or null if empty
     curRoute = routeQueue.isNotEmpty ? routeQueue.last : null;
 
-    if (route.settings.name == Routers.msg) {
+    if (route.settings.name == NPN.msg) {
       // 使用 WidgetsBinding.instance.addPostFrameCallback 确保在导航完成后执行刷新
       WidgetsBinding.instance.addPostFrameCallback((_) {
         try {

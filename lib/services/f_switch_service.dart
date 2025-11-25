@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 class FSwitchService {
   static Future request({bool isFisrt = false}) async {
     if (FService().isDebugMode) {
-      FCache().isBig = false;
+      FCache().isBig = true;
       return;
     }
 

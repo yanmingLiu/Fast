@@ -5,7 +5,7 @@ import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
 import 'package:fast_ai/services/f_api.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_service.dart';
@@ -17,16 +17,18 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AppRouter {
-  AppRouter._();
+class NTN {
+  NTN._();
 
   /// 导航到搜索页面
   static void pushSearch() async {
-    Get.toNamed(Routers.search);
+    Get.toNamed(NPN.search);
   }
 
-  static Future<void> pushChat(String? roleId,
-      {bool showLoading = true}) async {
+  static Future<void> pushChat(
+    String? roleId, {
+    bool showLoading = true,
+  }) async {
     if (roleId == null) {
       FToast.toast('roleId is null, please check!');
       return;
@@ -57,7 +59,7 @@ class AppRouter {
       }
 
       FLoading.dismiss();
-      Get.toNamed(Routers.msg, arguments: {'role': role, 'session': session});
+      Get.toNamed(NPN.msg, arguments: {'role': role, 'session': session});
     } catch (e) {
       FLoading.dismiss();
       FToast.toast(e.toString());
@@ -73,28 +75,28 @@ class AppRouter {
   ///
   /// [from] 表示从哪个入口进入VIP页面
   static void pushVip(ProFrom from) {
-    Get.toNamed(Routers.vip, arguments: from);
+    Get.toNamed(NPN.vip, arguments: from);
   }
 
   /// 导航到角色资料页面
   ///
   /// [role] 要查看的角色信息
   static void pushProfile(APop role) {
-    Get.toNamed(Routers.profile, arguments: role);
+    Get.toNamed(NPN.profile, arguments: role);
   }
 
   /// 导航到宝石/钻石页面
   ///
   /// [from] 表示从哪个入口进入宝石页面
   static void pushGem(GemsFrom from) {
-    Get.toNamed(Routers.gems, arguments: from);
+    Get.toNamed(NPN.gems, arguments: from);
   }
 
   /// 导航到Undr页面
   ///
   /// [role] 可选的角色信息
   static void pushUndr(APop? role) {
-    Get.toNamed(Routers.undr, arguments: role);
+    Get.toNamed(NPN.undr, arguments: role);
   }
 
   static Future<T?>? pushPhone<T>({
@@ -111,7 +113,7 @@ class AppRouter {
     }
 
     return Get.toNamed(
-      Routers.phone,
+      NPN.phone,
       arguments: {
         'sessionId': sessionId,
         'role': role,
@@ -147,7 +149,7 @@ class AppRouter {
     }
 
     return Get.offNamed(
-      Routers.phone,
+      NPN.phone,
       arguments: {
         'sessionId': sessionId,
         'role': role,
@@ -164,9 +166,9 @@ class AppRouter {
       PermissionStatus micStatus = await Permission.microphone.status;
       PermissionStatus speechStatus = await Permission.speech.status;
 
-      log.d(
-        'AppRouter checkPermissions - Current status - Microphone: $micStatus, Speech: $speechStatus',
-      );
+      // log.d(
+      //   'AppRouter checkPermissions - Current status - Microphone: $micStatus, Speech: $speechStatus',
+      // );
 
       // 如果权限已经授予，直接返回 true
       if (micStatus.isGranted && speechStatus.isGranted) {
@@ -175,7 +177,7 @@ class AppRouter {
 
       // 如果权限被永久拒绝，直接返回 false
       if (micStatus.isPermanentlyDenied || speechStatus.isPermanentlyDenied) {
-        log.d('Permissions permanently denied');
+        // log.d('Permissions permanently denied');
         return false;
       }
 
@@ -187,11 +189,11 @@ class AppRouter {
       ].request();
 
       bool allGranted = statuses.values.every((status) => status.isGranted);
-      log.d('Permission request result: $statuses, allGranted: $allGranted');
+      // log.d('Permission request result: $statuses, allGranted: $allGranted');
 
       return allGranted;
     } catch (e) {
-      log.e('Error checking/requesting permissions in AppRouter: $e');
+      // log.e('Error checking/requesting permissions in AppRouter: $e');
       return false;
     }
   }
@@ -212,26 +214,26 @@ class AppRouter {
   ///
   /// [role] 角色信息
   static Future<T?>? pushPhoneGuide<T>({required APop role}) async {
-    return Get.toNamed(Routers.phoneGuide, arguments: {'role': role});
+    return Get.toNamed(NPN.phoneGuide, arguments: {'role': role});
   }
 
   /// 导航到图片预览页面
   ///
   /// [imageUrl] 要预览的图片URL
   static void pushImagePreview(String imageUrl) {
-    Get.toNamed(Routers.imagePreview, arguments: imageUrl);
+    Get.toNamed(NPN.imagePreview, arguments: imageUrl);
   }
 
   /// 导航到视频预览页面
   ///
   /// [url] 要预览的视频URL
   static void pushVideoPreview(String url) {
-    Get.toNamed(Routers.videoPreview, arguments: url);
+    Get.toNamed(NPN.videoPreview, arguments: url);
   }
 
   /// 导航到蒙版页面
   static void pushMask() {
-    Get.toNamed(Routers.mask);
+    Get.toNamed(NPN.mask);
   }
 
   static void toEmail() async {
@@ -260,7 +262,7 @@ class AppRouter {
   static Future<void> openAppStoreReview() async {
     if (Platform.isIOS) {
       // iOS App Store review URL
-      const String appId = '6740072684'; // App Store的应用程序ID
+      const String appId = '6751800550'; // App Store的应用程序ID
       final Uri url =
           Uri.parse('https://apps.apple.com/app/id$appId?action=write-review');
 
@@ -273,7 +275,8 @@ class AppRouter {
       // Android Google Play review URL
       String packageName = await FService().packageName(); // 你的Android应用包名
       final Uri url = Uri.parse(
-          'https://play.google.com/store/apps/details?id=$packageName');
+        'https://play.google.com/store/apps/details?id=$packageName',
+      );
 
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -302,7 +305,8 @@ class AppRouter {
         String packageName =
             await FService().packageName(); // 替换为获取Android应用包名的方法
         final Uri url = Uri.parse(
-            'https://play.google.com/store/apps/details?id=$packageName');
+          'https://play.google.com/store/apps/details?id=$packageName',
+        );
 
         if (await canLaunchUrl(url)) {
           await launchUrl(url, mode: LaunchMode.externalApplication);

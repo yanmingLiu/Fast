@@ -1,13 +1,13 @@
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/data/session_data.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_api.dart';
 
-import '../../component/base_list_controller.dart';
+import '../../component/f_list_controller.dart';
 
 enum ChatTab { chatted, liked }
 
-class ChatCtr extends BaseListController<SessionData> {
+class ChatCtr extends FListController<SessionData> {
   @override
   Future<void> fetchData() async {
     try {
@@ -26,6 +26,6 @@ class ChatCtr extends BaseListController<SessionData> {
 
   @override
   Future<void> onItemTap(SessionData session) async {
-    AppRouter.pushChat(session.characterId);
+    NTN.pushChat(session.characterId);
   }
 }

@@ -2,7 +2,7 @@ import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/component/f_progress.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,7 +43,7 @@ class LevelView extends StatelessWidget {
       return GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();
-          AppRouter.pushProfile(ctr.role);
+          NTN.pushProfile(ctr.role);
         },
         child: Container(
           width: 160,

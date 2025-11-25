@@ -1,7 +1,7 @@
 import 'package:blur/blur.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/m_y.dart';
@@ -19,7 +19,7 @@ class TextLock extends StatelessWidget {
   void _unLockTextGems() async {
     logEvent('c_news_locktext');
     if (!MY().isVip.value) {
-      AppRouter.pushVip(ProFrom.locktext);
+      NTN.pushVip(ProFrom.locktext);
     }
   }
 

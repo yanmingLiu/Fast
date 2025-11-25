@@ -14,7 +14,7 @@ import 'package:fast_ai/data/session_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/chat_ctr.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_api.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
@@ -57,6 +57,8 @@ class MsgCtr extends GetxController {
   MsgData? tmpSendMsg;
 
   bool isRecieving = false; // 正在接收消息
+
+  int sendCount = 0;
 
   @override
   void onInit() {
@@ -201,7 +203,7 @@ class MsgCtr extends GetxController {
       'id': 3,
       'name': 'Mask',
       'icon': Assets.images.msgMask.path,
-      'list': []
+      'list': [],
     });
 
     if (FCache().isBig) {
@@ -209,7 +211,7 @@ class MsgCtr extends GetxController {
         'id': 2,
         'name': 'Gifts',
         'icon': Assets.images.msgGift.path,
-        'list': []
+        'list': [],
       });
     }
 
@@ -224,7 +226,7 @@ class MsgCtr extends GetxController {
   Future<void> rechage() async {
     await FToast.toast(LocaleKeys.not_enough.tr);
     // v1.3.0 - 调整为跳订阅页
-    AppRouter.pushVip(ProFrom.send);
+    NTN.pushVip(ProFrom.send);
   }
 
   Future<bool> canSendMsg(String text) async {
@@ -267,7 +269,7 @@ class MsgCtr extends GetxController {
             confirmText: LocaleKeys.upgrade_to_chat.tr,
             onConfirm: () {
               logEvent('t_chat_send');
-              AppRouter.pushVip(ProFrom.send);
+              NTN.pushVip(ProFrom.send);
             },
           );
           return false;
@@ -302,13 +304,15 @@ class MsgCtr extends GetxController {
     // } else {
     //   checkRateMsgCount();
     // }
+
+    checkRateMsgCount();
   }
 
   void checkRateMsgCount() async {
-    FCache().rateCount++;
-    log.d('[AppDialog]: checkRateMsgCount ${FCache().rateCount}');
-    if (FCache().rateCount == 8) {
+    sendCount++;
+    if (sendCount == 2 && !FCache().isRateMsg) {
       FDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
+      FCache().isRateMsg = true;
     }
   }
 
@@ -390,7 +394,7 @@ class MsgCtr extends GetxController {
       var body = {
         'character_id': charId,
         'conversation_id': conversationId,
-        'user_id': uid
+        'user_id': uid,
       };
       if (text != null) {
         body['message'] = text;
@@ -479,7 +483,7 @@ class MsgCtr extends GetxController {
       // 升级了
       await _showChatLevelUp(rewards);
 
-      if ((level?.level ?? 0) == 3) {
+      if ((level?.level ?? 0) == 2) {
         if (FDialog.rateLevel3Shoed == false) {
           FDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
           FDialog.rateLevel3Shoed = true;
@@ -529,7 +533,7 @@ class MsgCtr extends GetxController {
   Future<void> onTapUnlockImage(APopImage image) async {
     final gems = image.gems ?? 0;
     if (MY().balance.value < gems) {
-      AppRouter.pushGem(GemsFrom.album);
+      NTN.pushGem(GemsFrom.album);
       return;
     }
 
@@ -567,7 +571,7 @@ class MsgCtr extends GetxController {
     if (imageUrl == null) {
       return;
     }
-    AppRouter.pushImagePreview(imageUrl);
+    NTN.pushImagePreview(imageUrl);
   }
 
   void translateMsg(MsgData msg) async {
@@ -584,8 +588,10 @@ class MsgCtr extends GetxController {
     if (content == null || content.isEmpty) return;
 
     // 定义更新消息的方法
-    Future<void> updateMessage(
-        {required bool showTranslate, String? translate}) async {
+    Future<void> updateMessage({
+      required bool showTranslate,
+      String? translate,
+    }) async {
       msg.showTranslate = showTranslate;
 
       if (id != null) {
@@ -641,7 +647,7 @@ class MsgCtr extends GetxController {
       var balance = MY().balance.value;
       var price = toy.itemPrice ?? 0;
       if (balance < price) {
-        AppRouter.pushGem(GemsFrom.gift_toy);
+        NTN.pushGem(GemsFrom.gift_toy);
         return;
       }
 
@@ -671,7 +677,7 @@ class MsgCtr extends GetxController {
       var balance = MY().balance.value;
       var price = clothings.itemPrice ?? 0;
       if (balance < price) {
-        AppRouter.pushGem(GemsFrom.gift_clo);
+        NTN.pushGem(GemsFrom.gift_clo);
         return;
       }
 
@@ -721,7 +727,7 @@ class MsgCtr extends GetxController {
       if (msg != null) {
         list.add(msg);
 
-        AppRouter.pushImagePreview(imgUrl ?? '');
+        NTN.pushImagePreview(imgUrl ?? '');
 
         MY().getUserInfo();
       } else {
@@ -849,7 +855,10 @@ class MsgCtr extends GetxController {
       }
 
       bool res = await FApi.editScene(
-          convId: conversationId, scene: scene, roleId: charId);
+        convId: conversationId,
+        scene: scene,
+        roleId: charId,
+      );
       if (res) {
         session.scene = scene;
         list.clear();

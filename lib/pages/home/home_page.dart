@@ -1,12 +1,13 @@
 import 'package:fast_ai/component/f_button.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_icon.dart';
+import 'package:fast_ai/component/f_link_tab_controller.dart';
 import 'package:fast_ai/component/f_loading.dart';
-import 'package:fast_ai/component/link_tab_controller.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final ctr = Get.put(HomeCtr());
 
-  late LinkTabController _linkedController;
+  late FLinkTabController _linkedController;
 
   @override
   void initState() {
@@ -60,10 +61,10 @@ class _HomePageState extends State<HomePage>
                 return FEmpty(type: EmptyType.loading);
               }
 
-              _linkedController = LinkTabController(
+              _linkedController = FLinkTabController(
                 items: ctr.categroyList,
-                onIndexChanged: (index) => log.d("当前选中 index: $index"),
-                onItemsChanged: (items) => log.d("数据源更新: $items"),
+                onIndexChanged: (index) => log.d("index: $index"),
+                onItemsChanged: (items) => log.d("items: $items"),
               );
 
               return AnimatedBuilder(
@@ -206,7 +207,7 @@ class _HomePageState extends State<HomePage>
               }
               return FButton(
                 onTap: () {
-                  AppRouter.pushVip(ProFrom.homevip);
+                  NTN.pushVip(ProFrom.homevip);
                 },
                 width: 44,
                 height: 44,
@@ -221,7 +222,7 @@ class _HomePageState extends State<HomePage>
               constraints: BoxConstraints(minWidth: 44),
               padding: EdgeInsets.symmetric(horizontal: 12),
               onTap: () {
-                AppRouter.pushGem(GemsFrom.home);
+                NTN.pushGem(GemsFrom.home);
               },
               child: Center(
                 child: Row(
@@ -247,9 +248,14 @@ class _HomePageState extends State<HomePage>
         ),
       ),
       actions: [
+        IconButton(
+            onPressed: () {
+              FDialog.showRateUs('msg');
+            },
+            icon: Icon(Icons.notifications)),
         FButton(
           onTap: () {
-            AppRouter.pushSearch();
+            NTN.pushSearch();
           },
           width: 44,
           height: 44,

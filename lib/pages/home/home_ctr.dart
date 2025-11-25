@@ -6,8 +6,8 @@ import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/data/a_pop_tags.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_list_view.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_api.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
@@ -74,7 +74,7 @@ class HomeCtr extends GetxController {
   }
 
   void onTapFilter() {
-    Get.toNamed(Routers.homeFilter);
+    Get.toNamed(NPN.homeFilter);
   }
 
   Future<void> setupAndJump() async {
@@ -144,7 +144,7 @@ class HomeCtr extends GetxController {
       FLoading.dismiss();
       if (startRole != null) {
         final roleId = startRole.id;
-        AppRouter.pushChat(roleId, showLoading: false);
+        NTN.pushChat(roleId, showLoading: false);
       } else {
         jumpVip(isFirstLaunch);
       }
@@ -223,7 +223,7 @@ class HomeCtr extends GetxController {
   }
 
   void jumpVip(bool isFirstLaunch) async {
-    AppRouter.pushVip(FCache().isRestart ? ProFrom.relaunch : ProFrom.launch);
+    NTN.pushVip(FCache().isRestart ? ProFrom.relaunch : ProFrom.launch);
 
     var event = FCache().isBig ? 't_vipb' : 't_vipa';
 

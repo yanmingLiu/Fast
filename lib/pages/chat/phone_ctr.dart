@@ -5,8 +5,8 @@ import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/data/msg_ans_data.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/audio_manager.dart';
 import 'package:fast_ai/services/f_api.dart';
 import 'package:fast_ai/services/f_log_event.dart';
@@ -126,7 +126,7 @@ class PhoneCtr extends GetxController {
     _stopVibration();
     if (!_isVip) {
       logEvent('acceptcall');
-      AppRouter.pushVip(ProFrom.acceptcall);
+      NTN.pushVip(ProFrom.acceptcall);
       return;
     }
     onTapCall();
@@ -268,9 +268,9 @@ class PhoneCtr extends GetxController {
       // Additional check to ensure we're on the correct page
       final currentRouteName = NavigationObs().curRoute?.settings.name;
       log.d(
-          '_onCallTimeout - current route: $currentRouteName, expected: ${Routers.phone}');
+          '_onCallTimeout - current route: $currentRouteName, expected: ${NPN.phone}');
 
-      if (currentRouteName == Routers.phone || currentRouteName == null) {
+      if (currentRouteName == NPN.phone || currentRouteName == null) {
         // Even if we can't determine the route, if we're in incoming state for 15+ seconds,
         // we should probably hang up
         log.d('_onCallTimeout - calling onTapHangup()');

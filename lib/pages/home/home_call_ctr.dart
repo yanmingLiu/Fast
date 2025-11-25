@@ -1,8 +1,8 @@
 import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/pages/mian/main_page.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/pages/router/routers.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/f_service.dart';
@@ -77,7 +77,7 @@ class HomeCallCtr extends GetxController {
 
       const sessionId = 0;
 
-      AppRouter.pushPhone(
+      NTN.pushPhone(
         sessionId: sessionId,
         role: _callRole!,
         showVideo: true,
@@ -114,7 +114,7 @@ class HomeCallCtr extends GetxController {
       return false;
     }
 
-    if (NavigationObs().curRoute?.settings.name != Routers.main) {
+    if (NavigationObs().curRoute?.settings.name != NPN.main) {
       log.d('-------->canCall: false curRoute is not root');
       return false;
     }

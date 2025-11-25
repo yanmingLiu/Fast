@@ -1,5 +1,5 @@
 import 'package:fast_ai/component/f_button.dart';
-import 'package:fast_ai/component/link_tab_controller.dart';
+import 'package:fast_ai/component/f_link_tab_controller.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/chat_ctr.dart';
@@ -25,13 +25,13 @@ class _ChatPageState extends State<ChatPage> {
   final likedCtr = Get.put(LikedCtr());
 
   final titles = [LocaleKeys.chatted.tr, LocaleKeys.liked.tr];
-  late LinkTabController _linkedController;
+  late FLinkTabController _linkedController;
 
   @override
   void initState() {
     super.initState();
 
-    _linkedController = LinkTabController(
+    _linkedController = FLinkTabController(
       items: titles,
       onIndexChanged: (value) {
         log.d("value: $value");

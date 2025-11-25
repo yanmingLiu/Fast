@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 /// 通用的 Tab <-> Page 联动控制器（支持动态数据源 + 懒加载）
-class LinkTabController<T> extends ChangeNotifier {
+class FLinkTabController<T> extends ChangeNotifier {
   List<T> _items;
   List<T> get items => _items;
 
@@ -22,7 +22,7 @@ class LinkTabController<T> extends ChangeNotifier {
   /// 懒加载控制
   Completer<void>? _readyCompleter;
 
-  LinkTabController({
+  FLinkTabController({
     required List<T> items,
     int initialIndex = 0,
     this.onIndexChanged,

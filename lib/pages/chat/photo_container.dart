@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/values/theme_style.dart';
@@ -59,7 +59,7 @@ class PhotoContainer extends StatelessWidget {
           ? _buildLoackWidge(imageWidth, imageHeight, imageWidget)
           : GestureDetector(
               onTap: () {
-                AppRouter.pushImagePreview(imageUrl);
+                NTN.pushImagePreview(imageUrl);
               },
               child: imageWidget,
             );
@@ -136,7 +136,7 @@ class PhotoContainer extends StatelessWidget {
     logEvent('c_news_lockpic');
     final isVip = MY().isVip.value;
     if (!isVip) {
-      AppRouter.pushVip(ProFrom.lockpic);
+      NTN.pushVip(ProFrom.lockpic);
     }
   }
 }

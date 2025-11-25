@@ -3,7 +3,7 @@ import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_grad_text.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_api.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/values/theme_colors.dart';
@@ -22,7 +22,7 @@ class FLoginRewardDialog extends StatelessWidget {
   }
 
   void onTapVip() {
-    AppRouter.pushVip(ProFrom.dailyrd);
+    NTN.pushVip(ProFrom.dailyrd);
   }
 
   @override

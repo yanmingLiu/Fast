@@ -5,7 +5,7 @@ import 'package:fast_ai/pages/me/me_ctr.dart';
 import 'package:fast_ai/pages/me/me_item.dart';
 import 'package:fast_ai/pages/me/me_not_vip.dart';
 import 'package:fast_ai/pages/me/me_vip.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +55,7 @@ class MePage extends StatelessWidget {
                   }),
                   MeItem(
                       title: LocaleKeys.feedback.tr,
-                      onTap: () => AppRouter.toEmail()),
+                      onTap: () => NTN.toEmail()),
                   MeItem(
                     title: LocaleKeys.set_chat_background.tr,
                     onTap: () {
@@ -66,13 +66,13 @@ class MePage extends StatelessWidget {
                     () => MeItem(
                       title: LocaleKeys.app_version.tr,
                       subtitle: ctr.version.value,
-                      onTap: () => AppRouter.openAppStore(),
+                      onTap: () => NTN.openAppStore(),
                     ),
                   ),
                   MeItem(
                     sectionTitle: LocaleKeys.legal.tr,
                     title: LocaleKeys.privacy_policy.tr,
-                    onTap: () => AppRouter.toPrivacy(),
+                    onTap: () => NTN.toPrivacy(),
                     onTapSection: () {
                       Get.to(LogPage());
                     },
@@ -80,7 +80,7 @@ class MePage extends StatelessWidget {
                   ),
                   MeItem(
                       title: LocaleKeys.terms_of_use.tr,
-                      onTap: () => AppRouter.toTerms()),
+                      onTap: () => NTN.toTerms()),
                   const SizedBox(height: kBottomNavigationBarHeight + 60),
                 ],
               ),

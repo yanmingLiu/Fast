@@ -1,7 +1,7 @@
 import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +20,7 @@ class FloatItem extends StatelessWidget {
 
   void _onTapPhoneVideo() {
     logEvent('c_videocall');
-    AppRouter.pushPhoneGuide(role: role);
+    NTN.pushPhoneGuide(role: role);
   }
 
   Widget _buildVideoItem() {

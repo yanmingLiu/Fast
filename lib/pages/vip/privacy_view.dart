@@ -1,4 +1,4 @@
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,11 +33,11 @@ class PrivacyView extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildButton(LocaleKeys.privacy_policy.tr,
-                () => AppRouter.toPrivacy(), buttonColor),
-            _buildSeparator(),
-            _buildButton(LocaleKeys.terms_of_use.tr, () => AppRouter.toTerms(),
+            _buildButton(LocaleKeys.privacy_policy.tr, () => NTN.toPrivacy(),
                 buttonColor),
+            _buildSeparator(),
+            _buildButton(
+                LocaleKeys.terms_of_use.tr, () => NTN.toTerms(), buttonColor),
           ],
         ),
         if (showSubscriptionText) ...[
@@ -63,11 +63,9 @@ class PrivacyView extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildButton(
-            LocaleKeys.terms_of_use.tr, () => AppRouter.toTerms(), null),
+        _buildButton(LocaleKeys.terms_of_use.tr, () => NTN.toTerms(), null),
         _buildSeparator(),
-        _buildButton(
-            LocaleKeys.privacy_policy.tr, () => AppRouter.toPrivacy(), null),
+        _buildButton(LocaleKeys.privacy_policy.tr, () => NTN.toPrivacy(), null),
       ],
     );
   }

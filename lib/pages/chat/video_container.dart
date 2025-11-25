@@ -5,7 +5,7 @@ import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/values/theme_style.dart';
@@ -129,7 +129,7 @@ class VideoContainer extends StatelessWidget {
   Widget _buildVideoButton(String videoUrl, Widget imageWidget) {
     return InkWell(
       onTap: () {
-        AppRouter.pushVideoPreview(videoUrl);
+        NTN.pushVideoPreview(videoUrl);
       },
       child: Stack(
         alignment: Alignment.center,
@@ -142,7 +142,7 @@ class VideoContainer extends StatelessWidget {
     logEvent('c_news_lockvideo');
     final isVip = MY().isVip.value;
     if (!isVip) {
-      AppRouter.pushVip(ProFrom.lockpic);
+      NTN.pushVip(ProFrom.lockpic);
     }
   }
 }

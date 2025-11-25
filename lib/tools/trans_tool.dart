@@ -1,6 +1,6 @@
 import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/values/values.dart';
@@ -64,6 +64,6 @@ class TransTool {
   }
 
   void toVip() {
-    AppRouter.pushVip(ProFrom.trans);
+    NTN.pushVip(ProFrom.trans);
   }
 }

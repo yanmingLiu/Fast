@@ -20,14 +20,14 @@ extension IntExt on int {
   }
 }
 
-class VideoPreview extends StatefulWidget {
-  const VideoPreview({super.key});
+class FVideoPreview extends StatefulWidget {
+  const FVideoPreview({super.key});
 
   @override
-  State<VideoPreview> createState() => _VideoPreviewState();
+  State<FVideoPreview> createState() => _FVideoPreviewState();
 }
 
-class _VideoPreviewState extends State<VideoPreview>
+class _FVideoPreviewState extends State<FVideoPreview>
     with WidgetsBindingObserver {
   VideoPlayerController? _controller;
 

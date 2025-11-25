@@ -4,7 +4,7 @@ import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +104,7 @@ class _ToysContainerState extends State<ToysContainer> {
             borderRadius: BorderRadius.circular(8),
             child: InkWell(
               onTap: () {
-                AppRouter.pushImagePreview(widget.msg.giftImg ?? '');
+                NTN.pushImagePreview(widget.msg.giftImg ?? '');
               },
               child: Container(
                 width: 40,
@@ -138,7 +138,7 @@ class _ToysContainerState extends State<ToysContainer> {
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: () {
-                    AppRouter.pushImagePreview(widget.msg.giftImg ?? '');
+                    NTN.pushImagePreview(widget.msg.giftImg ?? '');
                   },
                   child: Container(
                     height: 186,

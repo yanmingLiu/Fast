@@ -122,4 +122,8 @@ class FCache {
 
   set translationMsgIds(Set<String> value) =>
       _box.write('tr_23456789', value.toList()); // 存储时转为List
+
+  // 同一个 AI 连续发送 2 次消息拉起评分
+  bool get isRateMsg => _box.read<bool>('Sn8tC3b') ?? false;
+  set isRateMsg(bool value) => _box.write('Sn8tC3b', value);
 }

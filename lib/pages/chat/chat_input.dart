@@ -10,7 +10,7 @@ import 'package:fast_ai/pages/chat/gift_page.dart';
 import 'package:fast_ai/pages/chat/mode_sheet.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/msg_edit_page.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/m_y.dart';
@@ -61,7 +61,7 @@ class _ChatInputState extends State<ChatInput> {
       clickMaskDismiss: false,
       onConfirm: () {
         FDialog.dismiss();
-        AppRouter.pushMask();
+        NTN.pushMask();
       },
     );
   }
@@ -96,11 +96,11 @@ class _ChatInputState extends State<ChatInput> {
         textEditingController.text = list.randomOrNull ?? '';
         onSend();
       } else if (id == 1) {
-        AppRouter.pushUndr(ctr.role);
+        NTN.pushUndr(ctr.role);
       } else if (id == 2) {
         showGift();
       } else if (id == 3) {
-        AppRouter.pushMask();
+        NTN.pushMask();
       } else {
         FToast.toast(LocaleKeys.not_support.tr);
       }
@@ -117,7 +117,7 @@ class _ChatInputState extends State<ChatInput> {
             return;
           }
           if (!MY().isVip.value) {
-            AppRouter.pushVip(ProFrom.scenario);
+            NTN.pushVip(ProFrom.scenario);
             return;
           }
           Get.back();

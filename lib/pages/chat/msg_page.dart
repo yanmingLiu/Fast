@@ -13,7 +13,7 @@ import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/chat/msg_list_view.dart';
 import 'package:fast_ai/pages/chat/photo_album.dart';
 import 'package:fast_ai/pages/chat/role_lock_view.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/m_y.dart';
@@ -131,12 +131,12 @@ class MsgPage extends StatelessWidget {
           onPressed: () {
             logEvent('c_call');
             if (!MY().isVip.value) {
-              AppRouter.pushVip(ProFrom.call);
+              NTN.pushVip(ProFrom.call);
               return;
             }
 
             if (!MY().isBalanceEnough(GemsFrom.call)) {
-              AppRouter.pushGem(GemsFrom.call);
+              NTN.pushGem(GemsFrom.call);
               return;
             }
 
@@ -146,7 +146,7 @@ class MsgPage extends StatelessWidget {
               return;
             }
 
-            AppRouter.pushPhone(
+            NTN.pushPhone(
                 sessionId: sessionId, role: ctr.role, showVideo: false);
           },
           icon: Image.asset(Assets.images.phone.path, width: 24, height: 24),
@@ -159,7 +159,7 @@ class MsgPage extends StatelessWidget {
           constraints: BoxConstraints(minWidth: 44),
           padding: EdgeInsets.symmetric(horizontal: 12),
           onTap: () {
-            AppRouter.pushGem(GemsFrom.chat);
+            NTN.pushGem(GemsFrom.chat);
           },
           child: Center(
             child: Row(

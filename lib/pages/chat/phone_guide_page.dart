@@ -10,7 +10,7 @@ import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/phone_page.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/tools/downloader.dart';
@@ -327,10 +327,10 @@ class _PhoneGuidePageState extends State<PhoneGuidePage>
     final vip = MY().isVip.value;
     if (vip) {
       if (MY().balance.value < GemsFrom.call.gems) {
-        AppRouter.pushGem(GemsFrom.call);
+        NTN.pushGem(GemsFrom.call);
         return;
       }
-      AppRouter.offPhone(role: role, showVideo: true);
+      NTN.offPhone(role: role, showVideo: true);
     } else {
       _pushVip();
     }
@@ -338,7 +338,7 @@ class _PhoneGuidePageState extends State<PhoneGuidePage>
 
   void _pushVip() {
     logEvent('c_unlock_videocall');
-    AppRouter.pushVip(ProFrom.call);
+    NTN.pushVip(ProFrom.call);
   }
 
   Widget _playingView() {

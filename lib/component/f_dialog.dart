@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/component/f_login_reward_dialog.dart';
-import 'package:fast_ai/component/rate_view.dart';
+import 'package:fast_ai/component/f_rate.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/gift_loading.dart';
@@ -421,7 +421,7 @@ class FDialog {
   static void showRateUs(String msg) async {
     FDialog.show(
       clickMaskDismiss: false,
-      child: RateView(msg: msg),
+      child: FRate(msg: msg),
       tag: rateUsTag,
     );
   }

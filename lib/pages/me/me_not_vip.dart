@@ -2,7 +2,7 @@ import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/main.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/values/theme_colors.dart'; // 引入统一颜色管理
 import 'package:fast_ai/values/theme_style.dart';
 import 'package:fast_ai/values/values.dart';
@@ -15,7 +15,7 @@ class MeNotVip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => AppRouter.pushVip(ProFrom.mevip),
+      onTap: () => NTN.pushVip(ProFrom.mevip),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
