@@ -88,10 +88,6 @@ class FCache {
   int get sendMsgCount => _box.read<int>('send_d5F9sP2wQ') ?? 0;
   set sendMsgCount(int value) => _box.write('send_d5F9sP2wQ', value);
 
-  // rate count
-  int get rateCount => _box.read<int>('k_rate_count') ?? 0;
-  set rateCount(int value) => _box.write('k_rate_count', value);
-
   // locale
   String get locale => _box.read<String>('lan_p3C9dY2jF') ?? '';
   set locale(String value) => _box.write('lan_p3C9dY2jF', value);
@@ -126,6 +122,18 @@ class FCache {
   // 同一个 AI 连续发送 2 次消息拉起评分
   bool get isRateMsg => _box.read<bool>('Sn8tC3b') ?? false;
   set isRateMsg(bool value) => _box.write('Sn8tC3b', value);
+
+  // 根据 角色 id 记录发送消息的次数Map<String,int> key 是角色 id value 是发送消息的次数
+  Map<String, int> get sendMsgCountMap {
+    final dynamic storedValue = _box.read('dfh4543fdgasd2d');
+    if (storedValue is Map<String, dynamic>) {
+      return storedValue.cast<String, int>();
+    }
+    return {};
+  }
+
+  set sendMsgCountMap(Map<String, int> value) =>
+      _box.write('dfh4543fdgasd2d', value);
 
   // rate collect showd
   bool get isRateCollectShowd => _box.read<bool>('Lx7qA4z') ?? false;

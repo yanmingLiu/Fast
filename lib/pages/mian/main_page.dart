@@ -4,6 +4,7 @@ import 'package:fast_ai/pages/home/home_page.dart';
 import 'package:fast_ai/pages/me/me_page.dart';
 import 'package:fast_ai/pages/mian/main_tab_bar.dart';
 import 'package:fast_ai/services/audio_manager.dart';
+import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/services/f_switch_service.dart';
@@ -79,7 +80,9 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       _initializeAsyncServices();
 
       await MY().getUserInfo();
-      await FSwitchService.request();
+      if (FCache().isBig == false) {
+        await FSwitchService.request();
+      }
     } catch (e) {
       // 捕获超时异常或其他异常
       log.e('splash Setup error: $e');

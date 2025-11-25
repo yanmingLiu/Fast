@@ -174,7 +174,8 @@ class IAPTool {
 
   // 处理购买详情
   Future<void> _processPurchaseDetails(
-      List<PurchaseDetails> purchaseDetailsList) async {
+    List<PurchaseDetails> purchaseDetailsList,
+  ) async {
     if (purchaseDetailsList.isEmpty) return;
 
     // 按交易日期降序排序
@@ -199,8 +200,11 @@ class IAPTool {
           break;
 
         case PurchaseStatus.error:
-        case PurchaseStatus.canceled:
           _handlePurchaseError(purchaseDetails);
+          break;
+
+        case PurchaseStatus.canceled:
+          FLoading.dismiss();
           break;
 
         case PurchaseStatus.pending:
@@ -217,7 +221,8 @@ class IAPTool {
   }
 
   Future<void> _handleSuccessfulPurchase(
-      PurchaseDetails purchaseDetails) async {
+    PurchaseDetails purchaseDetails,
+  ) async {
     // log.d(' 购买成功 status: ${purchaseDetails.status}');
     // log.d(
     //     ' 购买成功 pendingCompletePurchase: ${purchaseDetails.pendingCompletePurchase}');
@@ -232,7 +237,7 @@ class IAPTool {
     // if (await _isPurchaseProcessed(purchaseDetails.purchaseID)) return;
 
     if (await _verifyAndCompletePurchase(purchaseDetails)) {
-      // await _markPurchaseAsProcessed(purchaseDetails.purchaseID);
+      await _markPurchaseAsProcessed(purchaseDetails.purchaseID);
     } else {
       // log.e('[iap] 验证失败: ${purchaseDetails.productID}');
     }
@@ -253,7 +258,8 @@ class IAPTool {
   }
 
   Future<bool> _verifyAndCompletePurchase(
-      PurchaseDetails purchaseDetails) async {
+    PurchaseDetails purchaseDetails,
+  ) async {
     bool isValid = await verifyPurchaseWithServer(purchaseDetails);
     FLoading.dismiss();
     if (isValid) {
@@ -360,7 +366,9 @@ class IAPTool {
     if (Platform.isIOS) {
       try {
         final order = await FApi.makeIosOrder(
-            orderType: orderType, skuId: productDetails.id);
+          orderType: orderType,
+          skuId: productDetails.id,
+        );
         if (order == null || order.id == null) {
           throw Exception('Creat order error');
         }
@@ -373,7 +381,9 @@ class IAPTool {
     if (Platform.isAndroid) {
       try {
         final order = await FApi.makeAndOrder(
-            orderType: orderType, skuId: productDetails.id);
+          orderType: orderType,
+          skuId: productDetails.id,
+        );
         if (order == null || order.orderNo == null) {
           throw Exception('Creat order error');
         }
@@ -402,9 +412,9 @@ class IAPTool {
   }
 
   // 工具方法：标记购买为已处理
-  // Future<void> _markPurchaseAsProcessed(String? purchaseID) async {
-  //   // if (purchaseID != null) await _storage.write(key: purchaseID, value: 'processed');
-  // }
+  Future<void> _markPurchaseAsProcessed(String? purchaseID) async {
+    // if (purchaseID != null) await _storage.write(key: purchaseID, value: 'processed');
+  }
 
   // Future<bool> _isPurchaseProcessed(String? purchaseID) async {
   //   if (purchaseID == null) return false;
@@ -430,7 +440,7 @@ class IAPTool {
 
     if (_consumableIds.contains(id)) {
       path = 'gems';
-      from = _consFrom?.name ?? '';
+      from = _consFrom?.name ?? GemsFrom.home.name;
       logEvent('suc_gems');
       final name = 'suc_${path}_${id}_$from';
       log.d('[iap] report: $name');
@@ -445,7 +455,7 @@ class IAPTool {
       iapEvent.value = (IAPEvent.goldSucc, id, _eventCounter.value);
     } else {
       path = 'sub';
-      from = _vipFrom?.name ?? '';
+      from = _vipFrom?.name ?? ProFrom.homevip.name;
       logEvent('suc_sub');
       final name = 'suc_${path}_${id}_$from';
       log.d('[iap] report: $name');
