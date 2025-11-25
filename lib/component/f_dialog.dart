@@ -60,7 +60,7 @@ class FDialog {
                 children: [
                   _buildCloseButton(
                     onTap: onCancel,
-                  )
+                  ),
                 ],
               ),
             ],
@@ -195,7 +195,9 @@ class FDialog {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 36),
+                          horizontal: 20,
+                          vertical: 36,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF333333), // 对话框背景色
                           borderRadius: BorderRadius.circular(32),
@@ -236,7 +238,8 @@ class FDialog {
                                     hintText: hintText ?? 'input',
                                     counterText: '', // 去掉字数显示
                                     hintStyle: const TextStyle(
-                                        color: Color(0xFFB3B3B3)),
+                                      color: Color(0xFFB3B3B3),
+                                    ),
                                     fillColor: Colors.transparent,
                                     border: InputBorder.none,
                                     filled: true,
@@ -281,8 +284,9 @@ class FDialog {
                   ),
                   const SizedBox(height: 20),
                   Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [_buildCloseButton()]),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [_buildCloseButton()],
+                  ),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -307,13 +311,19 @@ class FDialog {
   }
 
   static Widget _buildText(
-      String? text, double fontSize, FontWeight fontWeight) {
+    String? text,
+    double fontSize,
+    FontWeight fontWeight,
+  ) {
     if (text?.isNotEmpty != true) return const SizedBox.shrink();
     return Text(
       text!,
       textAlign: TextAlign.center,
       style: ThemeStyle.openSans(
-          color: Colors.white, fontSize: fontSize, fontWeight: fontWeight),
+        color: Colors.white,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
     );
   }
 
@@ -400,23 +410,23 @@ class FDialog {
       return;
     }
     return show(
-        tag: loginRewardTag,
-        clickMaskDismiss: false,
-        child: FLoginRewardDialog());
+      tag: loginRewardTag,
+      clickMaskDismiss: false,
+      child: FLoginRewardDialog(),
+    );
   }
 
   static Future showGiftLoading() {
     return show(
-        clickMaskDismiss: false, tag: giftLoadingTag, child: GiftLoading());
+      clickMaskDismiss: false,
+      tag: giftLoadingTag,
+      child: GiftLoading(),
+    );
   }
 
   static Future hiddenGiftLoading() {
     return SmartDialog.dismiss(tag: giftLoadingTag);
   }
-
-  static bool rateLevel3Shoed = false;
-
-  static bool rateCollectShowd = false;
 
   static void showRateUs(String msg) async {
     FDialog.show(

@@ -8,6 +8,7 @@ import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_call_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/values/values.dart';
@@ -108,7 +109,8 @@ class HomeListController {
       await Future.delayed(Duration(milliseconds: 50));
       refreshCtr.finishRefresh();
       refreshCtr.finishLoad(
-          isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+        isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none,
+      );
     } finally {
       _isRefreshing = false;
     }
@@ -130,7 +132,8 @@ class HomeListController {
 
       await Future.delayed(Duration(milliseconds: 50));
       refreshCtr.finishLoad(
-          isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none);
+        isNoMoreData ? IndicatorResult.noMore : IndicatorResult.none,
+      );
     } catch (e) {
       page--;
       refreshCtr.finishLoad(IndicatorResult.fail);
@@ -156,9 +159,9 @@ class HomeListController {
         role.collect = true;
         list.refresh();
 
-        if (FDialog.rateCollectShowd == false) {
+        if (FCache().isRateCollectShowd == false) {
+          FCache().isRateCollectShowd = true;
           FDialog.showRateUs(LocaleKeys.rate_us_like.tr);
-          FDialog.rateCollectShowd = true;
         }
       }
     }

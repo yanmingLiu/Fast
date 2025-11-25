@@ -484,9 +484,9 @@ class MsgCtr extends GetxController {
       await _showChatLevelUp(rewards);
 
       if ((level?.level ?? 0) == 2) {
-        if (FDialog.rateLevel3Shoed == false) {
+        if (FCache().isRateLevel2Showd == false) {
+          FCache().isRateLevel2Showd = true;
           FDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
-          FDialog.rateLevel3Shoed = true;
         }
       }
     } else {
