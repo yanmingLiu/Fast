@@ -58,8 +58,6 @@ class MsgCtr extends GetxController {
 
   bool isRecieving = false; // 正在接收消息
 
-  int sendCount = 0;
-
   @override
   void onInit() {
     super.onInit();
@@ -181,20 +179,20 @@ class MsgCtr extends GetxController {
         'name': 'Tease',
         'icon': Assets.images.msgAuto.path,
         'list': [
-          "What's your favorite intimate moment?",
-          "Are you experienced in relationships?",
-          "Have you ever been with someone your friend dated?",
-          "Where was your first time?",
-          "If you could choose any place to be intimate, where would it be?",
-          "Do you have a favorite position?",
-          "Are you open to exploring new things in the bedroom?",
-          "What do you find more attractive: curves or a toned figure?",
-          "What's the most romantic thing someone has said to you during intimacy?",
-          "Can you make a moment unforgettable?",
-          "When do you feel most in the mood for romance?",
-          "Can you share something personal about yourself?",
-          "Would you like to exchange some romantic photos?",
-          "Can I see a photo of you?",
+          "What's your most cherished intimate memory?",
+          "Do you have much experience with romantic relationships?",
+          "Have you ever dated someone your friend was once with?",
+          "Where did you have your first intimate experience?",
+          "If you could pick any location for intimacy, where would it be?",
+          "Do you have a preferred intimate position?",
+          "Are you willing to try new things in an intimate setting?",
+          "What do you find more appealing: curvy figures or toned bodies?",
+          "What's the most romantic comment someone has shared with you during intimacy?",
+          "Can you create an unforgettable intimate moment?",
+          "When are you most in the mood for romantic intimacy?",
+          "Would you share something personal about yourself?",
+          "Would you be open to exchanging romantic photos?",
+          "Would you mind sharing a photo of yourself?",
         ],
       });
     }
@@ -309,10 +307,21 @@ class MsgCtr extends GetxController {
   }
 
   void checkRateMsgCount() async {
-    sendCount++;
-    if (sendCount == 2 && !FCache().isRateMsg) {
-      FDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
-      FCache().isRateMsg = true;
+    // 未弹出过聊天好评
+    final roleId = role.id;
+    var map = FCache().sendMsgCountMap;
+
+    if (!FCache().isRateMsg && roleId != null) {
+      final sendCount = map[roleId] ?? 0;
+      log.d('checkRateMsgCount sendCount $sendCount roleId $roleId');
+
+      if ((sendCount + 1) == 2) {
+        FDialog.showRateUs(LocaleKeys.rate_us_msg.tr);
+        FCache().isRateMsg = true;
+      } else {
+        map[roleId] = sendCount + 1;
+        FCache().sendMsgCountMap = map;
+      }
     }
   }
 
