@@ -36,7 +36,7 @@ android {
 
         // 添加 ABI 过滤器，确保打包所需架构
         ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
     }
 
