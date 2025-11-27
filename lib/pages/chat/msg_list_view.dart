@@ -55,39 +55,38 @@ class _MsgListViewState extends State<MsgListView> {
           },
           child: Obx(() {
             final list = ctr.list.reversed.toList();
-            return ShaderMask(
-              blendMode: BlendMode.dstIn,
-              shaderCallback: (rect) {
-                return const LinearGradient(
-                  colors: [
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.white
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [0, 0.4, 0.5],
-                ).createShader(rect);
-              },
-              child: ListView.separated(
-                controller: autoController,
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 16)
-                    .copyWith(top: top, bottom: bottom),
-                reverse: true,
-                itemBuilder: (context, index) {
-                  var item = list[index];
-                  return AutoScrollTag(
-                    controller: autoController,
-                    index: index,
-                    key: ValueKey('${item.id}_${item.source.name}'), // 更稳定的key
-                    child: MsgItem(msg: item),
-                  );
+            return ClipRect(
+              child: ShaderMask(
+                blendMode: BlendMode.dstIn,
+                shaderCallback: (rect) {
+                  return const LinearGradient(
+                    colors: [Colors.transparent, Colors.white],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0, 0.2],
+                  ).createShader(rect);
                 },
-                separatorBuilder: (context, index) {
-                  return SizedBox(height: 16);
-                },
-                itemCount: list.length,
+                child: ListView.separated(
+                  controller: autoController,
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(horizontal: 16)
+                      .copyWith(top: top, bottom: bottom),
+                  reverse: true,
+                  itemBuilder: (context, index) {
+                    var item = list[index];
+                    return AutoScrollTag(
+                      controller: autoController,
+                      index: index,
+                      key:
+                          ValueKey('${item.id}_${item.source.name}'), // 更稳定的key
+                      child: MsgItem(msg: item),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: 16);
+                  },
+                  itemCount: list.length,
+                ),
               ),
             );
           }),

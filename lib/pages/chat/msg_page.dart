@@ -37,30 +37,22 @@ class MsgPage extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-              child: FImage(url: ctr.session.background ?? role.avatar)),
+            child: FImage(url: ctr.session.background ?? role.avatar),
+          ),
           if (FCache().chatBgImagePath.isNotEmpty)
             Positioned.fill(
-                child: Image.file(File(FCache().chatBgImagePath),
-                    fit: BoxFit.cover)),
+              child: Image.file(
+                File(FCache().chatBgImagePath),
+                fit: BoxFit.cover,
+              ),
+            ),
           Scaffold(
             appBar: _buildAppBar(),
             extendBodyBehindAppBar: true,
             extendBody: true,
             backgroundColor: Colors.transparent,
-            body: Column(
-              children: [
-                Expanded(child: MsgListView()),
-                ChatInput(),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            top: kToolbarHeight,
-            child: SafeArea(
+            body: SafeArea(
               child: Column(
-                spacing: 8,
                 children: [
                   const PhotoAlbum(),
                   Padding(
@@ -74,14 +66,17 @@ class MsgPage extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Expanded(child: MsgListView()),
+                  ChatInput(),
                 ],
               ),
             ),
           ),
           Obx(() {
             final vip = MY().isVip.value;
-            if (role.vip == true && !vip)
+            if (role.vip == true && !vip) {
               return const Positioned.fill(child: RoleLockView());
+            }
             return const SizedBox();
           }),
         ],
@@ -121,8 +116,10 @@ class MsgPage extends StatelessWidget {
                   (element) => element['level'] == level,
                 );
                 var levelStr = map?['icon'] as String?;
-                return Text(levelStr ?? '👋',
-                    style: const TextStyle(fontSize: 17));
+                return Text(
+                  levelStr ?? '👋',
+                  style: const TextStyle(fontSize: 17),
+                );
               }),
             ),
           ),
@@ -147,7 +144,10 @@ class MsgPage extends StatelessWidget {
             }
 
             NTN.pushPhone(
-                sessionId: sessionId, role: ctr.role, showVideo: false);
+              sessionId: sessionId,
+              role: ctr.role,
+              showVideo: false,
+            );
           },
           icon: Image.asset(Assets.images.phone.path, width: 24, height: 24),
         ),

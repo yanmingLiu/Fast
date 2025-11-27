@@ -248,7 +248,11 @@ class NTN {
           "subject=Feedback&body=version: $version\ndevice: $device\nuid: $uid\nPlease input your problem:\n", // 设置默认主题和正文内容
     );
 
-    launchUrl(emailUri);
+    if (await canLaunchUrl(emailUri)) {
+      launchUrl(emailUri);
+    } else {
+      _showError('Could not launch email client');
+    }
   }
 
   static void toPrivacy() {
