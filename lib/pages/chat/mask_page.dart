@@ -1,15 +1,15 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:fast_ai/component/app_dialog.dart';
 import 'package:fast_ai/component/f_button.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/data/mask_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/mask_ctr.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,12 +18,12 @@ class MaskPage extends GetView<MaskCtr> {
 
   void _handleChangeMask() async {
     if (controller.needConfirmChange) {
-      AppDialog.alert(
+      FDialog.alert(
         message: LocaleKeys.mask_already_loaded.tr,
         cancelText: LocaleKeys.cancel.tr,
         confirmText: LocaleKeys.confirm.tr,
         onConfirm: () async {
-          AppDialog.dismiss();
+          FDialog.dismiss();
           await controller.changeMask();
         },
       );
@@ -51,7 +51,8 @@ class MaskPage extends GetView<MaskCtr> {
         ),
         title: Text(
           LocaleKeys.select_profile_mask.tr,
-          style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+              fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
       ),
@@ -72,7 +73,8 @@ class MaskPage extends GetView<MaskCtr> {
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 68).copyWith(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 68)
+                  .copyWith(
                 bottom: MediaQuery.of(context).padding.bottom > 0
                     ? MediaQuery.of(context).padding.bottom
                     : 16,
@@ -92,7 +94,7 @@ class MaskPage extends GetView<MaskCtr> {
                 child: Center(
                   child: Text(
                     LocaleKeys.pick_it.tr,
-                    style: AppTextStyle.openSans(
+                    style: ThemeStyle.openSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
@@ -117,7 +119,8 @@ class MaskPage extends GetView<MaskCtr> {
         children: [
           Text(
             LocaleKeys.profile_mask_description.tr,
-            style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+                fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 16),
           InkWell(
@@ -153,7 +156,8 @@ class MaskPage extends GetView<MaskCtr> {
           ),
           const SizedBox(height: 22),
           Obx(() {
-            if (controller.maskList.isEmpty && controller.emptyType.value != null) {
+            if (controller.maskList.isEmpty &&
+                controller.emptyType.value != null) {
               return SizedBox(
                 width: double.infinity,
                 height: 400,
@@ -214,7 +218,8 @@ class MaskPage extends GetView<MaskCtr> {
               child: Stack(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     margin: const EdgeInsets.only(top: 12),
                     width: double.infinity,
                     constraints: const BoxConstraints(minHeight: 64),
@@ -222,7 +227,9 @@ class MaskPage extends GetView<MaskCtr> {
                       color: const Color(0x333F8DFD),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: isSelected ? const Color(0xFF3F8DFD) : Colors.transparent,
+                        color: isSelected
+                            ? const Color(0xFF3F8DFD)
+                            : Colors.transparent,
                         width: 1,
                       ),
                     ),
@@ -235,7 +242,7 @@ class MaskPage extends GetView<MaskCtr> {
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                           maxLines: 2,
-                          style: AppTextStyle.openSans(
+                          style: ThemeStyle.openSans(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
@@ -248,11 +255,13 @@ class MaskPage extends GetView<MaskCtr> {
                     children: [
                       const SizedBox(width: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: const Color(0xFF3F8DFD),
-                          border: Border.all(color: const Color(0x33FFFFFF), width: 1),
+                          border: Border.all(
+                              color: const Color(0x33FFFFFF), width: 1),
                         ),
                         child: Row(
                           spacing: 4,

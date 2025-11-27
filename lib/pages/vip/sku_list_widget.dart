@@ -1,12 +1,12 @@
 import 'package:fast_ai/component/f_button.dart';
-import 'package:fast_ai/data/sku_data.dart';
+import 'package:fast_ai/data/p_d_data.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/vip/f_vip_timer.dart';
 import 'package:fast_ai/pages/vip/sku_item_widget.dart';
 import 'package:fast_ai/pages/vip/vip_controller.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/values/app_colors.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/values/theme_colors.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,9 +29,9 @@ class SkuListWidget extends StatelessWidget {
         children: [
           _buildSkuList(controller, skuList),
           const SizedBox(height: 28),
-          if (AppCache().isBig) const VipTimer(),
+          if (FCache().isBig) const VipTimer(),
           const SizedBox(height: 8),
-          if (!AppCache().isBig) _buildSubscriptionInfo(controller),
+          if (!FCache().isBig) _buildSubscriptionInfo(controller),
           const SizedBox(height: 8),
           _buildPurchaseButton(controller),
         ],
@@ -54,7 +54,7 @@ class SkuListWidget extends StatelessWidget {
   }
 
   /// 构建SKU列表
-  Widget _buildSkuList(VipController controller, List<SkuData> skuList) {
+  Widget _buildSkuList(VipController controller, List<PDData> skuList) {
     return SizedBox(
       height: 110,
       child: ListView.separated(
@@ -97,11 +97,11 @@ class SkuListWidget extends StatelessWidget {
       onTap: controller.purchaseSelectedProduct,
       margin: const EdgeInsets.symmetric(horizontal: 60),
       hasShadow: true,
-      color: AppColors.primary,
+      color: ThemeColors.primary,
       child: Center(
         child: Text(
-          AppCache().isBig ? LocaleKeys.btn_continue.tr : LocaleKeys.subscribe.tr,
-          style: AppTextStyle.openSans(
+          FCache().isBig ? LocaleKeys.btn_continue.tr : LocaleKeys.subscribe.tr,
+          style: ThemeStyle.openSans(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w700,
@@ -115,7 +115,7 @@ class SkuListWidget extends StatelessWidget {
 /// 响应式SKU项组件，仅在选中状态变化时重建
 class _ResponsiveSkuItem extends StatelessWidget {
   final VipController controller;
-  final SkuData skuData;
+  final PDData skuData;
 
   const _ResponsiveSkuItem({required this.controller, required this.skuData});
 

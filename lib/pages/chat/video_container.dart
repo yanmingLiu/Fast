@@ -5,11 +5,11 @@ import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_text_style.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/theme_style.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -35,7 +35,7 @@ class VideoContainer extends StatelessWidget {
 
   Widget _buildImageWidget() {
     var imageUrl = msg.thumbLink ?? msg.imgUrl ?? '';
-    var isLockImage = msg.mediaLock == MsgLockLevel.private.value;
+    var isLockImage = msg.mediaLock == LockType.private.value;
     var imageWidth = 200.0;
     var imageHeight = 240.0;
 
@@ -52,14 +52,15 @@ class VideoContainer extends StatelessWidget {
     );
 
     return Obx(() {
-      var isHide = !AppUser().isVip.value && isLockImage;
+      var isHide = !MY().isVip.value && isLockImage;
       return isHide
           ? _buildCover(imageWidth, imageHeight, imageWidget)
           : _buildVideoButton(videoUrl, imageWidget);
     });
   }
 
-  Widget _buildCover(double imageWidth, double imageHeight, Widget imageWidget) {
+  Widget _buildCover(
+      double imageWidth, double imageHeight, Widget imageWidget) {
     return GestureDetector(
       onTap: _onTapUnlock,
       child: Container(
@@ -95,16 +96,18 @@ class VideoContainer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                         color: Color(0xFF3F8DFD),
-                        borderRadius: const BorderRadius.all(Radius.circular(30)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(30)),
                       ),
                       child: Row(
                         children: [
                           Text(
                             LocaleKeys.hot_video.tr,
-                            style: AppTextStyle.openSans(
+                            style: ThemeStyle.openSans(
                               color: Colors.white,
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
@@ -126,7 +129,7 @@ class VideoContainer extends StatelessWidget {
   Widget _buildVideoButton(String videoUrl, Widget imageWidget) {
     return InkWell(
       onTap: () {
-        AppRouter.pushVideoPreview(videoUrl);
+        NTN.pushVideoPreview(videoUrl);
       },
       child: Stack(
         alignment: Alignment.center,
@@ -137,9 +140,9 @@ class VideoContainer extends StatelessWidget {
 
   void _onTapUnlock() async {
     logEvent('c_news_lockvideo');
-    final isVip = AppUser().isVip.value;
+    final isVip = MY().isVip.value;
     if (!isVip) {
-      AppRouter.pushVip(VipFrom.lockpic);
+      NTN.pushVip(ProFrom.lockpic);
     }
   }
 }

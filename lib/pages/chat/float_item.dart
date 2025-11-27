@@ -1,15 +1,15 @@
 import 'package:fast_ai/component/f_image.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/services/f_log_event.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FloatItem extends StatelessWidget {
   const FloatItem({super.key, required this.role, required this.sessionId});
 
-  final Role role;
+  final APop role;
   final int sessionId;
 
   @override
@@ -20,11 +20,12 @@ class FloatItem extends StatelessWidget {
 
   void _onTapPhoneVideo() {
     logEvent('c_videocall');
-    AppRouter.pushPhoneGuide(role: role);
+    NTN.pushPhoneGuide(role: role);
   }
 
   Widget _buildVideoItem() {
-    final guide = role.characterVideoChat?.firstWhereOrNull((e) => e.tag == 'guide');
+    final guide =
+        role.characterVideoChat?.firstWhereOrNull((e) => e.tag == 'guide');
     final url = guide?.gifUrl ?? role.avatar;
 
     return GestureDetector(

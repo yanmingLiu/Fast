@@ -1,13 +1,14 @@
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_loading.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/liked_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:get/get.dart';
 
 class SearchCtr extends GetxController {
@@ -21,7 +22,7 @@ class SearchCtr extends GetxController {
   int size = _defaultSize;
 
   // 响应式状态
-  final list = <Role>[].obs;
+  final list = <APop>[].obs;
   final type = Rx<EmptyType?>(EmptyType.noData);
   final searchQuery = ''.obs;
   final currentRequestId = 0.obs;
@@ -35,11 +36,15 @@ class SearchCtr extends GetxController {
 
   /// 设置搜索防抖
   void _setupSearchDebounce() {
-    debounce(searchQuery, (_) {
-      final requestId = _generateRequestId();
-      currentRequestId.value = requestId;
-      search(searchQuery.value, requestId);
-    }, time: _debounceDelay);
+    debounce(
+      searchQuery,
+      (_) {
+        final requestId = _generateRequestId();
+        currentRequestId.value = requestId;
+        search(searchQuery.value, requestId);
+      },
+      time: _debounceDelay,
+    );
   }
 
   /// 生成唯一请求ID
@@ -54,7 +59,8 @@ class SearchCtr extends GetxController {
       }
 
       _setLoadingState();
-      final res = await Api.homeList(page: page, size: size, name: searchText.trim());
+      final res =
+          await FApi.homeList(page: page, size: size, name: searchText.trim());
 
       // 检查请求是否已过期
       if (!_isRequestValid(requestId)) {
@@ -83,7 +89,7 @@ class SearchCtr extends GetxController {
   bool _isRequestValid(int requestId) => requestId == currentRequestId.value;
 
   /// 更新搜索结果
-  void _updateSearchResults(List<Role> records) {
+  void _updateSearchResults(List<APop> records) {
     if (page == _defaultPage) {
       list.clear();
     }
@@ -98,7 +104,7 @@ class SearchCtr extends GetxController {
   }
 
   /// 处理收藏/取消收藏操作
-  Future<void> onCollect(int index, Role role) async {
+  Future<void> onCollect(int index, APop role) async {
     final targetRole = list[index];
     final chatId = targetRole.id;
 
@@ -114,8 +120,8 @@ class SearchCtr extends GetxController {
       FLoading.showLoading();
 
       final success = isCurrentlyCollected
-          ? await Api.cancelCollectRole(chatIdStr)
-          : await Api.collectRole(chatIdStr);
+          ? await FApi.cancelCollectRole(chatIdStr)
+          : await FApi.collectRole(chatIdStr);
 
       if (success) {
         _updateCollectionState(targetRole, !isCurrentlyCollected, chatIdStr);
@@ -132,7 +138,7 @@ class SearchCtr extends GetxController {
   }
 
   /// 更新收藏状态
-  void _updateCollectionState(Role role, bool isCollected, String chatId) {
+  void _updateCollectionState(APop role, bool isCollected, String chatId) {
     role.collect = isCollected;
     list.refresh();
 
@@ -143,7 +149,8 @@ class SearchCtr extends GetxController {
   /// 通知关注事件
   void _notifyFollowEvent(bool isCollected, String chatId) {
     try {
-      final followEvent = isCollected ? FollowEvent.follow : FollowEvent.unfollow;
+      final followEvent =
+          isCollected ? FollowEvent.follow : FollowEvent.unfollow;
       Get.find<HomeCtr>().followEvent.value = (
         followEvent,
         chatId,
@@ -167,9 +174,9 @@ class SearchCtr extends GetxController {
 
   /// 显示评分对话框（如果需要）
   void _showRateDialogIfNeeded() {
-    if (!AppDialog.rateCollectShowd) {
-      AppDialog.showRateUs(LocaleKeys.rate_us_like.tr);
-      AppDialog.rateCollectShowd = true;
+    if (!FCache().isRateCollectShowd) {
+      FCache().isRateCollectShowd = true;
+      FDialog.showRateUs(LocaleKeys.rate_us_like.tr);
     }
   }
 }

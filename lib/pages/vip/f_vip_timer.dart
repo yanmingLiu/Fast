@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/values/app_colors.dart';
+import 'package:fast_ai/values/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +13,8 @@ class VipTimer extends StatefulWidget {
 }
 
 class _VipTimerState extends State<VipTimer> {
-  final ValueNotifier<Duration> _timeNotifier = ValueNotifier(const Duration(minutes: 30));
+  final ValueNotifier<Duration> _timeNotifier =
+      ValueNotifier(const Duration(minutes: 30));
   Timer? _timer;
 
   @override
@@ -36,14 +37,16 @@ class _VipTimerState extends State<VipTimer> {
       children: [
         Text(
           LocaleKeys.expiration_time.tr,
-          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+          style: TextStyle(
+              color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
         ),
         SizedBox(width: 4),
         ValueListenableBuilder<Duration>(
           valueListenable: _timeNotifier,
           builder: (context, value, child) {
             final minutesStr = value.inMinutes.toString().padLeft(2, '0');
-            final secondsStr = (value.inSeconds % 60).toString().padLeft(2, '0');
+            final secondsStr =
+                (value.inSeconds % 60).toString().padLeft(2, '0');
             return Row(
               children: [
                 _buildDigit(minutesStr[0]),
@@ -53,7 +56,9 @@ class _VipTimerState extends State<VipTimer> {
                 Text(
                   ':',
                   style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: ThemeColors.primary),
                 ),
                 const SizedBox(width: 8),
                 _buildDigit(secondsStr[0]),
@@ -78,7 +83,10 @@ class _VipTimerState extends State<VipTimer> {
       child: Center(
         child: Text(
           digit,
-          style: TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.w700),
+          style: TextStyle(
+              color: ThemeColors.primary,
+              fontSize: 12,
+              fontWeight: FontWeight.w700),
         ),
       ),
     );

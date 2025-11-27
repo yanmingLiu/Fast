@@ -1,19 +1,19 @@
 import 'dart:async';
 
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_toast.dart';
-import 'package:fast_ai/data/msg_answer_data.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
+import 'package:fast_ai/data/msg_ans_data.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/pages/router/routers.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/audio_manager.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -26,16 +26,16 @@ class PhoneCtr extends GetxController {
   bool _showVideo = false;
 
   late int sessionId;
-  late Role role;
-  late CharacterVideoChat? guideVideo;
-  late CharacterVideoChat? phoneVideo;
+  late APop role;
+  late APopVideo? guideVideo;
+  late APopVideo? phoneVideo;
 
   final Rx<CallState> callState = CallState.calling.obs;
   final RxInt callDuration = 0.obs;
   final RxString lastWords = ''.obs;
   final RxBool showFormattedDuration = false.obs;
   var answerText = '';
-  MsgAnswerData? messageReplyRsp;
+  MsgAnsData? messageReplyRsp;
 
   Timer? _callTimer;
   bool _isVibrating = false;
@@ -45,7 +45,7 @@ class PhoneCtr extends GetxController {
   final SpeechToText _speech = SpeechToText();
   bool _hasSpeech = false;
 
-  bool get _isVip => AppUser().isVip.value;
+  bool get _isVip => MY().isVip.value;
 
   @override
   void onInit() {
@@ -68,15 +68,18 @@ class PhoneCtr extends GetxController {
     role = args['role'];
     callState.value = args['callState'];
 
-    phoneVideo = role.characterVideoChat?.firstWhereOrNull((e) => e.tag != 'guide');
+    phoneVideo =
+        role.characterVideoChat?.firstWhereOrNull((e) => e.tag != 'guide');
     var url = phoneVideo?.url;
     if (url != null && url.isNotEmpty && _showVideo) {
       _hasVideoPlayer = true;
     }
 
-    log.d('_hasVideoPlayer = $_hasVideoPlayer, showVideo = $_showVideo, url = $url');
+    log.d(
+        '_hasVideoPlayer = $_hasVideoPlayer, showVideo = $_showVideo, url = $url');
 
-    guideVideo = role.characterVideoChat?.firstWhereOrNull((e) => e.tag == 'guide');
+    guideVideo =
+        role.characterVideoChat?.firstWhereOrNull((e) => e.tag == 'guide');
 
     _handleCallState(callState.value);
   }
@@ -123,7 +126,7 @@ class PhoneCtr extends GetxController {
     _stopVibration();
     if (!_isVip) {
       logEvent('acceptcall');
-      AppRouter.pushVip(VipFrom.acceptcall);
+      NTN.pushVip(ProFrom.acceptcall);
       return;
     }
     onTapCall();
@@ -135,7 +138,8 @@ class PhoneCtr extends GetxController {
       var micStatus = await Permission.microphone.status;
       var speechStatus = await Permission.speech.status;
 
-      log.d('PhoneCtr permissions check - Microphone: $micStatus, Speech: $speechStatus');
+      log.d(
+          'PhoneCtr permissions check - Microphone: $micStatus, Speech: $speechStatus');
 
       // 如果权限已经授予，直接返回
       if (micStatus.isGranted && speechStatus.isGranted) {
@@ -163,7 +167,7 @@ class PhoneCtr extends GetxController {
   }
 
   void _showPermissionDialog() {
-    AppDialog.alert(
+    FDialog.alert(
       message: LocaleKeys.microphone_permission_required.tr,
       onConfirm: () async {
         await openAppSettings();
@@ -263,9 +267,10 @@ class PhoneCtr extends GetxController {
     if (callState.value == CallState.incoming) {
       // Additional check to ensure we're on the correct page
       final currentRouteName = NavigationObs().curRoute?.settings.name;
-      log.d('_onCallTimeout - current route: $currentRouteName, expected: ${Routers.phone}');
+      log.d(
+          '_onCallTimeout - current route: $currentRouteName, expected: ${NPN.phone}');
 
-      if (currentRouteName == Routers.phone || currentRouteName == null) {
+      if (currentRouteName == NPN.phone || currentRouteName == null) {
         // Even if we can't determine the route, if we're in incoming state for 15+ seconds,
         // we should probably hang up
         log.d('_onCallTimeout - calling onTapHangup()');
@@ -287,8 +292,8 @@ class PhoneCtr extends GetxController {
   }
 
   Future<void> _deductGems() async {
-    if (AppUser().isBalanceEnough(ConsumeFrom.call)) {
-      AppUser().consume(ConsumeFrom.call);
+    if (MY().isBalanceEnough(GemsFrom.call)) {
+      MY().consume(GemsFrom.call);
     } else {
       FToast.toast(LocaleKeys.not_enough_coins.tr);
       Future.delayed(const Duration(milliseconds: 1000));
@@ -312,11 +317,11 @@ class PhoneCtr extends GetxController {
           if (error.errorMsg.contains('error_language_not_supported') ||
               error.errorMsg.contains('error_language_unavailable')) {
             Get.back();
-            AppDialog.alert(
+            FDialog.alert(
               title: LocaleKeys.tips.tr,
               message: LocaleKeys.speech_recognition_not_supported.tr,
               onConfirm: () {
-                AppDialog.dismiss();
+                FDialog.dismiss();
               },
             );
           } else {
@@ -372,11 +377,13 @@ class PhoneCtr extends GetxController {
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) async {
-    log.d('_onSpeechResult: ${result.recognizedWords} callState: ${callState.value}');
+    log.d(
+        '_onSpeechResult: ${result.recognizedWords} callState: ${callState.value}');
 
     if (result.finalResult && result.recognizedWords.trim().isNotEmpty) {
       lastWords.value = result.recognizedWords;
-      if (callState.value == CallState.listening || callState.value == CallState.micOff) {
+      if (callState.value == CallState.listening ||
+          callState.value == CallState.micOff) {
         _requestAnswer();
       }
     }
@@ -404,17 +411,17 @@ class PhoneCtr extends GetxController {
     }
   }
 
-  Future<MsgAnswerData?> _sendMessage() async {
+  Future<MsgAnsData?> _sendMessage() async {
     log.d('_sendMessage: ${lastWords.value}');
     final roleId = role.id;
-    var userId = AppUser().user?.id;
-    var nickname = AppUser().user?.nickname;
+    var userId = MY().user?.id;
+    var nickname = MY().user?.nickname;
     if (roleId == null || userId == null || nickname == null) {
       FToast.toast(LocaleKeys.some_error_try_again.tr);
       return null;
     }
 
-    final res = await Api.sendVoiceChatMsg(
+    final res = await FApi.sendVoiceChatMsg(
       userId: userId,
       nickName: nickname,
       message: lastWords.value,
@@ -433,7 +440,7 @@ class PhoneCtr extends GetxController {
     _startListening();
   }
 
-  void _playResponseAudio(MsgAnswerData msg) async {
+  void _playResponseAudio(MsgAnsData msg) async {
     log.d('_playResponseAudio');
     final url = msg.answer?.voiceUrl;
     final id = msg.msgId;

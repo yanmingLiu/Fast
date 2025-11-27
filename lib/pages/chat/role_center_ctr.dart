@@ -1,15 +1,17 @@
-import 'package:fast_ai/component/app_dialog.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/component/f_dialog.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:get/get.dart';
 
 class RoleCenterCtr extends GetxController {
-  var images = <RoleImage>[].obs;
-  late Role role;
+  var images = <APopImage>[].obs;
+  var changeCount = 0.obs;
+  late APop role;
 
   var isLoading = false.obs;
 
@@ -22,7 +24,7 @@ class RoleCenterCtr extends GetxController {
     super.onInit();
 
     final arguments = Get.arguments;
-    if (arguments != null && arguments is Role) {
+    if (arguments != null && arguments is APop) {
       role = arguments;
     }
 
@@ -32,15 +34,16 @@ class RoleCenterCtr extends GetxController {
 
     ever(msgCtr.roleImagesChaned, (_) {
       images.value = msgCtr.role.images ?? [];
+      changeCount.value++;
     });
   }
 
   void deleteChat() async {
-    AppDialog.alert(
+    FDialog.alert(
       message: LocaleKeys.delete_chat_confirmation.tr,
       cancelText: LocaleKeys.cancel.tr,
       onConfirm: () async {
-        AppDialog.dismiss();
+        FDialog.dismiss();
         var res = await Get.find<MsgCtr>().deleteConv();
         if (res) {
           Get.until((route) => route.isFirst);
@@ -50,11 +53,11 @@ class RoleCenterCtr extends GetxController {
   }
 
   void clearHistory() async {
-    AppDialog.alert(
+    FDialog.alert(
       message: LocaleKeys.clear_history_confirmation.tr,
       cancelText: LocaleKeys.cancel.tr,
       onConfirm: () async {
-        AppDialog.dismiss();
+        FDialog.dismiss();
         await msgCtr.resetConv();
       },
     );
@@ -70,7 +73,7 @@ class RoleCenterCtr extends GetxController {
     }
 
     if (collect.value) {
-      final res = await Api.cancelCollectRole(id);
+      final res = await FApi.cancelCollectRole(id);
       if (res) {
         role.collect = false;
         collect.value = false;
@@ -82,7 +85,7 @@ class RoleCenterCtr extends GetxController {
       }
       isLoading.value = false;
     } else {
-      final res = await Api.collectRole(id);
+      final res = await FApi.collectRole(id);
       if (res) {
         role.collect = true;
         collect.value = true;
@@ -92,9 +95,9 @@ class RoleCenterCtr extends GetxController {
           DateTime.now().millisecondsSinceEpoch,
         );
 
-        if (AppDialog.rateCollectShowd == false) {
-          AppDialog.showRateUs(LocaleKeys.rate_us_like.tr);
-          AppDialog.rateCollectShowd = true;
+        if (FCache().isRateCollectShowd == false) {
+          FCache().isRateCollectShowd = true;
+          FDialog.showRateUs(LocaleKeys.rate_us_like.tr);
         }
       }
       isLoading.value = false;

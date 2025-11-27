@@ -6,7 +6,7 @@ import 'package:fast_ai/pages/vip/privacy_view.dart';
 import 'package:fast_ai/pages/vip/sku_list_widget.dart';
 import 'package:fast_ai/pages/vip/vip_content_widget.dart';
 import 'package:fast_ai/pages/vip/vip_controller.dart';
-import 'package:fast_ai/services/app_cache.dart';
+import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/tools/iap_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,7 +19,10 @@ class VipPage extends GetView<VipController> {
     // 初始化控制器
     Get.put(VipController());
 
-    return Scaffold(extendBodyBehindAppBar: true, appBar: _buildAppBar(), body: _buildBody());
+    return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: _buildAppBar(),
+        body: _buildBody());
   }
 
   /// 构建应用栏
@@ -91,7 +94,7 @@ class VipPage extends GetView<VipController> {
       top: 0,
       left: 0,
       right: 0,
-      child: AppCache().isBig
+      child: FCache().isBig
           ? Assets.images.vipPageBg2.image(fit: BoxFit.cover)
           : Assets.images.vipPageBg1.image(fit: BoxFit.cover),
     );
@@ -106,11 +109,15 @@ class VipPage extends GetView<VipController> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Obx(() => VipContentWidget(contentText: controller.contentText.value)),
+            child: Obx(() =>
+                VipContentWidget(contentText: controller.contentText.value)),
           ),
           const SkuListWidget(),
           const SizedBox(height: 8),
-          PrivacyView(type: AppCache().isBig ? PolicyBottomType.vip2 : PolicyBottomType.vip1),
+          PrivacyView(
+              type: FCache().isBig
+                  ? PolicyBottomType.vip2
+                  : PolicyBottomType.vip1),
           const SizedBox(height: 12),
         ],
       ),

@@ -1,13 +1,13 @@
 import 'package:fast_ai/component/f_button.dart';
-import 'package:fast_ai/component/linked_tab_page_controller.dart';
+import 'package:fast_ai/component/f_link_tab_controller.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/chat_ctr.dart';
 import 'package:fast_ai/pages/chat/chat_list_view.dart';
 import 'package:fast_ai/pages/chat/liked_ctr.dart';
 import 'package:fast_ai/pages/chat/liked_list_view.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,13 +25,13 @@ class _ChatPageState extends State<ChatPage> {
   final likedCtr = Get.put(LikedCtr());
 
   final titles = [LocaleKeys.chatted.tr, LocaleKeys.liked.tr];
-  late LinkedTabPageController _linkedController;
+  late FLinkTabController _linkedController;
 
   @override
   void initState() {
     super.initState();
 
-    _linkedController = LinkedTabPageController(
+    _linkedController = FLinkTabController(
       items: titles,
       onIndexChanged: (value) {
         log.d("value: $value");
@@ -49,7 +49,8 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(top: 0, left: 0, right: 0, child: Assets.images.pageBg.image()),
+          Positioned(
+              top: 0, left: 0, right: 0, child: Assets.images.pageBg.image()),
           SafeArea(
             child: Column(
               children: [
@@ -63,8 +64,8 @@ class _ChatPageState extends State<ChatPage> {
                     },
                     physics: BouncingScrollPhysics(),
                     children: [
-                      KeepAliveWrapper(child: ChatListView(controller: chatCtr)),
-                      KeepAliveWrapper(child: LikedListView(controller: likedCtr)),
+                      FKeepAlive(child: ChatListView(controller: chatCtr)),
+                      FKeepAlive(child: LikedListView(controller: likedCtr)),
                     ],
                   ),
                 ),
@@ -83,15 +84,19 @@ class _ChatPageState extends State<ChatPage> {
         height: 48,
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: AppColors.white10,
-          border: BoxBorder.all(color: AppColors.white20, width: 1),
+          color: ThemeColors.white10,
+          border: BoxBorder.all(color: ThemeColors.white20, width: 1),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
           spacing: 12,
           children: [
-            Expanded(child: _buildItem(Assets.images.chatted.image(width: 20), titles[0], 0)),
-            Expanded(child: _buildItem(Assets.images.liked.image(width: 20), titles[1], 1)),
+            Expanded(
+                child: _buildItem(
+                    Assets.images.chatted.image(width: 20), titles[0], 0)),
+            Expanded(
+                child: _buildItem(
+                    Assets.images.liked.image(width: 20), titles[1], 1)),
           ],
         ),
       ),
@@ -135,8 +140,8 @@ class _ChatPageState extends State<ChatPage> {
     return FButton(
       key: key,
       borderRadius: BorderRadius.circular(16),
-      color: isActive ? AppColors.primary : Colors.transparent,
-      highlightColor: AppColors.primaryLight,
+      color: isActive ? ThemeColors.primary : Colors.transparent,
+      highlightColor: ThemeColors.primaryLight,
       onTap: onTap,
       padding: EdgeInsets.symmetric(horizontal: 8),
       constraints: BoxConstraints(minWidth: 50),

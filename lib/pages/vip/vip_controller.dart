@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:fast_ai/data/sku_data.dart';
+import 'package:fast_ai/data/p_d_data.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_service.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/tools/iap_tool.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -15,13 +15,13 @@ class VipController extends GetxController {
   static VipController get to => Get.find();
 
   // 响应式状态变量
-  final RxList<SkuData> skuList = <SkuData>[].obs;
-  final Rx<SkuData?> selectedProduct = Rx<SkuData?>(null);
+  final RxList<PDData> skuList = <PDData>[].obs;
+  final Rx<PDData?> selectedProduct = Rx<PDData?>(null);
   final RxString contentText = ''.obs;
   final RxBool showBackButton = false.obs;
   final RxBool isLoading = false.obs;
 
-  late VipFrom? vipFrom;
+  late ProFrom? vipFrom;
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -29,7 +29,7 @@ class VipController extends GetxController {
     super.onInit();
 
     // 获取传入参数
-    vipFrom = Get.arguments ?? VipFrom.homevip;
+    vipFrom = Get.arguments ?? ProFrom.homevip;
 
     // 初始化数据
     _initializeData();
@@ -65,14 +65,15 @@ class VipController extends GetxController {
     try {
       isLoading.value = true;
 
-      await AppService().getIdfa();
+      await FService().getIdfa();
       SmartDialog.showLoading();
 
       await IAPTool().query();
       skuList.value = IAPTool().subscriptionList;
 
       // 选择默认商品
-      selectedProduct.value = skuList.firstWhereOrNull((e) => e.defaultSku == true);
+      selectedProduct.value =
+          skuList.firstWhereOrNull((e) => e.defaultSku == true);
       _updateContentText();
     } catch (e) {
       debugPrint('加载订阅数据失败: $e');
@@ -84,9 +85,10 @@ class VipController extends GetxController {
 
   /// 更新内容文本
   void _updateContentText() {
-    if (AppCache().isBig) {
+    if (FCache().isBig) {
       final gems = selectedProduct.value?.number ?? 150;
-      contentText.value = LocaleKeys.vip_get_2.trParams({'gems': gems.toString()});
+      contentText.value =
+          LocaleKeys.vip_get_2.trParams({'gems': gems.toString()});
     } else {
       contentText.value = LocaleKeys.vip_get_1.tr;
     }
@@ -94,12 +96,12 @@ class VipController extends GetxController {
 
   /// 记录页面事件
   void _logPageEvent() {
-    logEvent(AppCache().isBig ? 't_vipb' : 't_vipa');
+    logEvent(FCache().isBig ? 't_vipb' : 't_vipa');
   }
 
   /// 设置返回按钮显示
   void _setupBackButtonDisplay() {
-    if (AppCache().isBig) {
+    if (FCache().isBig) {
       Future.delayed(const Duration(seconds: 3), () {
         showBackButton.value = true;
       });
@@ -109,7 +111,7 @@ class VipController extends GetxController {
   }
 
   /// 选择商品
-  void selectProduct(SkuData product) {
+  void selectProduct(PDData product) {
     if (selectedProduct.value?.sku == product.sku) return; // 避免重复选择
 
     selectedProduct.value = product;
@@ -136,7 +138,7 @@ class VipController extends GetxController {
     final product = selectedProduct.value;
     if (product == null) return;
 
-    logEvent(AppCache().isBig ? 'c_vipb_subs' : 'c_vipa_subs');
+    logEvent(FCache().isBig ? 'c_vipb_subs' : 'c_vipa_subs');
     IAPTool().buy(product, vipFrom: vipFrom);
   }
 
@@ -146,7 +148,8 @@ class VipController extends GetxController {
   }
 
   /// 获取价格信息
-  String get currentPrice => selectedProduct.value?.productDetails?.price ?? '0.0';
+  String get currentPrice =>
+      selectedProduct.value?.productDetails?.price ?? '0.0';
 
   /// 获取单位信息
   String get currentUnit {
@@ -168,7 +171,8 @@ class VipController extends GetxController {
     if (skuType == 4) {
       return LocaleKeys.vip_price_lt_desc.trParams({'price': price});
     } else {
-      return LocaleKeys.subscription_info.trParams({'price': price, 'unit': unit});
+      return LocaleKeys.subscription_info
+          .trParams({'price': price, 'unit': unit});
     }
   }
 
@@ -224,9 +228,10 @@ class VipController extends GetxController {
       try {
         final screenWidth = Get.width;
         final itemWidth = (screenWidth - 32 - 40) / 2 + 8;
-        final offset =
-            index * itemWidth - (scrollController.position.viewportDimension - itemWidth) / 2;
-        final clampedOffset = offset.clamp(0.0, scrollController.position.maxScrollExtent);
+        final offset = index * itemWidth -
+            (scrollController.position.viewportDimension - itemWidth) / 2;
+        final clampedOffset =
+            offset.clamp(0.0, scrollController.position.maxScrollExtent);
 
         if (animated) {
           scrollController.animateTo(

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:fast_ai/data/chat_anser_level.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/data/ans_level.dart';
+import 'package:fast_ai/values/values.dart';
 
 class MsgRes {
   List<MsgData>? records;
@@ -17,22 +17,25 @@ class MsgRes {
   String toRawJson() => json.encode(toJson());
 
   factory MsgRes.fromJson(Map<String, dynamic> json) => MsgRes(
-    records: json["records"] == null
-        ? []
-        : List<MsgData>.from(json["records"]!.map((x) => MsgData.fromJson(x))),
-    total: json["total"],
-    size: json["size"],
-    current: json["current"],
-    pages: json["pages"],
-  );
+        records: json["records"] == null
+            ? []
+            : List<MsgData>.from(
+                json["records"]!.map((x) => MsgData.fromJson(x))),
+        total: json["total"],
+        size: json["size"],
+        current: json["current"],
+        pages: json["pages"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "records": records == null ? [] : List<dynamic>.from(records!.map((x) => x.toJson())),
-    "total": total,
-    "size": size,
-    "current": current,
-    "pages": pages,
-  };
+        "records": records == null
+            ? []
+            : List<dynamic>.from(records!.map((x) => x.toJson())),
+        "total": total,
+        "size": size,
+        "current": current,
+        "pages": pages,
+      };
 }
 
 class MsgData {
@@ -63,7 +66,7 @@ class MsgData {
   String? thumbLink;
   String? voiceUrl;
   int? voiceDur;
-  ChatAnserLevel? appUserChatLevel;
+  AnsLevel? appUserChatLevel;
   bool? upgrade;
   int? rewards;
   String? translateAnswer;
@@ -76,22 +79,22 @@ class MsgData {
   bool showTranslate = false;
   bool typewriterAnimated = false;
 
-  MsgSource _source = MsgSource.text; // 用私有变量来存储 source 的值
+  MsgType _source = MsgType.text; // 用私有变量来存储 source 的值
 
-  MsgSource get source {
+  MsgType get source {
     if (videoUrl != null) {
-      return MsgSource.video;
+      return MsgType.video;
     }
     if (imgUrl != null) {
-      return MsgSource.photo;
+      return MsgType.photo;
     }
     if (audioUrl != null) {
-      return MsgSource.audio;
+      return MsgType.audio;
     }
-    return MsgSource.fromSource(src) ?? _source;
+    return MsgType.fromSource(src) ?? _source;
   }
 
-  set source(MsgSource value) {
+  set source(MsgType value) {
     _source = value;
   }
 
@@ -138,78 +141,79 @@ class MsgData {
   String toRawJson() => json.encode(toJson());
 
   factory MsgData.fromJson(Map<String, dynamic> json) => MsgData(
-    answer: json["ophbla"],
-    atokens: json["atokens"],
-    audioDuration: json["audio_duration"],
-    audioUrl: json["audio_url"],
-    characterId: json["char_id"],
-    conversationId: json["ybvhjk"],
-    createTime: json["creat_time"],
-    deleted: json["deleted"],
-    id: json["id"],
-    imgUrl: json["img_url"],
-    likes: json["like_cnt"],
-    mediaLock: json["media_lock"],
-    model: json["model"],
-    modifyTime: json["modify_time"],
-    msgId: json["msg_identifier"],
-    params: json["params"],
-    platform: json["platfrm"],
-    qtokens: json["qtokens"],
-    question: json["vnvqou"],
-    templateId: json["tmpl_id"],
-    textLock: json["text_lock"],
-    userId: json["usr_id"],
-    videoDuration: json["video_duration"],
-    videoUrl: json["video_url"],
-    thumbLink: json["thumb_link"] ?? json["gejhdy"],
-    voiceUrl: json["voice_link"],
-    voiceDur: json["voice_dur"],
-    appUserChatLevel: json["yiasvv"] == null ? null : ChatAnserLevel.fromJson(json["yiasvv"]),
-    upgrade: json["dclesw"],
-    rewards: json["wouomy"],
-    translateAnswer: json["vmmqud"],
-    giftId: json["gift_id"],
-    giftImg: json["gift_img"],
-    src: json["mvusjp"],
-  );
+        answer: json["ophbla"],
+        atokens: json["atokens"],
+        audioDuration: json["audio_duration"],
+        audioUrl: json["audio_url"],
+        characterId: json["char_id"],
+        conversationId: json["ybvhjk"],
+        createTime: json["creat_time"],
+        deleted: json["deleted"],
+        id: json["id"],
+        imgUrl: json["img_url"],
+        likes: json["like_cnt"],
+        mediaLock: json["media_lock"],
+        model: json["model"],
+        modifyTime: json["modify_time"],
+        msgId: json["msg_identifier"],
+        params: json["params"],
+        platform: json["platfrm"],
+        qtokens: json["qtokens"],
+        question: json["vnvqou"],
+        templateId: json["tmpl_id"],
+        textLock: json["text_lock"],
+        userId: json["usr_id"],
+        videoDuration: json["video_duration"],
+        videoUrl: json["video_url"],
+        thumbLink: json["thumb_link"] ?? json["gejhdy"],
+        voiceUrl: json["voice_link"],
+        voiceDur: json["voice_dur"],
+        appUserChatLevel:
+            json["yiasvv"] == null ? null : AnsLevel.fromJson(json["yiasvv"]),
+        upgrade: json["dclesw"],
+        rewards: json["wouomy"],
+        translateAnswer: json["vmmqud"],
+        giftId: json["gift_id"],
+        giftImg: json["gift_img"],
+        src: json["mvusjp"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "ophbla": answer,
-    "atokens": atokens,
-    "audio_duration": audioDuration,
-    "audio_url": audioUrl,
-    "char_id": characterId,
-    "ybvhjk": conversationId,
-    "creat_time": createTime,
-    "deleted": deleted,
-    "id": id,
-    "img_url": imgUrl,
-    "like_cnt": likes,
-    "media_lock": mediaLock,
-    "model": model,
-    "modify_time": modifyTime,
-    "msg_identifier": msgId,
-    "params": params,
-    "platfrm": platform,
-    "qtokens": qtokens,
-    "vnvqou": question,
-    "tmpl_id": templateId,
-    "text_lock": textLock,
-    "usr_id": userId,
-    "video_duration": videoDuration,
-    "video_url": videoUrl,
-    "voice_link": voiceUrl,
-    "voice_dur": voiceDur,
-    "yiasvv": appUserChatLevel?.toJson(),
-    "dclesw": upgrade,
-    "wouomy": rewards,
-    "vmmqud": translateAnswer,
-    "thumb_link": thumbLink,
-    "gift_id": giftId,
-    "gift_img": giftImg,
-    "mvusjp": src,
-  };
+        "ophbla": answer,
+        "atokens": atokens,
+        "audio_duration": audioDuration,
+        "audio_url": audioUrl,
+        "char_id": characterId,
+        "ybvhjk": conversationId,
+        "creat_time": createTime,
+        "deleted": deleted,
+        "id": id,
+        "img_url": imgUrl,
+        "like_cnt": likes,
+        "media_lock": mediaLock,
+        "model": model,
+        "modify_time": modifyTime,
+        "msg_identifier": msgId,
+        "params": params,
+        "platfrm": platform,
+        "qtokens": qtokens,
+        "vnvqou": question,
+        "tmpl_id": templateId,
+        "text_lock": textLock,
+        "usr_id": userId,
+        "video_duration": videoDuration,
+        "video_url": videoUrl,
+        "voice_link": voiceUrl,
+        "voice_dur": voiceDur,
+        "yiasvv": appUserChatLevel?.toJson(),
+        "dclesw": upgrade,
+        "wouomy": rewards,
+        "vmmqud": translateAnswer,
+        "thumb_link": thumbLink,
+        "gift_id": giftId,
+        "gift_img": giftImg,
+        "mvusjp": src,
+      };
 
   @override
   bool operator ==(Object other) {

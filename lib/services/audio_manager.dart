@@ -52,16 +52,6 @@ class AudioStateInfo {
 }
 
 /// 全局音频管理器 - 优化版本，与AudioTool协作
-///
-/// 功能特性：
-/// - 单例模式，全局统一管理音频播放状态
-/// - 与AudioTool协作，职责分离更清晰
-/// - 防止ListView回收导致音频中断
-/// - 自动下载和缓存音频文件
-/// - 完善的错误处理和重试机制
-/// - 文件完整性验证
-/// - 音频时长动态获取
-/// - 解决异步竞态条件问题
 class AudioManager extends GetxController {
   static AudioManager? _instance;
 
@@ -79,7 +69,8 @@ class AudioManager extends GetxController {
   AudioPlayer? _audioPlayer;
 
   /// 所有音频状态映射 msgId -> AudioStateInfo
-  final RxMap<String, AudioStateInfo> _audioStates = <String, AudioStateInfo>{}.obs;
+  final RxMap<String, AudioStateInfo> _audioStates =
+      <String, AudioStateInfo>{}.obs;
 
   /// 当前正在播放的音频信息
   final Rx<AudioStateInfo?> currentPlayingAudio = Rx<AudioStateInfo?>(null);
@@ -103,7 +94,7 @@ class AudioManager extends GetxController {
   void onInit() {
     super.onInit();
     _initializeAudioManager();
-    debugPrint('🎧 AudioManager: 全局音频管理器初始化完成');
+    // debugPrint('🎧 AudioManager: 全局音频管理器初始化完成');
   }
 
   /// 初始化音频管理器
@@ -115,15 +106,15 @@ class AudioManager extends GetxController {
       // 初始化当前管理器的音频播放器
       await _initializeAudioPlayer();
 
-      debugPrint('🎧 AudioManager: 音频管理器初始化成功');
+      // debugPrint('🎧 AudioManager: 音频管理器初始化成功');
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 音频管理器初始化失败: $e');
+      debugPrint('⚠️ AudioManager init error: $e');
     }
   }
 
   @override
   void onClose() {
-    debugPrint('🎧 AudioManager: 开始清理资源');
+    // debugPrint('🎧 AudioManager: 开始清理资源');
     _cleanupResources();
     super.onClose();
   }
@@ -138,13 +129,13 @@ class AudioManager extends GetxController {
       _playerStateSubscription = _audioPlayer!.onPlayerStateChanged.listen(
         _handlePlayerStateChanged,
         onError: (error) {
-          debugPrint('⚠️ AudioManager: 播放器状态监听错误: $error');
+          debugPrint('⚠️ AudioManager onError: $error');
         },
       );
 
-      debugPrint('🎧 AudioManager: 音频播放器初始化成功');
+      // debugPrint('🎧 AudioManager: 音频播放器初始化成功');
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 音频播放器初始化失败: $e');
+      debugPrint('⚠️ AudioManager : $e');
     }
   }
 
@@ -157,12 +148,12 @@ class AudioManager extends GetxController {
 
     switch (state) {
       case PlayerState.completed:
-        debugPrint('🎧 AudioManager: 音频播放完成, msgId: ${currentAudio.msgId}');
+        // debugPrint('🎧 AudioManager: 音频播放完成, msgId: ${currentAudio.msgId}');
         _updateAudioState(currentAudio.msgId, AudioPlayState.stopped);
         currentPlayingAudio.value = null;
         break;
       case PlayerState.stopped:
-        debugPrint('🎧 AudioManager: 音频播放停止, msgId: ${currentAudio.msgId}');
+        // debugPrint('🎧 AudioManager: 音频播放停止, msgId: ${currentAudio.msgId}');
         _updateAudioState(currentAudio.msgId, AudioPlayState.stopped);
         currentPlayingAudio.value = null;
         break;
@@ -180,8 +171,8 @@ class AudioManager extends GetxController {
 
       // 验证参数
       if (audioUrl == null || audioUrl.isEmpty) {
-        debugPrint('⚠️ AudioManager: 音频URL为空，无法播放');
-        _updateAudioState(msgId, AudioPlayState.error, errorMessage: '音频URL为空');
+        // debugPrint('⚠️ AudioManager: 音频URL为空，无法播放');
+        // _updateAudioState(msgId, AudioPlayState.error, errorMessage: '音频URL为空');
         return;
       }
 
@@ -192,33 +183,35 @@ class AudioManager extends GetxController {
       _updateAudioState(msgId, AudioPlayState.downloading);
 
       // 下载音频文件
-      String? downloadedFilePath = await _downloadAudioWithRetry(msgId, audioUrl);
+      String? downloadedFilePath =
+          await _downloadAudioWithRetry(msgId, audioUrl);
       if (downloadedFilePath == null) {
-        _updateAudioState(msgId, AudioPlayState.error, errorMessage: '下载失败');
+        _updateAudioState(msgId, AudioPlayState.error,
+            errorMessage: 'download failed');
         return;
       }
 
       // 检查音频是否在下载过程中被停止
       final currentState = _audioStates[msgId];
       if (currentState?.state == AudioPlayState.stopped) {
-        debugPrint('🎧 AudioManager: 音频在下载过程中被停止，取消播放, msgId: $msgId');
+        // debugPrint('🎧 AudioManager: 音频在下载过程中被停止，取消播放, msgId: $msgId');
         return;
       }
 
-      debugPrint('🎧 AudioManager: 音频下载成功, 路径: $downloadedFilePath');
+      // debugPrint('🎧 AudioManager: 音频下载成功, 路径: $downloadedFilePath');
 
       // 获取实际音频时长
       int currentDuration = await _getAudioDuration(downloadedFilePath);
-      debugPrint('🎧 AudioManager: 获取实际音频时长: $currentDuration ms');
+      // debugPrint('🎧 AudioManager: 获取实际音频时长: $currentDuration ms');
 
       // 验证文件完整性
       if (!await _validateAudioFile(downloadedFilePath, currentDuration)) {
-        debugPrint('⚠️ AudioManager: 音频文件验证失败，强制重新下载');
+        // debugPrint('⚠️ AudioManager: 音频文件验证失败，强制重新下载');
         // 删除不完整的文件
         final file = File(downloadedFilePath);
         if (await file.exists()) {
           await file.delete();
-          debugPrint('🎧 AudioManager: 已删除不完整的缓存文件');
+          // debugPrint('🎧 AudioManager: 已删除不完整的缓存文件');
         }
 
         // 等待片刻后重新下载
@@ -227,24 +220,27 @@ class AudioManager extends GetxController {
         // 再次检查是否被停止
         final recheckState = _audioStates[msgId];
         if (recheckState?.state == AudioPlayState.stopped) {
-          debugPrint('🎧 AudioManager: 音频在重新下载前被停止，取消播放, msgId: $msgId');
+          // debugPrint('🎧 AudioManager: 音频在重新下载前被停止，取消播放, msgId: $msgId');
           return;
         }
 
         // 重新下载
-        downloadedFilePath = await _downloadAudioWithRetry(msgId, audioUrl, forceRedownload: true);
+        downloadedFilePath = await _downloadAudioWithRetry(msgId, audioUrl,
+            forceRedownload: true);
         if (downloadedFilePath == null) {
-          _updateAudioState(msgId, AudioPlayState.error, errorMessage: '重新下载失败');
+          _updateAudioState(msgId, AudioPlayState.error,
+              errorMessage: 'download failed');
           return;
         }
 
         currentDuration = await _getAudioDuration(downloadedFilePath);
-        debugPrint('🎧 AudioManager: 重新下载后时长: $currentDuration ms');
+        // debugPrint('🎧 AudioManager: 重新下载后时长: $currentDuration ms');
 
         // 再次验证
         if (!await _validateAudioFile(downloadedFilePath, currentDuration)) {
-          debugPrint('⚠️ AudioManager: 重新下载后仍然验证失败，可能是服务器文件问题');
-          _updateAudioState(msgId, AudioPlayState.error, errorMessage: '文件仍然不完整');
+          // debugPrint('⚠️ AudioManager: 重新下载后仍然验证失败，可能是服务器文件问题');
+          _updateAudioState(msgId, AudioPlayState.error,
+              errorMessage: 'file is not complete');
           return;
         }
       }
@@ -252,22 +248,23 @@ class AudioManager extends GetxController {
       // 最终检查是否被停止（在播放前的最后检查）
       final finalState = _audioStates[msgId];
       if (finalState?.state == AudioPlayState.stopped) {
-        debugPrint('🎧 AudioManager: 音频在播放前被停止，取消播放, msgId: $msgId');
+        // debugPrint('🎧 AudioManager: 音频在播放前被停止，取消播放, msgId: $msgId');
         return;
       }
 
       // 开始播放
       await _playAudioFile(msgId, downloadedFilePath, currentDuration);
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 播放音频异常: $e');
-      _updateAudioState(msgId, AudioPlayState.error, errorMessage: e.toString());
+      debugPrint('⚠️ AudioManager play audio error: $e');
+      _updateAudioState(msgId, AudioPlayState.error,
+          errorMessage: e.toString());
     }
   }
 
   /// 停止播放指定音频
   Future<void> stopPlay(String msgId) async {
     try {
-      debugPrint('🎧 AudioManager: 停止播放音频, msgId: $msgId');
+      // debugPrint('🎧 AudioManager: 停止播放音频, msgId: $msgId');
 
       final currentAudio = currentPlayingAudio.value;
       if (currentAudio?.msgId == msgId) {
@@ -277,14 +274,14 @@ class AudioManager extends GetxController {
 
       _updateAudioState(msgId, AudioPlayState.stopped);
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 停止播放异常: $e');
+      debugPrint('⚠️ AudioManager stop play error: $e');
     }
   }
 
   /// 停止所有音频播放
   Future<void> stopAll() async {
     try {
-      debugPrint('🎧 AudioManager: 停止所有音频播放');
+      // debugPrint('🎧 AudioManager: 停止所有音频播放');
       await _audioPlayer?.stop();
       currentPlayingAudio.value = null;
 
@@ -294,11 +291,11 @@ class AudioManager extends GetxController {
         if (audioState?.state == AudioPlayState.playing ||
             audioState?.state == AudioPlayState.downloading) {
           _updateAudioState(msgId, AudioPlayState.stopped);
-          debugPrint('🎧 AudioManager: 停止音频 $msgId, 原状态: ${audioState?.state}');
+          // debugPrint('🎧 AudioManager: 停止音频 $msgId, 原状态: ${audioState?.state}');
         }
       }
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 停止所有播放异常: $e');
+      debugPrint('⚠️ AudioManager stop all error: $e');
     }
   }
 
@@ -313,7 +310,7 @@ class AudioManager extends GetxController {
   Future<void> _stopCurrentAudio() async {
     final currentAudio = currentPlayingAudio.value;
     if (currentAudio != null) {
-      debugPrint('🎧 AudioManager: 停止当前音频, msgId: ${currentAudio.msgId}');
+      // debugPrint('🎧 AudioManager: 停止当前音频, msgId: ${currentAudio.msgId}');
       await _audioPlayer?.stop();
       _updateAudioState(currentAudio.msgId, AudioPlayState.stopped);
       currentPlayingAudio.value = null;
@@ -331,7 +328,7 @@ class AudioManager extends GetxController {
 
     while (_retryCount[retryKey]! < _maxRetryCount) {
       try {
-        debugPrint('🎧 AudioManager: 开始下载音频, URL: $audioUrl');
+        // debugPrint('🎧 AudioManager: 开始下载音频, URL: $audioUrl');
 
         // 如果需要强制重新下载，先删除已存在的文件
         if (forceRedownload) {
@@ -342,25 +339,30 @@ class AudioManager extends GetxController {
           final existingFile = File(existingFilePath);
           if (await existingFile.exists()) {
             await existingFile.delete();
-            debugPrint('🎧 AudioManager: 已删除旧缓存文件: $existingFilePath');
+            // debugPrint('🎧 AudioManager: 已删除旧缓存文件: $existingFilePath');
           }
         }
 
-        final filePath = await Downloader.downloadFile(audioUrl, fileType: FileType.audio).timeout(
+        final filePath =
+            await Downloader.downloadFile(audioUrl, fileType: FileType.audio)
+                .timeout(
           Duration(seconds: _downloadTimeoutSeconds),
-          onTimeout: () =>
-              throw TimeoutException('下载超时', Duration(seconds: _downloadTimeoutSeconds)),
+          onTimeout: () => throw TimeoutException(
+            'download timeout',
+            Duration(seconds: _downloadTimeoutSeconds),
+          ),
         );
 
         if (filePath != null && await File(filePath).exists()) {
           _retryCount.remove(retryKey); // 清除重试次数
           return filePath;
         } else {
-          throw Exception('下载返回空路径或文件不存在');
+          throw Exception('download return empty path or file not exists');
         }
       } catch (e) {
         _retryCount[retryKey] = _retryCount[retryKey]! + 1;
-        debugPrint('⚠️ AudioManager: 下载失败 (${_retryCount[retryKey]}/$_maxRetryCount): $e');
+        // debugPrint(
+        //     '⚠️ AudioManager: 下载失败 (${_retryCount[retryKey]}/$_maxRetryCount): $e');
 
         if (_retryCount[retryKey]! >= _maxRetryCount) {
           _retryCount.remove(retryKey);
@@ -384,11 +386,11 @@ class AudioManager extends GetxController {
       if (duration != null) {
         return duration.inMilliseconds;
       } else {
-        debugPrint('⚠️ AudioManager: 无法获取音频时长');
+        // debugPrint('⚠️ AudioManager: 无法获取音频时长');
         return 0;
       }
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 获取音频时长异常: $e');
+      debugPrint('⚠️ AudioManager get audio duration error: $e');
       return 0;
     }
   }
@@ -400,44 +402,47 @@ class AudioManager extends GetxController {
 
       // 检查文件是否存在
       if (!await file.exists()) {
-        debugPrint('⚠️ AudioManager: 音频文件不存在: $filePath');
+        // debugPrint('⚠️ AudioManager: 音频文件不存在: $filePath');
         return false;
       }
 
       // 检查文件大小（小于1KB可能是不完整的）
       final fileSize = await file.length();
       if (fileSize < 1024) {
-        debugPrint('⚠️ AudioManager: 音频文件过小: ${fileSize}B');
+        // debugPrint('⚠️ AudioManager: 音频文件过小: ${fileSize}B');
         return false;
       }
 
       // 检查时长合理性（小于1秒可能有问题）
       if (duration < 1000) {
-        debugPrint('⚠️ AudioManager: 音频时长过短: ${duration}ms');
+        // debugPrint('⚠️ AudioManager: 音频时长过短: ${duration}ms');
         return false;
       }
 
-      debugPrint('🎧 AudioManager: 音频文件验证通过, 文件大小: ${fileSize}B, 时长: ${duration}ms');
+      // debugPrint(
+      //     '🎧 AudioManager: 音频文件验证通过, 文件大小: ${fileSize}B, 时长: ${duration}ms');
       return true;
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 验证音频文件异常: $e');
+      debugPrint('⚠️ AudioManager validate audio file error: $e');
       return false;
     }
   }
 
   /// 播放音频文件
-  Future<void> _playAudioFile(String msgId, String filePath, int duration) async {
+  Future<void> _playAudioFile(
+      String msgId, String filePath, int duration) async {
     try {
-      debugPrint('🎧 AudioManager: 开始播放音频文件, msgId: $msgId, 路径: $filePath, duration: $duration');
+      // debugPrint(
+      //     '🎧 AudioManager: 开始播放音频文件, msgId: $msgId, 路径: $filePath, duration: $duration',);
 
       if (_audioPlayer == null) {
-        throw Exception('音频播放器未初始化');
+        throw Exception('audio player is null');
       }
 
       // 播放前最后一次检查状态
       final currentState = _audioStates[msgId];
       if (currentState?.state == AudioPlayState.stopped) {
-        debugPrint('🎧 AudioManager: 音频在播放前被停止，取消播放, msgId: $msgId');
+        // debugPrint('🎧 AudioManager: 音频在播放前被停止，取消播放, msgId: $msgId');
         return;
       }
 
@@ -455,18 +460,20 @@ class AudioManager extends GetxController {
       // 触发状态更新
       _audioStates.refresh();
 
-      debugPrint('🎧 AudioManager: 开始播放音频文件');
+      // debugPrint('🎧 AudioManager: 开始播放音频文件');
 
       // 开始播放
-      await _audioPlayer!
-          .play(DeviceFileSource(filePath))
-          .timeout(
+      await _audioPlayer!.play(DeviceFileSource(filePath)).timeout(
             Duration(seconds: _playTimeoutSeconds),
-            onTimeout: () => throw TimeoutException('播放超时', Duration(seconds: _playTimeoutSeconds)),
+            onTimeout: () => throw TimeoutException(
+              'play timeout',
+              Duration(seconds: _playTimeoutSeconds),
+            ),
           );
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 播放音频文件异常: $e');
-      _updateAudioState(msgId, AudioPlayState.error, errorMessage: e.toString());
+      debugPrint('⚠️ AudioManager: paly error: $e');
+      _updateAudioState(msgId, AudioPlayState.error,
+          errorMessage: e.toString());
       currentPlayingAudio.value = null;
     }
   }
@@ -490,13 +497,13 @@ class AudioManager extends GetxController {
     );
 
     _audioStates[msgId] = newState;
-    debugPrint('🎧 AudioManager: 音频状态更新, msgId: $msgId, state: $state');
+    // debugPrint('🎧 AudioManager: 音频状态更新, msgId: $msgId, state: $state');
   }
 
   /// 清理资源
   void _cleanupResources() {
     try {
-      debugPrint('🎧 AudioManager: 开始清理资源...');
+      // debugPrint('🎧 AudioManager: 开始清理资源...');
 
       // 停止所有音频播放
       _audioPlayer?.stop();
@@ -514,9 +521,9 @@ class AudioManager extends GetxController {
       currentPlayingAudio.value = null;
       _retryCount.clear();
 
-      debugPrint('🎧 AudioManager: 资源清理完成');
+      // debugPrint('🎧 AudioManager: 资源清理完成');
     } catch (e) {
-      debugPrint('⚠️ AudioManager: 资源清理异常: $e');
+      debugPrint('⚠️ AudioManager: $e');
     }
   }
 }

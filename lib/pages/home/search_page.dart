@@ -1,13 +1,13 @@
 import 'package:fast_ai/component/f_button.dart';
 import 'package:fast_ai/component/f_empty.dart';
 import 'package:fast_ai/component/f_icon.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_ctr.dart';
 import 'package:fast_ai/pages/home/home_item.dart';
 import 'package:fast_ai/pages/home/search_ctr.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -89,7 +89,7 @@ class _SearchPageState extends State<SearchPage> {
                       onEditingComplete: () {},
                       minLines: 1,
                       maxLength: 20,
-                      style: AppTextStyle.openSans(
+                      style: ThemeStyle.openSans(
                         height: 1,
                         color: Colors.white,
                         fontSize: 14,
@@ -101,7 +101,8 @@ class _SearchPageState extends State<SearchPage> {
                       decoration: InputDecoration(
                         hintText: LocaleKeys.search_sirens.tr,
                         counterText: '', // 去掉字数显示
-                        hintStyle: AppTextStyle.openSans(color: Color(0x33FFFFFF)),
+                        hintStyle:
+                            ThemeStyle.openSans(color: Color(0x33FFFFFF)),
                         fillColor: Colors.transparent,
                         border: InputBorder.none,
                         filled: true,
@@ -163,11 +164,11 @@ class _SearchPageState extends State<SearchPage> {
                   width: width,
                   height: height,
                   role: role,
-                  onCollect: (Role role) {
+                  onCollect: (APop role) {
                     focusNode.unfocus();
                     ctr.onCollect(index, role);
                   },
-                  cate: HomeListCategroy.all,
+                  cate: HomeCate.all,
                 );
               },
             );

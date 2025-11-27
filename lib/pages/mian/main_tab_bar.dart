@@ -5,7 +5,7 @@ import 'package:fast_ai/component/f_icon.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/mian/main_page.dart';
-import 'package:fast_ai/values/app_colors.dart'; // 统一颜色管理
+import 'package:fast_ai/values/theme_colors.dart'; // 统一颜色管理
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
@@ -31,14 +31,17 @@ class MainTabBar extends StatelessWidget {
           height: kBottomNavigationBarHeight,
           decoration: BoxDecoration(
             color: Color(0x1AFFFFFF),
-            borderRadius: BorderRadiusGeometry.circular(kBottomNavigationBarHeight / 2),
+            borderRadius:
+                BorderRadiusGeometry.circular(kBottomNavigationBarHeight / 2),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadiusGeometry.circular(kBottomNavigationBarHeight / 2),
+            borderRadius:
+                BorderRadiusGeometry.circular(kBottomNavigationBarHeight / 2),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: itemHorizontal, vertical: itemVertical),
+                padding: EdgeInsets.symmetric(
+                    horizontal: itemHorizontal, vertical: itemVertical),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: 30,
@@ -131,13 +134,14 @@ class MainTabBar extends StatelessWidget {
             height: itemHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(itemRadius),
-              color: AppColors.white20,
+              color: ThemeColors.white20,
             ),
             child: Center(
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                child: FIcon(assetName: assetName, color: Colors.white, width: 24),
+                child:
+                    FIcon(assetName: assetName, color: Colors.white, width: 24),
               ),
             ),
           ),
@@ -167,7 +171,10 @@ class MainTabBar extends StatelessWidget {
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Color(0xFF333333), fontWeight: FontWeight.w600, fontSize: 11),
+              style: TextStyle(
+                  color: Color(0xFF333333),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11),
             ),
           ),
         ],

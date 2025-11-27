@@ -1,0 +1,21 @@
+import 'package:flutter/material.dart';
+
+class ThemeStyle {
+  ThemeStyle._();
+
+  static TextStyle openSans({
+    double? fontSize,
+    double? height,
+    FontWeight? fontWeight,
+    Color? color,
+    FontStyle? fontStyle,
+  }) =>
+      TextStyle(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        fontStyle: fontStyle,
+        fontFamily: 'OpenSans',
+        height: height,
+      );
+}

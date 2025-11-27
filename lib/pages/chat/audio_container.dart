@@ -3,11 +3,11 @@ import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/chat/text_container.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
 import 'package:fast_ai/services/audio_manager.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -33,7 +33,8 @@ class AudioContainer extends StatefulWidget {
   State<AudioContainer> createState() => _AudioContainerState();
 }
 
-class _AudioContainerState extends State<AudioContainer> with SingleTickerProviderStateMixin {
+class _AudioContainerState extends State<AudioContainer>
+    with SingleTickerProviderStateMixin {
   /// 动画控制器
   AnimationController? _controller;
 
@@ -108,7 +109,8 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
           onLoaded: (composition) {
             // 只设置动画持续时间，不控制播放
             _controller?.duration = composition.duration;
-            debugPrint('🎧 AudioContainer: Lottie动画加载完成, 动画时长: ${composition.duration}');
+            debugPrint(
+                '🎧 AudioContainer: Lottie动画加载完成, 动画时长: ${composition.duration}');
           },
           errorBuilder: (context, error, stackTrace) {
             debugPrint('⚠️ AudioContainer: Lottie加载失败: $error');
@@ -182,13 +184,16 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
   /// 构建音频组件 - 优化版本
   Widget _buildAudioWidget() {
     final isRead = widget.msg.isRead;
-    final isShowTrial = !AppUser().isVip.value;
+    final isShowTrial = !MY().isVip.value;
 
     return GestureDetector(
       onTap: () => _handleAudioTap(isRead),
       child: Stack(
         alignment: Alignment.topLeft,
-        children: [_buildAudioContainer(isShowTrial, isRead), _buildStatusTag()],
+        children: [
+          _buildAudioContainer(isShowTrial, isRead),
+          _buildStatusTag()
+        ],
       ),
     );
   }
@@ -221,13 +226,14 @@ class _AudioContainerState extends State<AudioContainer> with SingleTickerProvid
       final currentAudioState = _audioManager.getAudioState(_msgId);
       final currentState = currentAudioState?.state ?? AudioPlayState.stopped;
 
-      debugPrint('🎧 AudioContainer: 音频点击, msgId: $_msgId, 当前状态: $currentState');
+      debugPrint(
+          '🎧 AudioContainer: 音频点击, msgId: $_msgId, 当前状态: $currentState');
 
       // VIP权限检查
-      if (!AppUser().isVip.value) {
+      if (!MY().isVip.value) {
         debugPrint('🔒 AudioContainer: 非VIP用户，跳转到VIP页面');
         logEvent('c_news_lockaudio');
-        AppRouter.pushVip(VipFrom.lockaudio);
+        NTN.pushVip(ProFrom.lockaudio);
         return;
       }
 

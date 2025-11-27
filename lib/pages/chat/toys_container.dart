@@ -4,9 +4,9 @@ import 'package:fast_ai/component/f_image.dart';
 import 'package:fast_ai/data/msg_data.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/chat/msg_ctr.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -33,7 +33,7 @@ class _ToysContainerState extends State<ToysContainer> {
     var showTranslate = msg.showTranslate == true;
     var showTransBtn = true;
 
-    if (AppUser().user?.autoTranslate == true) {
+    if (MY().user?.autoTranslate == true) {
       showTransBtn = false;
       if (msg.translateAnswer == null || msg.translateAnswer!.isEmpty) {
         showTranslate = false;
@@ -53,7 +53,10 @@ class _ToysContainerState extends State<ToysContainer> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 4,
-          children: [_buildAnser(showTranslate), _buildTransBtn(showTransBtn, showTranslate)],
+          children: [
+            _buildAnser(showTranslate),
+            _buildTransBtn(showTransBtn, showTranslate)
+          ],
         ),
       ],
     );
@@ -83,13 +86,14 @@ class _ToysContainerState extends State<ToysContainer> {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(color: bgColor, borderRadius: borderRadius),
-      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+      constraints:
+          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             showTranslate ? translate : content,
-            style: AppTextStyle.openSans(
+            style: ThemeStyle.openSans(
               color: Colors.white,
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -100,7 +104,7 @@ class _ToysContainerState extends State<ToysContainer> {
             borderRadius: BorderRadius.circular(8),
             child: InkWell(
               onTap: () {
-                AppRouter.pushImagePreview(widget.msg.giftImg ?? '');
+                NTN.pushImagePreview(widget.msg.giftImg ?? '');
               },
               child: Container(
                 width: 40,
@@ -134,7 +138,7 @@ class _ToysContainerState extends State<ToysContainer> {
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: () {
-                    AppRouter.pushImagePreview(widget.msg.giftImg ?? '');
+                    NTN.pushImagePreview(widget.msg.giftImg ?? '');
                   },
                   child: Container(
                     height: 186,
@@ -145,7 +149,7 @@ class _ToysContainerState extends State<ToysContainer> {
               ),
               Text(
                 question,
-                style: AppTextStyle.openSans(
+                style: ThemeStyle.openSans(
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w400,

@@ -1,31 +1,32 @@
-import 'package:fast_ai/component/app_dialog.dart';
-import 'package:fast_ai/data/role_data.dart';
+import 'package:fast_ai/component/f_dialog.dart';
+import 'package:fast_ai/data/a_pop.dart';
 import 'package:fast_ai/pages/mian/main_page.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/pages/router/routers.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/services/m_y.dart';
 import 'package:fast_ai/tools/ext.dart';
 import 'package:fast_ai/tools/navigation_obs.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:get/get.dart';
 
 class HomeCallCtr extends GetxController {
   // 主动来电
-  final List<Role> _callList = [];
-  Role? _callRole;
+  final List<APop> _callList = [];
+  APop? _callRole;
   int _callCount = 0;
   int _lastCallTime = 0;
   bool _calling = false;
 
-  void onCall(List<Role>? list) async {
+  void onCall(List<APop>? list) async {
     try {
       if (list == null || list.isEmpty) return;
       _callList.assignAll(list);
       final role = list
-          .where((element) => element.gender == 1 && element.renderStyle == 'REALISTIC')
+          .where((element) =>
+              element.gender == 1 && element.renderStyle == 'REALISTIC')
           .toList()
           .randomOrNull;
       if (role == null) {
@@ -51,7 +52,8 @@ class HomeCallCtr extends GetxController {
       String? url;
       if (_callRole!.videoChat == true) {
         logEvent('t_ai_videocall');
-        final guide = _callRole?.characterVideoChat?.firstWhereOrNull((e) => e.tag == 'guide');
+        final guide = _callRole?.characterVideoChat
+            ?.firstWhereOrNull((e) => e.tag == 'guide');
         url = guide?.gifUrl;
       } else {
         logEvent('t_ai_audiocall');
@@ -75,7 +77,7 @@ class HomeCallCtr extends GetxController {
 
       const sessionId = 0;
 
-      AppRouter.pushPhone(
+      NTN.pushPhone(
         sessionId: sessionId,
         role: _callRole!,
         showVideo: true,
@@ -103,7 +105,7 @@ class HomeCallCtr extends GetxController {
   }
 
   bool canCall() {
-    if (!AppCache().isBig) {
+    if (!FCache().isBig) {
       log.d('-------->canCall: false isA');
       return false;
     }
@@ -112,12 +114,12 @@ class HomeCallCtr extends GetxController {
       return false;
     }
 
-    if (NavigationObs().curRoute?.settings.name != Routers.main) {
+    if (NavigationObs().curRoute?.settings.name != NPN.main) {
       log.d('-------->canCall: false curRoute is not root');
       return false;
     }
 
-    if (AppUser().isVip.value) {
+    if (MY().isVip.value) {
       log.d('-------->canCall: false isVip');
       return false;
     }
@@ -125,7 +127,7 @@ class HomeCallCtr extends GetxController {
       log.d('-------->canCall:false  _callCount > 2');
       return false;
     }
-    if (AppDialog.checkExist(loginRewardTag)) {
+    if (FDialog.checkExist(loginRewardTag)) {
       log.d('-------->canCall: false  loginRewardTag');
       return false;
     }

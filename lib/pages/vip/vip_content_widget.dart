@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:fast_ai/component/gradient_text.dart';
-import 'package:fast_ai/component/rich_text_placeholder.dart';
+import 'package:fast_ai/component/f_grad_text.dart';
+import 'package:fast_ai/component/f_rich_place_text.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/generated/locales.g.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/values/app_text_style.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/values/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,7 +30,7 @@ class VipContentWidget extends StatelessWidget {
 
   /// 构建标题
   Widget _buildTitle() {
-    if (AppCache().isBig) {
+    if (FCache().isBig) {
       return _buildBigVersionTitle();
     } else {
       return _buildSmallVersionTitle();
@@ -43,7 +43,7 @@ class VipContentWidget extends StatelessWidget {
       spacing: 12,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        GradientText(
+        FGradText(
           textAlign: TextAlign.center,
           data: "50%",
           gradient: const LinearGradient(
@@ -52,11 +52,11 @@ class VipContentWidget extends StatelessWidget {
             end: Alignment.bottomCenter,
             stops: [0.0, 1.0],
           ),
-          style: AppTextStyle.openSans(fontSize: 64, fontWeight: FontWeight.w800),
+          style: ThemeStyle.openSans(fontSize: 64, fontWeight: FontWeight.w800),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 38),
-          child: GradientText(
+          child: FGradText(
             textAlign: TextAlign.center,
             data: "OFF",
             gradient: const LinearGradient(
@@ -65,7 +65,8 @@ class VipContentWidget extends StatelessWidget {
               end: Alignment.bottomCenter,
               stops: [0.0, 1.0],
             ),
-            style: AppTextStyle.openSans(fontSize: 64, fontWeight: FontWeight.w800),
+            style:
+                ThemeStyle.openSans(fontSize: 64, fontWeight: FontWeight.w800),
           ),
         ),
       ],
@@ -74,7 +75,7 @@ class VipContentWidget extends StatelessWidget {
 
   /// 构建小版本标题
   Widget _buildSmallVersionTitle() {
-    return GradientText(
+    return FGradText(
       data: LocaleKeys.up_to_vip.tr,
       textAlign: TextAlign.center,
       gradient: const LinearGradient(
@@ -83,7 +84,7 @@ class VipContentWidget extends StatelessWidget {
         end: Alignment.bottomCenter,
         stops: [0.0, 1.0],
       ),
-      style: AppTextStyle.openSans(fontSize: 36, fontWeight: FontWeight.w800),
+      style: ThemeStyle.openSans(fontSize: 36, fontWeight: FontWeight.w800),
     );
   }
 
@@ -104,7 +105,7 @@ class VipContentWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 16,
-            children: [if (AppCache().isBig) _buildSubtitle(), _buildContent()],
+            children: [if (FCache().isBig) _buildSubtitle(), _buildContent()],
           ),
         ),
       ),
@@ -115,13 +116,14 @@ class VipContentWidget extends StatelessWidget {
   Widget _buildSubtitle() {
     return Text(
       LocaleKeys.best_chat_experience.tr,
-      style: AppTextStyle.openSans(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400),
+      style: ThemeStyle.openSans(
+          color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400),
     );
   }
 
   /// 构建内容
   Widget _buildContent() {
-    return RichTextPlaceholder(
+    return FRichPlaceText(
       textKey: contentText,
       placeholders: {
         'icon': WidgetSpan(
@@ -132,7 +134,7 @@ class VipContentWidget extends StatelessWidget {
           ),
         ),
       },
-      style: AppTextStyle.openSans(
+      style: ThemeStyle.openSans(
         color: Colors.white,
         fontSize: 12,
         fontWeight: FontWeight.w500,

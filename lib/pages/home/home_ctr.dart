@@ -1,55 +1,55 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_keep_alive.dart';
 import 'package:fast_ai/component/f_loading.dart';
-import 'package:fast_ai/data/role_data.dart';
-import 'package:fast_ai/data/role_tags.dart';
+import 'package:fast_ai/data/a_pop.dart';
+import 'package:fast_ai/data/a_pop_tags.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/home/home_list_view.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/pages/router/routers.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_log_event.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/services/network_service.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/pages/router/n_p_n.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_log_event.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/services/net_o_b_s.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-enum HomeListCategroy { all, realistic, anime, dressUp, video }
+enum HomeCate { all, realistic, anime, dressUp, video }
 
 // 为枚举添加扩展，提供title和icon等属性
-extension HomeListCategoryExtension on HomeListCategroy {
+extension HomeListCategoryExtension on HomeCate {
   String get title {
     switch (this) {
-      case HomeListCategroy.all:
+      case HomeCate.all:
         return LocaleKeys.popular.tr;
-      case HomeListCategroy.realistic:
+      case HomeCate.realistic:
         return LocaleKeys.realistic.tr;
-      case HomeListCategroy.anime:
+      case HomeCate.anime:
         return LocaleKeys.anime.tr;
-      case HomeListCategroy.dressUp:
+      case HomeCate.dressUp:
         return LocaleKeys.dress_up.tr;
-      case HomeListCategroy.video:
+      case HomeCate.video:
         return LocaleKeys.video.tr;
     }
   }
 
-  int get index => HomeListCategroy.values.indexOf(this);
+  int get index => HomeCate.values.indexOf(this);
 }
 
 class HomeCtr extends GetxController {
-  var categroyList = <HomeListCategroy>[];
-  var categroy = HomeListCategroy.all.obs;
+  var categroyList = <HomeCate>[];
+  var categroy = HomeCate.all.obs;
 
   var pages = <Widget>[];
 
   // 标签
-  List<RoleTagRes> roleTags = [];
-  var selectTags = <RoleTag>{}.obs;
-  Rx<(Set<RoleTag>, int)> filterEvent = (<RoleTag>{}, 0).obs;
+  List<APopTagRes> roleTags = [];
+  var selectTags = <APopTag>{}.obs;
+  Rx<(Set<APopTag>, int)> filterEvent = (<APopTag>{}, 0).obs;
 
   // 关注
   Rx<(FollowEvent, String, int)> followEvent = (FollowEvent.follow, '', 0).obs;
@@ -58,10 +58,10 @@ class HomeCtr extends GetxController {
   void onInit() {
     super.onInit();
 
-    if (NetworkService.to.isConnected.value) {
+    if (NetOBS.to.isConnected.value) {
       setupAndJump();
     } else {
-      ever(NetworkService.to.isConnected, (v) {
+      ever(NetOBS.to.isConnected, (v) {
         if (v) {
           setupAndJump();
         }
@@ -69,12 +69,12 @@ class HomeCtr extends GetxController {
     }
   }
 
-  void onTapCate(HomeListCategroy value) {
+  void onTapCate(HomeCate value) {
     categroy.value = value;
   }
 
   void onTapFilter() {
-    Get.toNamed(Routers.homeFilter);
+    Get.toNamed(NPN.homeFilter);
   }
 
   Future<void> setupAndJump() async {
@@ -87,19 +87,19 @@ class HomeCtr extends GetxController {
   Future<void> setup() async {
     try {
       categroyList.addAll([
-        HomeListCategroy.all,
-        HomeListCategroy.realistic,
-        HomeListCategroy.anime,
-        if (AppCache().isBig) HomeListCategroy.video,
-        if (AppCache().isBig) HomeListCategroy.dressUp,
+        HomeCate.all,
+        HomeCate.realistic,
+        HomeCate.anime,
+        if (FCache().isBig) HomeCate.video,
+        if (FCache().isBig) HomeCate.dressUp,
       ]);
 
       // 使用智能缓存策略，只保活当前页面和相邻页面
       pages = categroyList.map((element) {
-        return KeepAliveWrapper(child: HomeListView(cate: element));
+        return FKeepAlive(child: HomeListView(cate: element));
       }).toList();
 
-      Api.updateEventParams();
+      FApi.updateEventParams();
       loadTags();
     } catch (e) {
       log.e('All tasks failed with error: $e');
@@ -109,14 +109,14 @@ class HomeCtr extends GetxController {
   }
 
   Future loadTags() async {
-    final tags = await Api.roleTagsList();
+    final tags = await FApi.roleTagsList();
     if (tags != null) {
       roleTags.assignAll(tags);
     }
   }
 
   void jump() {
-    if (AppCache().isBig) {
+    if (FCache().isBig) {
       jumpForB();
     } else {
       jumpForA();
@@ -125,18 +125,18 @@ class HomeCtr extends GetxController {
 
   void jumpForA() {
     recordInstallTime();
-    AppCache().isRestart = true;
+    FCache().isRestart = true;
   }
 
   void jumpForB() async {
     final isShowDailyReward = await shouldShowDailyReward();
-    final isVip = AppUser().isVip.value;
-    final isFirstLaunch = AppCache().isRestart == false;
+    final isVip = MY().isVip.value;
+    final isFirstLaunch = FCache().isRestart == false;
     if (isFirstLaunch) {
       // 记录安装时间
       recordInstallTime();
       // 记录为重启
-      AppCache().isRestart = true;
+      FCache().isRestart = true;
 
       // 首次启动 获取指定人物聊天
       FLoading.showLoading();
@@ -144,7 +144,7 @@ class HomeCtr extends GetxController {
       FLoading.dismiss();
       if (startRole != null) {
         final roleId = startRole.id;
-        AppRouter.pushChat(roleId, showLoading: false);
+        NTN.pushChat(roleId, showLoading: false);
       } else {
         jumpVip(isFirstLaunch);
       }
@@ -152,8 +152,8 @@ class HomeCtr extends GetxController {
       // 非首次启动 判断弹出奖励弹窗
       if (isShowDailyReward) {
         // 更新奖励时间戳
-        AppCache().lastRewardDate = DateTime.now().millisecondsSinceEpoch;
-        AppDialog.showLoginReward();
+        FCache().lastRewardDate = DateTime.now().millisecondsSinceEpoch;
+        FDialog.showLoginReward();
       } else {
         // 非vip用户 跳转订阅页
         if (!isVip) {
@@ -164,11 +164,11 @@ class HomeCtr extends GetxController {
   }
 
   Future<void> recordInstallTime() async {
-    AppCache().installTime = DateTime.now().millisecondsSinceEpoch;
+    FCache().installTime = DateTime.now().millisecondsSinceEpoch;
   }
 
   Future<bool> shouldShowDailyReward() async {
-    final installTimeMillis = AppCache().lastRewardDate;
+    final installTimeMillis = FCache().lastRewardDate;
     if (installTimeMillis <= 0) {
       // 记录安装时间
       recordInstallTime();
@@ -190,9 +190,10 @@ class HomeCtr extends GetxController {
     }
 
     // 检查今天是否已经发过奖励（避免重复弹窗）
-    final lastRewardDateMillis = AppCache().lastRewardDate;
+    final lastRewardDateMillis = FCache().lastRewardDate;
     if (lastRewardDateMillis > 0) {
-      final lastRewardDate = DateTime.fromMillisecondsSinceEpoch(lastRewardDateMillis);
+      final lastRewardDate =
+          DateTime.fromMillisecondsSinceEpoch(lastRewardDateMillis);
 
       // 如果今天已经发过奖励，则不弹窗
       if (now.year == lastRewardDate.year &&
@@ -206,9 +207,9 @@ class HomeCtr extends GetxController {
   }
 
   // 获取开屏随机角色
-  Future<Role?> getSplashRole() async {
-    AppUser().getUserInfo();
-    final role = await Api.splashRandomRole();
+  Future<APop?> getSplashRole() async {
+    MY().getUserInfo();
+    final role = await FApi.splashRandomRole();
     final avatar = role?.avatar;
     if (avatar != null && avatar.isNotEmpty) {
       ExtendedNetworkImageProvider(
@@ -222,15 +223,15 @@ class HomeCtr extends GetxController {
   }
 
   void jumpVip(bool isFirstLaunch) async {
-    AppRouter.pushVip(AppCache().isRestart ? VipFrom.relaunch : VipFrom.launch);
+    NTN.pushVip(FCache().isRestart ? ProFrom.relaunch : ProFrom.launch);
 
-    var event = AppCache().isBig ? 't_vipb' : 't_vipa';
+    var event = FCache().isBig ? 't_vipb' : 't_vipa';
 
-    if (AppCache().isRestart) {
+    if (FCache().isRestart) {
       event = '${event}_relaunch';
     } else {
       event = '${event}_launch';
-      AppCache().isRestart = true;
+      FCache().isRestart = true;
     }
     logEvent(event);
   }

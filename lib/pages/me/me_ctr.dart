@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:fast_ai/component/app_dialog.dart';
+import 'package:fast_ai/component/f_dialog.dart';
 import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/component/f_toast.dart';
 import 'package:fast_ai/generated/locales.g.dart';
 import 'package:fast_ai/pages/me/me_chat_bg.dart';
-import 'package:fast_ai/pages/router/app_router.dart';
-import 'package:fast_ai/services/api.dart';
-import 'package:fast_ai/services/app_cache.dart';
-import 'package:fast_ai/services/app_service.dart';
-import 'package:fast_ai/services/app_user.dart';
-import 'package:fast_ai/values/app_values.dart';
+import 'package:fast_ai/pages/router/n_t_n.dart';
+import 'package:fast_ai/services/f_api.dart';
+import 'package:fast_ai/services/f_cache.dart';
+import 'package:fast_ai/services/f_service.dart';
+import 'package:fast_ai/services/m_y.dart';
+import 'package:fast_ai/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
@@ -28,24 +28,24 @@ class MeCtr extends GetxController {
   void onInit() {
     super.onInit();
 
-    nickname.value = AppUser().user?.nickname ?? '';
+    nickname.value = MY().user?.nickname ?? '';
 
     _loadData();
   }
 
   void _loadData() async {
-    final v = await AppService().version();
-    final n = await AppService().buildNumber();
+    final v = await FService().version();
+    final n = await FService().buildNumber();
     version.value = '$v  $n';
 
-    chatbgImagePath.value = AppCache().chatBgImagePath;
+    chatbgImagePath.value = FCache().chatBgImagePath;
   }
 
   void changeNickName() {
-    nickname.value = AppUser().user?.nickname ?? '';
+    nickname.value = MY().user?.nickname ?? '';
     _textEditingController = TextEditingController(text: nickname.value);
 
-    AppDialog.input(
+    FDialog.input(
       title: LocaleKeys.your_nickname.tr,
       hintText: LocaleKeys.input_your_nickname.tr,
       focusNode: _focusNode,
@@ -57,22 +57,22 @@ class MeCtr extends GetxController {
         }
         nickname.value = _textEditingController.text.trim();
         FLoading.showLoading();
-        await AppUser().updateUser(nickname.value);
+        await MY().updateUser(nickname.value);
         await FLoading.dismiss();
-        AppDialog.dismiss();
+        FDialog.dismiss();
       },
     );
   }
 
   void resetChatBackground() async {
-    await AppDialog.dismiss();
+    await FDialog.dismiss();
 
-    AppCache().chatBgImagePath = '';
+    FCache().chatBgImagePath = '';
     chatbgImagePath.value = '';
   }
 
   void changeChatBackground() async {
-    AppDialog.show(
+    FDialog.show(
       child: MeChatBg(
         onTapUpload: uploadImage,
         onTapUseChat: resetChatBackground,
@@ -82,11 +82,10 @@ class MeCtr extends GetxController {
   }
 
   void uploadImage() async {
-    await AppDialog.dismiss();
+    await FDialog.dismiss();
 
     final List<AssetEntity>? result = await AssetPicker.pickAssets(
       Get.context!,
-
       pickerConfig: const AssetPickerConfig(
         maxAssets: 1,
         requestType: RequestType.image,
@@ -101,8 +100,9 @@ class MeCtr extends GetxController {
         final directory = await getApplicationDocumentsDirectory();
         final fileName = path.basename(pickedFile.path);
         final cachedImagePath = path.join(directory.path, fileName);
-        final File cachedImage = await File(pickedFile.path).copy(cachedImagePath);
-        AppCache().chatBgImagePath = cachedImage.path;
+        final File cachedImage =
+            await File(pickedFile.path).copy(cachedImagePath);
+        FCache().chatBgImagePath = cachedImage.path;
         chatbgImagePath.value = cachedImage.path;
         await Future.delayed(Duration(seconds: 2));
         FLoading.dismiss();
@@ -112,13 +112,13 @@ class MeCtr extends GetxController {
   }
 
   void autoTranslation(bool value) async {
-    if (AppUser().isVip.value) {
+    if (MY().isVip.value) {
       FLoading.showLoading();
-      await Api.updateEventParams(autoTranslate: value);
-      await AppUser().getUserInfo();
+      await FApi.updateEventParams(autoTranslate: value);
+      await MY().getUserInfo();
       FLoading.dismiss();
     } else {
-      AppRouter.pushVip(VipFrom.trans);
+      NTN.pushVip(ProFrom.trans);
     }
   }
 }
