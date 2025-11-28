@@ -4,6 +4,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:fast_ai/component/f_progress.dart';
 import 'package:fast_ai/gen/assets.gen.dart';
 import 'package:fast_ai/pages/router/n_p_n.dart';
+import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/services/f_switch_service.dart';
 import 'package:fast_ai/services/m_y.dart';
@@ -69,11 +70,19 @@ class _LaunchPageState extends State<LaunchPage>
         FSwitchService.request(isFisrt: true),
         MY().register(),
         IAPTool().query(),
-      ]).timeout(Duration(seconds: 7));
+      ]).timeout(
+        Duration(seconds: 7),
+        onTimeout: () {
+          log.d('Splash setup timeout');
+          logEvent('splash_setup_timeout');
+          return [];
+        },
+      );
 
       _completeSetup();
-    } catch (e) {
+    } catch (e, stack) {
       log.d('Splash setup error: $e');
+      log.d('Splash setup error: $stack');
       _completeSetup();
     }
   }
@@ -123,16 +132,18 @@ class _LaunchPageState extends State<LaunchPage>
             Text(
               'Fast AI',
               style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w700),
+                color: Colors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             Text(
               'Effortless Collaboration, Advanced AI.',
               style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500),
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             const SizedBox(height: 20),
             FProgress(

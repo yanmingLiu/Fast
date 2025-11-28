@@ -146,8 +146,16 @@ class OtherCheck {
     }
 
     //判断是否模拟器
-    var iosInfo = await DeviceInfoPlugin().iosInfo;
-    if (iosInfo.isPhysicalDevice == false) {
+    bool isPhysicalDevice = false;
+    if (Platform.isIOS) {
+      var iosInfo = await DeviceInfoPlugin().iosInfo;
+      isPhysicalDevice = iosInfo.isPhysicalDevice;
+    } else if (Platform.isAndroid) {
+      var androidInfo = await DeviceInfoPlugin().androidInfo;
+      isPhysicalDevice = androidInfo.isPhysicalDevice;
+    }
+
+    if (isPhysicalDevice) {
       _log('isSimulator status: simulator');
       logEvent("other_lock", parameters: {"Ym8dT4b": "simulator"});
       return false;
