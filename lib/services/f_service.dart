@@ -9,6 +9,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fast_ai/services/audio_manager.dart';
 import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_http.dart';
+import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/net_o_b_s.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -66,6 +67,15 @@ class FService {
 
   int maxFreeChatCount = 50;
   int showClothingCount = 5;
+
+  // 白名单
+  String whiteList = '';
+
+  // 是否开启用户模式
+  bool isOpenUserMode = true;
+
+  // 是否开启拦截配置
+  bool isOpenIntercept = true;
 
   /// 初始化方法，根据环境加载配置
   void init({required Environment env}) {
@@ -151,10 +161,51 @@ class FService {
       await remoteConfig.fetchAndActivate();
 
       // 获取配置值
-      maxFreeChatCount =
-          _getConfigValue('free_chat_count', remoteConfig.getInt, 50);
-      showClothingCount =
-          _getConfigValue('show_clothing_count', remoteConfig.getInt, 5);
+      maxFreeChatCount = _getConfigValue(
+        'free_chat_count',
+        remoteConfig.getInt,
+        50,
+      );
+      showClothingCount = _getConfigValue(
+        'show_clothing_count',
+        remoteConfig.getInt,
+        5,
+      );
+
+      whiteList = _getConfigValue(
+        'Kp7zQ2x',
+        remoteConfig.getString,
+        '',
+      );
+
+      isOpenUserMode = _getConfigValue(
+        'Rt3wE9v',
+        remoteConfig.getBool,
+        true,
+      );
+
+      isOpenIntercept = _getConfigValue(
+        'Ym8dT4b',
+        remoteConfig.getBool,
+        true,
+      );
+
+      log.d('maxFreeChatCount: $maxFreeChatCount');
+      log.d('showClothingCount: $showClothingCount');
+      log.d('whiteList: $whiteList');
+      log.d('isOpenUserMode: $isOpenUserMode');
+      log.d('isOpenIntercept: $isOpenIntercept');
+
+      logEvent(
+        'remote_config',
+        parameters: {
+          'maxFreeChatCount': maxFreeChatCount,
+          'showClothingCount': showClothingCount,
+          'whiteList': whiteList,
+          'isOpenUserMode': isOpenUserMode.toString(),
+          'isOpenIntercept': isOpenIntercept.toString(),
+        },
+      );
     } catch (e) {
       log.e("Remote Config 错误: $e");
     }

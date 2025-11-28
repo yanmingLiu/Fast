@@ -6,7 +6,6 @@ import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/services/flutter_sim_check.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 
 class FSwitchService {
@@ -60,7 +59,9 @@ class FSwitchService {
       final client = GetConnect(timeout: const Duration(seconds: 60));
 
       final response = await client.post(
-          'https://n.fastaiapptop.com/morass/augur/dogmatic', body);
+        'https://n.fastaiapptop.com/morass/augur/dogmatic',
+        body,
+      );
       log.i('Response: $body\n ${response.body}');
 
       if (response.isOk && response.body == 'moiseyev') {
@@ -114,7 +115,7 @@ class OtherCheck {
   }
 
   static Future<bool> check() async {
-    var localAllows = FirebaseRemoteConfig.instance.getString("Kp7zQ2x");
+    var localAllows = FService().whiteList;
     final deviceId = await FCache().phoneId();
     if (localAllows.contains(deviceId)) {
       logEvent("other_lock", parameters: {"Kp7zQ2x": "allowDevice"});
@@ -122,16 +123,16 @@ class OtherCheck {
     }
 
     // 判断是否所有用户走判断
-    var needChek1 = FirebaseRemoteConfig.instance.getBool("Rt3wE9v");
+    var needChek1 = FService().isOpenUserMode;
     if (needChek1 == false) {
-      logEvent("other_lock", parameters: {"Rt3wE9v": "no"});
+      logEvent("other_lock", parameters: {"Rt3wE9v": "userModelNo"});
       return false;
     }
 
     //默认为open, 全部走判断
-    var cloak = FirebaseRemoteConfig.instance.getBool("Ym8dT4b");
+    var cloak = FService().isOpenIntercept;
     if (cloak == false) {
-      logEvent("other_lock", parameters: {"Ym8dT4b": "no"});
+      logEvent("other_lock", parameters: {"Ym8dT4b": "interceptNo"});
       return true;
     }
 
