@@ -124,9 +124,6 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       child: FutureBuilder(
         future: _setupFuture,
         builder: (context, asyncSnapshot) {
-          // if (asyncSnapshot.connectionState == ConnectionState.waiting) {
-          //   return const Scaffold(backgroundColor: Colors.black);
-          // }
           return Scaffold(
             extendBody: true,
             bottomNavigationBar: MainTabBar(onTapItem: (p0) => _onTapItem(p0)),
