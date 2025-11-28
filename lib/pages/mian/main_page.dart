@@ -1,4 +1,5 @@
 import 'package:fast_ai/component/f_keep_alive.dart';
+import 'package:fast_ai/component/f_loading.dart';
 import 'package:fast_ai/pages/chat/chat_page.dart';
 import 'package:fast_ai/pages/home/home_page.dart';
 import 'package:fast_ai/pages/me/me_page.dart';
@@ -128,10 +129,15 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
             extendBody: true,
             bottomNavigationBar: MainTabBar(onTapItem: (p0) => _onTapItem(p0)),
             backgroundColor: Colors.black,
-            body: LazyIndexedStack(
-              index: mainTabIndex.index,
-              children: pages,
-            ),
+            body: (asyncSnapshot.connectionState == ConnectionState.waiting)
+                ? Container(
+                    color: Colors.black,
+                    child: Center(child: FLoading.loadingWidget()),
+                  )
+                : LazyIndexedStack(
+                    index: mainTabIndex.index,
+                    children: pages,
+                  ),
           );
         },
       ),
