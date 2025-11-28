@@ -68,15 +68,6 @@ class FService {
   int maxFreeChatCount = 50;
   int showClothingCount = 5;
 
-  // 白名单
-  String whiteList = '';
-
-  // 是否开启用户模式
-  bool isOpenUserMode = true;
-
-  // 是否开启拦截配置
-  bool isOpenIntercept = true;
-
   /// 初始化方法，根据环境加载配置
   void init({required Environment env}) {
     final config = _envConfig[env]!;
@@ -161,63 +152,23 @@ class FService {
       await remoteConfig.fetchAndActivate();
 
       // 获取配置值
-      maxFreeChatCount = _getConfigValue(
-        'free_chat_count',
-        remoteConfig.getInt,
-        50,
-      );
-      showClothingCount = _getConfigValue(
-        'show_clothing_count',
-        remoteConfig.getInt,
-        5,
-      );
-
-      whiteList = _getConfigValue(
-        'Kp7zQ2x',
-        remoteConfig.getString,
-        '',
-      );
-
-      isOpenUserMode = _getConfigValue(
-        'Rt3wE9v',
-        remoteConfig.getBool,
-        true,
-      );
-
-      isOpenIntercept = _getConfigValue(
-        'Ym8dT4b',
-        remoteConfig.getBool,
-        true,
-      );
+      maxFreeChatCount =
+          FirebaseRemoteConfig.instance.getInt('free_chat_count');
+      showClothingCount =
+          FirebaseRemoteConfig.instance.getInt('show_clothing_count');
 
       log.d('maxFreeChatCount: $maxFreeChatCount');
       log.d('showClothingCount: $showClothingCount');
-      log.d('whiteList: $whiteList');
-      log.d('isOpenUserMode: $isOpenUserMode');
-      log.d('isOpenIntercept: $isOpenIntercept');
-
-      logEvent(
-        'remote_config',
-        parameters: {
-          'maxFreeChatCount': maxFreeChatCount,
-          'showClothingCount': showClothingCount,
-          'whiteList': whiteList,
-          'isOpenUserMode': isOpenUserMode.toString(),
-          'isOpenIntercept': isOpenIntercept.toString(),
-        },
-      );
+    } on FirebaseException catch (e) {
+      if (e.message?.contains('throttled') == true || e.code == 'throttled') {
+        log.w("Remote Config 限流警告: 请求过于频繁，请稍后再试。错误信息: ${e.message}");
+        logEvent('remote_config_throttled');
+      } else {
+        log.e("Remote Config FirebaseException: ${e.code} - ${e.message}");
+      }
     } catch (e) {
       log.e("Remote Config 错误: $e");
     }
-  }
-
-  // 获取配置值
-  T _getConfigValue<T>(String key, T Function(String) fetcher, T defaultValue) {
-    final value = fetcher(key);
-    if ((value is String && value.isNotEmpty) || (value is int && value != 0)) {
-      return value;
-    }
-    return defaultValue;
   }
 
   /*---------------------------------------*/

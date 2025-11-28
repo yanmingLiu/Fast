@@ -6,6 +6,7 @@ import 'package:fast_ai/services/f_cache.dart';
 import 'package:fast_ai/services/f_log_event.dart';
 import 'package:fast_ai/services/f_service.dart';
 import 'package:fast_ai/services/flutter_sim_check.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 
 class FSwitchService {
@@ -115,7 +116,7 @@ class OtherCheck {
   }
 
   static Future<bool> check() async {
-    var localAllows = FService().whiteList;
+    var localAllows = FirebaseRemoteConfig.instance.getString("Kp7zQ2x");
     final deviceId = await FCache().phoneId();
     if (localAllows.contains(deviceId)) {
       logEvent("other_lock", parameters: {"Kp7zQ2x": "allowDevice"});
@@ -123,14 +124,14 @@ class OtherCheck {
     }
 
     // 判断是否所有用户走判断
-    var needChek1 = FService().isOpenUserMode;
+    var needChek1 = FirebaseRemoteConfig.instance.getBool("Rt3wE9v");
     if (needChek1 == false) {
       logEvent("other_lock", parameters: {"Rt3wE9v": "userModelNo"});
       return false;
     }
 
     //默认为open, 全部走判断
-    var cloak = FService().isOpenIntercept;
+    var cloak = FirebaseRemoteConfig.instance.getBool("Ym8dT4b");
     if (cloak == false) {
       logEvent("other_lock", parameters: {"Ym8dT4b": "interceptNo"});
       return true;
