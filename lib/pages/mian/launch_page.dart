@@ -69,7 +69,6 @@ class _LaunchPageState extends State<LaunchPage>
       await Future.wait([
         FSwitchService.request(isFisrt: true),
         MY().register(),
-        IAPTool().query(),
       ]).timeout(
         Duration(seconds: 7),
         onTimeout: () {

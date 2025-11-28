@@ -103,6 +103,8 @@ class FSwitchService {
 
       if (response.isOk && response.body == 'mute') {
         FCache().isBig = true;
+      } else {
+        FCache().isBig = false;
       }
     } catch (e) {
       log.e('Error in _requestAndroidClk: $e');
