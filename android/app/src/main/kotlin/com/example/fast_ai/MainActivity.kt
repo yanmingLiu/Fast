@@ -7,8 +7,13 @@ import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.facebook.LoggingBehavior
 
+import android.content.Context
+import android.telephony.TelephonyManager
+
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "facebook_sdk_channel"
+    private val SIM_CHANNEL = "sim_check"
+
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -83,6 +88,18 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
+
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SIM_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                if (call.method == "hasSimCard") {
+                    val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                    val state = telephonyManager.simState
+                    result.success(state == TelephonyManager.SIM_STATE_READY)
+                } else {
+                    result.notImplemented()
+                }
+            }
     }
 }
 
